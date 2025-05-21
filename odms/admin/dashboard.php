@@ -3,6 +3,7 @@
  <head>
  <title>Online DJ Management System - Admin Dashboard</title>
  <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
+ <link rel="stylesheet" href="assets/css/custom-dark.css">
     </head>
     <body>
         <div id="page-container" class="sidebar-o sidebar-inverse side-scroll page-header-fixed main-content-narrow">
