@@ -195,7 +195,10 @@ if (isset($_POST['submit'])) {
 
 								<div>
 									<label class="block text-gray-400 text-xs mb-1">Mobile Number</label>
-									<input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+									<input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" 
+                                        class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
+                                        onkeypress="return isNumberKey(event)" 
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 								</div>
 
 								<div>
@@ -265,6 +268,15 @@ if (isset($_POST['submit'])) {
 					notification.remove();
 				}, 300);
 			}, 5000);
+		}
+	
+		// Fungsi untuk memvalidasi input angka
+		function isNumberKey(evt) {
+			var charCode = (evt.which) ? evt.which : evt.keyCode;
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+				return false;
+			}
+			return true;
 		}
 	</script>
 </body>
