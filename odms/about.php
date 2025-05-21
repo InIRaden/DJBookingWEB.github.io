@@ -5,279 +5,150 @@ error_reporting(0);
 include('includes/dbconnection.php');
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Online DJ Management System || About Us</title>
-    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
-    <!-- Custom Theme files -->
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-    <link rel="stylesheet" href="css/touchTouch.css" type="text/css" media="all" />
-    <!-- Custom Theme files -->
-    <script src="js/jquery.min.js"></script>
-    <script type="application/x-javascript">
-        addEventListener("load", function() {
-            setTimeout(hideURLbar, 0);
-        }, false);
-
-        function hideURLbar() {
-            window.scrollTo(0, 1);
-        }
-    </script>
-    <!--webfont-->
-    <link href='http://fonts.googleapis.com/css?family=Monoton' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>DjBooking - About Us</title>
+    <link rel="stylesheet" href="../src/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-
-    <!---//End-css-style-switecher----->
-    <script type="text/javascript" src="js/jquery.fancybox.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css" media="screen" />
-    <script type="text/javascript">
-        $(document).ready(function() {
-            /*
-             *  Simple image gallery. Uses default settings
-             */
-
-            $('.fancybox').fancybox();
-
-        });
-    </script>
-
-    <!-- Tambahan CSS untuk meningkatkan tampilan -->
-    <style type="text/css">
-        /* Styling untuk halaman About */
-        .about.content {
-            background: linear-gradient(to bottom, #1a1a1a, #333);
-            padding-bottom: 40px;
-        }
-
-        .about-main {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .about-main:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .abt-pic img {
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .abt-pic img:hover {
-            transform: scale(1.02);
-        }
-
-        .abt-pic-info p {
-            font-size: 16px;
-            line-height: 1.8;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-left: 4px solid #ff5722;
-        }
-
-        h2 {
-            color: #ff5722;
-            font-size: 36px;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        h2:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background: #ff5722;
-        }
-
-        .latest {
-            margin-top: 50px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .latest h3 {
-            color: #ff5722;
-            font-size: 28px;
-            margin-bottom: 30px;
-            text-align: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
-
-        .pic {
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-        }
-
-        .pic:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .pic img {
-            border-radius: 5px;
-            transition: all 0.5s ease;
-        }
-
-        .pic:hover img {
-            transform: scale(1.05);
-        }
-
-        .pic h4 {
-            margin-top: 15px;
-            font-size: 18px;
-        }
-
-        .pic h4 a {
-            color: #ff5722;
-            transition: all 0.3s ease;
-        }
-
-        .pic h4 a:hover {
-            color: #ff8a65;
-            text-decoration: none;
-        }
-
-        .pic p {
-            color: #ccc;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .breadcrumb {
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            padding: 12px 20px;
-            margin-top: 20px;
-        }
-
-        .breadcrumb li a {
-            color: #ff5722;
-            transition: all 0.3s ease;
-        }
-
-        .breadcrumb li a:hover {
-            color: #ff8a65;
-            text-decoration: none;
-        }
-
-        .breadcrumb li.active {
-            color: #fff;
-        }
-
-        /* Animasi untuk elemen */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .about-main,
-        .latest {
-            animation: fadeIn 1s ease-out;
+    <!-- Tambahkan CSS Fancybox -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
         }
     </style>
-
 </head>
 
-<body>
-    <!---->
-    <?php include_once('includes/header.php'); ?>
-    <div class="about content">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li><a href="index.php">Home</a></li>
-                <li class="active">About</li>
-            </ol>
+<body class="bg-black text-white">
+    <!-- Header Section -->
+    <header class="relative">
+        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
+        <nav class="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-4 text-white bg-black">
+            <div class="flex items-center space-x-2 text-sm font-semibold">
+                <i class="fas fa-compact-disc"></i>
+                <span>DjBooking</span>
+            </div>
+            <ul class="hidden md:flex space-x-8 text-sm font-normal">
+                <li><a class="hover:underline" href="index.php">Home</a></li>
+                <li><a class="hover:underline" href="services.php">Services</a></li>
+                <li><a class="hover:underline" href="request-status.php">Request Status</a></li>
+                <li><a class="hover:underline" href="about.php">About</a></li>
+                <li><a class="hover:underline" href="contact.php">Contact</a></li>
+                <li><a class="hover:underline" href="admin/login.php">Admin</a></li>
+            </ul>
+            <a href="signup.php" class="hidden md:inline-block bg-gray-700 bg-opacity-60 rounded px-3 py-1 text-xs font-semibold hover:bg-gray-600 transition">
+                Sign Up
+            </a>
+        </nav>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
+            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">About Us</h1>
+            <p class="text-xs md:text-sm mt-2 text-white">
+                Learn more about our DJ services and what makes us special
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
+        <!-- Breadcrumb -->
+        <div class="flex items-center space-x-2 text-xs mb-8">
+            <a href="index.php" class="text-gray-400 hover:text-white">Home</a>
+            <span class="text-gray-600">/</span>
+            <span class="text-white">About</span>
+        </div>
+
+        <!-- About Content -->
+        <section class="mb-12">
             <?php
             $sql = "SELECT * from tblpage where PageType='aboutus'";
             $query = $dbh->prepare($sql);
             $query->execute();
             $results = $query->fetchAll(PDO::FETCH_OBJ);
 
-            $cnt = 1;
             if ($query->rowCount() > 0) {
-                foreach ($results as $row) {               ?>
-                    <h2><?php echo htmlentities($row->PageTitle); ?></h2>
-                    <div class="about-main">
-                        <div class="col-md-6 abt-pic">
-                            <img src="images/abt.jpg" class="img-responsive" alt="" />
+                foreach ($results as $row) { ?>
+                    <h2 class="font-semibold text-white text-lg mb-6"><?php echo htmlentities($row->PageTitle); ?></h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <a href="images/abt.jpg" data-fancybox="about-gallery">
+                                <img src="images/abt.jpg" alt="About Us" class="w-full h-auto rounded-md shadow-lg" />
+                            </a>
                         </div>
-                        <div class="col-md-6 abt-pic-info">
-
-                            <p style="color:#fff"><?php echo $row->PageDescription; ?>.</p>
-
+                        <div class="text-gray-300 text-sm leading-relaxed">
+                            <p><?php echo $row->PageDescription; ?></p>
                         </div>
-                <?php $cnt = $cnt + 1;
-                }
+                    </div>
+            <?php }
             } ?>
-                <div class="clearfix"></div>
-                    </div>
+        </section>
 
-                    <div class="latest">
-                        <h3>LATEST PHOTOS</h3>
-                        <div class="pic start">
-                            <a class="fancybox" href="images/4.jpg" data-fancybox-group="gallery" title="Lorem ipsum dolor sit amet"><img src="images/4.jpg" class="img-style row6" alt=""><span> </span></a>
-                            <h4><a href="event.html">Aenean rutrum</a></h4>
-                            <p>Suspendisse posuere enim eu ante scelerisque, vehicula turpis.</p>
-                        </div>
-                        <div class="pic">
-                            <a class="fancybox" href="images/5.jpg" data-fancybox-group="gallery" title="Lorem ipsum dolor sit amet"><img src="images/5.jpg" class="img-style row6" alt=""><span> </span></a>
-                            <h4><a href="event.html">Aenean rutrum</a></h4>
-                            <p>Suspendisse posuere enim eu ante scelerisque, vehicula turpis.</p>
-                        </div>
-                        <div class="pic">
-                            <a class="fancybox" href="images/6.jpg" data-fancybox-group="gallery" title="Lorem ipsum dolor sit amet"><img src="images/6.jpg" class="img-style row6" alt=""><span> </span></a>
-                            <h4><a href="event.html">Aenean rutrum</a></h4>
-                            <p>Suspendisse posuere enim eu ante scelerisque, vehicula turpis.</p>
-                        </div>
-                        <div class="pic">
-                            <a class="fancybox" href="images/7.jpg" data-fancybox-group="gallery" title="Lorem ipsum dolor sit amet"><img src="images/7.jpg" class="img-style row6" alt=""><span> </span></a>
-                            <h4><a href="event.html">Aenean rutrum</a></h4>
-                            <p>Suspendisse posuere enim eu ante scelerisque, vehicula turpis.</p>
-                        </div>
-                        <div class="pic">
-                            <a class="fancybox" href="images/8.jpg" data-fancybox-group="gallery" title="Lorem ipsum dolor sit amet"><img src="images/8.jpg" class="img-style row6" alt=""><span> </span></a>
-                            <h4><a href="event.html">Aenean rutrum</a></h4>
-                            <p>Suspendisse posuere enim eu ante scelerisque, vehicula turpis.</p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <?php include_once('includes/footer.php'); ?>
-        </div>
-    </div>
-    <!---->
+        <!-- Latest Photos Section -->
+        <section>
+            <h2 class="font-semibold text-white text-lg mb-6">LATEST PHOTOS</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                <div class="group">
+                    <a href="images/4.jpg" data-fancybox="gallery" class="block">
+                        <img src="images/4.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
+                    </a>
+                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
+                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
+                </div>
+                <div class="group">
+                    <a href="images/5.jpg" data-fancybox="gallery" class="block">
+                        <img src="images/5.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
+                    </a>
+                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
+                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
+                </div>
+                <div class="group">
+                    <a href="images/6.jpg" data-fancybox="gallery" class="block">
+                        <img src="images/6.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
+                    </a>
+                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
+                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
+                </div>
+                <div class="group">
+                    <a href="images/7.jpg" data-fancybox="gallery" class="block">
+                        <img src="images/7.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
+                    </a>
+                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
+                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
+                </div>
+                <div class="group">
+                    <a href="images/paham.png" data-fancybox="gallery" class="block">
+                        <img src="images/paham.png" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
+                    </a>
+                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
+                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <!---->
+    <?php include_once('includes/footer.php'); ?>
+
+    <!-- Tambahkan script Fancybox -->
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi Fancybox
+            Fancybox.bind("[data-fancybox]", {
+                // Opsi konfigurasi Fancybox
+                animationEffect: "fade",
+                transitionEffect: "fade",
+                buttons: [
+                    "zoom",
+                    "slideShow",
+                    "fullScreen",
+                    "close"
+                ]
+            });
+        });
+    </script>
 </body>
 
 </html>
