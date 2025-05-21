@@ -35,9 +35,9 @@
             <h4 class="font-bold mb-2 text-[11px]">Social</h4>
             <div class="flex space-x-3 text-white text-sm">
                 <a href="#" class="hover:text-gray-300"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="hover:text-gray-300"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.instagram.com/aruleyd/" class="hover:text-gray-300"><i class="fab fa-instagram"></i></a>
                 <a href="#" class="hover:text-gray-300"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hover:text-gray-300"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.youtube.com/@aruleyd" class="hover:text-gray-300"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
     </div>
