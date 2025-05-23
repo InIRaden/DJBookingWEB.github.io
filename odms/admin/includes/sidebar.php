@@ -6,13 +6,13 @@ if (strlen($_SESSION['odmsaid']==0)) {
   header('location:logout.php');
 } else {
 ?>
-<nav id="sidebar" style="background-color: #252b3b; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+<nav id="sidebar" style="background-color: #1a1f2e; box-shadow: 0 0 15px rgba(0,0,0,0.4);">
     <!-- Sidebar Scroll Container -->
     <div id="sidebar-scroll">
         <!-- Sidebar Content -->
         <div class="sidebar-content">
             <!-- Side Header -->
-            <div class="content-header content-header-fullrow px-15" style="background-color: #1a1f2e;">
+            <div class="content-header content-header-fullrow px-15" style="background-color: #151a27; border-bottom: 1px solid #2d3446;">
                 <!-- Mini Mode -->
                 <div class="content-header-section sidebar-mini-visible-b">
                     <!-- Logo -->
@@ -36,7 +36,7 @@ if (strlen($_SESSION['odmsaid']==0)) {
                     <div class="content-header-item">
                         <a class="link-effect font-w700" href="dashboard.php">
                             <i class="si si-music-tone-alt text-primary"></i>
-                            <span class="font-size-xl text-dual-primary-dark">OD</span><span class="font-size-xl text-primary">MS</span>
+                            <span class="font-size-xl text-white">OD</span><span class="font-size-xl text-primary">MS</span>
                         </a>
                     </div>
                     <!-- END Logo -->
@@ -46,7 +46,7 @@ if (strlen($_SESSION['odmsaid']==0)) {
             <!-- END Side Header -->
 
             <!-- Side User -->
-            <div class="content-side content-side-full content-side-user px-10 align-parent" style="background-color: #1e2433;">
+            <div class="content-side content-side-full content-side-user px-10 align-parent" style="background-color: #151a27; border-bottom: 1px solid #2d3446;">
                 <!-- Visible only in mini mode -->
                 <div class="sidebar-mini-visible-b align-v animated fadeIn">
                     <img class="img-avatar img-avatar32" src="assets/img/avatars/avatar15.jpg" alt="">
@@ -82,57 +82,57 @@ if (strlen($_SESSION['odmsaid']==0)) {
             <div class="content-side content-side-full">
                 <ul class="nav-main" style="color: #e0e0e0;">
                     <li class="open">
-                        <a href="dashboard.php" style="color: #e0e0e0; background-color: #1e2433;"><i class="si si-cup" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Dashboard</span></a>
+                        <a href="dashboard.php" style="color: #e0e0e0; background-color: #151a27;"><i class="si si-cup" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Dashboard</span></a>
                     </li>
                   
-                    <li class="nav-main-heading" style="color: #4f9fff;"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Menu</span></li>
+                    <li class="nav-main-heading" style="color: #4f9fff; margin-top: 10px;"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Menu</span></li>
                     <li>
                         <a class="nav-submenu" data-toggle="nav-submenu" style="color: #e0e0e0;"><i class="si si-volume-2" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">DJ Services</span></a>
-                        <ul style="background-color: #1e2433;">
+                        <ul style="background-color: #151a27; border-left: 3px solid #4f9fff;">
                             <li>
-                                <a href="add-services.php" style="color: #e0e0e0;">Add Services</a>
+                                <a href="add-services.php" style="color: #e0e0e0; padding-left: 40px;">Add Services</a>
                             </li>
                             <li>
-                                <a href="manage-services.php" style="color: #e0e0e0;">Manage Services</a>
+                                <a href="manage-services.php" style="color: #e0e0e0; padding-left: 40px;">Manage Services</a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-energy" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Type of Events</span></a>
-                        <ul style="background-color: #1e2433;">
+                        <ul style="background-color: #151a27; border-left: 3px solid #4f9fff;">
                             <li>
-                                <a href="add-event-type.php" style="color: #e0e0e0;">Add Event Types</a>
+                                <a href="add-event-type.php" style="color: #e0e0e0; padding-left: 40px;">Add Event Types</a>
                             </li>
                             <li>
-                                <a href="manage-event-type.php" style="color: #e0e0e0;">Manage Event Types</a>
+                                <a href="manage-event-type.php" style="color: #e0e0e0; padding-left: 40px;">Manage Event Types</a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-note" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Booking</span></a>
-                        <ul style="background-color: #1e2433;">
+                        <ul style="background-color: #151a27; border-left: 3px solid #4f9fff;">
                             <li>
-                                <a href="new-booking.php" style="color: #e0e0e0;">New Booking</a>
+                                <a href="new-booking.php" style="color: #e0e0e0; padding-left: 40px;">New Booking</a>
                             </li>
                             <li>
-                                <a href="approved-booking.php" style="color: #e0e0e0;">Approved Booking</a>
+                                <a href="approved-booking.php" style="color: #e0e0e0; padding-left: 40px;">Approved Booking</a>
                             </li>
                             <li>
-                                <a href="cancelled-booking.php" style="color: #e0e0e0;">Cancelled Booking</a>
+                                <a href="cancelled-booking.php" style="color: #e0e0e0; padding-left: 40px;">Cancelled Booking</a>
                             </li>
                             <li>
-                                <a href="all-booking.php" style="color: #e0e0e0;">All Booking</a>
+                                <a href="all-booking.php" style="color: #e0e0e0; padding-left: 40px;">All Booking</a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-users" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Contact Us Queries</span></a>
-                        <ul style="background-color: #1e2433;">
+                        <ul style="background-color: #151a27; border-left: 3px solid #4f9fff;">
                             <li>
-                                <a href="unread-queries.php" style="color: #e0e0e0;">Unread Queries</a>
+                                <a href="unread-queries.php" style="color: #e0e0e0; padding-left: 40px;">Unread Queries</a>
                             </li>
                             <li>
-                                <a href="read-queries.php" style="color: #e0e0e0;">Read Queries</a>
+                                <a href="read-queries.php" style="color: #e0e0e0; padding-left: 40px;">Read Queries</a>
                             </li>
                         </ul>
                     </li>
@@ -141,23 +141,23 @@ if (strlen($_SESSION['odmsaid']==0)) {
                     </li>
                     <li>
                         <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-magnifier" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Search</span></a>
-                        <ul style="background-color: #1e2433;">
+                        <ul style="background-color: #151a27; border-left: 3px solid #4f9fff;">
                             <li>
-                                <a href="user-search.php" style="color: #e0e0e0;">User Search</a>
+                                <a href="user-search.php" style="color: #e0e0e0; padding-left: 40px;">User Search</a>
                             </li>
                             <li>
-                                <a href="booking-search.php" style="color: #e0e0e0;">Booking Search</a>
+                                <a href="booking-search.php" style="color: #e0e0e0; padding-left: 40px;">Booking Search</a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-docs" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Pages</span></a>
-                        <ul style="background-color: #1e2433;">
+                        <ul style="background-color: #151a27; border-left: 3px solid #4f9fff;">
                             <li>
-                                <a href="aboutus.php" style="color: #e0e0e0;">About Us</a>
+                                <a href="aboutus.php" style="color: #e0e0e0; padding-left: 40px;">About Us</a>
                             </li>
                             <li>
-                                <a href="contactus.php" style="color: #e0e0e0;">Contact Us</a>
+                                <a href="contactus.php" style="color: #e0e0e0; padding-left: 40px;">Contact Us</a>
                             </li>
                         </ul>
                     </li>
