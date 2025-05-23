@@ -35,7 +35,7 @@ include('includes/dbconnection.php');
             <ul class="hidden md:flex space-x-8 text-sm font-normal">
                 <li><a class="hover:underline" href="index.php">Home</a></li>
                 <li><a class="hover:underline" href="services.php">Services</a></li>
-                <li><a class="hover:underline" href="request-status.php">Request Status</a></li>
+                <li><a class="hover:underline" href="status.php">Request Status</a></li>
                 <li><a class="hover:underline" href="about.php">About</a></li>
                 <li><a class="hover:underline" href="contact.php">Contact</a></li>
                 <li><a class="hover:underline" href="admin/login.php">Admin</a></li>

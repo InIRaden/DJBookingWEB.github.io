@@ -50,6 +50,35 @@ INSERT INTO `tbladmin` (`ID`, `AdminName`, `UserName`, `MobileNumber`, `Email`, 
 -- Table structure for table `tblbooking`
 --
 
+
+-- sementara
+CREATE TABLE `tblpaymentinstallment` (
+  `ID` INT(10) NOT NULL AUTO_INCREMENT,
+  `PaymentID` INT(10) NOT NULL,
+  `InstallmentNumber` INT(5) NOT NULL,
+  `DueDate` DATE NOT NULL,
+  `Amount` DECIMAL(10,2) NOT NULL,
+  `Paid` BOOLEAN DEFAULT FALSE,
+  `PaidDate` DATE DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  FOREIGN KEY (`PaymentID`) REFERENCES `tblpayment`(`ID`)
+);
+
+
+-- sementara
+CREATE TABLE `tblpaymentinstallment` (
+  `ID` INT(10) NOT NULL AUTO_INCREMENT,
+  `PaymentID` INT(10) NOT NULL,
+  `InstallmentNumber` INT(5) NOT NULL,
+  `DueDate` DATE NOT NULL,
+  `Amount` DECIMAL(10,2) NOT NULL,
+  `Paid` BOOLEAN DEFAULT FALSE,
+  `PaidDate` DATE DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  FOREIGN KEY (`PaymentID`) REFERENCES `tblpayment`(`ID`)
+);
+
+
 CREATE TABLE `tblbooking` (
   `ID` int(10) NOT NULL,
   `BookingID` int(10) DEFAULT NULL,
