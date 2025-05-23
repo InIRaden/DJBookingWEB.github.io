@@ -47,7 +47,7 @@ if (isset($_POST['submit'])) {
 		body {
 			font-family: "Inter", sans-serif;
 		}
-		
+
 		/* Styling untuk notifikasi */
 		.notification {
 			position: fixed;
@@ -65,32 +65,33 @@ if (isset($_POST['submit'])) {
 			transition: transform 0.3s ease-in-out;
 			max-width: 350px;
 		}
-		
+
 		.notification.show {
 			transform: translateX(0);
 		}
-		
+
 		.notification-success {
-			background-color: #822B2B; /* Sesuai dengan tema */
+			background-color: #822B2B;
+			/* Sesuai dengan tema */
 			border-left: 5px solid #ff5252;
 		}
-		
+
 		.notification-error {
 			background-color: #d32f2f;
 			border-left: 5px solid #b71c1c;
 		}
-		
+
 		.notification-icon {
 			margin-right: 12px;
 			font-size: 18px;
 		}
-		
+
 		.notification-close {
 			margin-left: 12px;
 			cursor: pointer;
 			opacity: 0.7;
 		}
-		
+
 		.notification-close:hover {
 			opacity: 1;
 		}
@@ -98,8 +99,16 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body class="bg-black text-white">
-	<?php include_once('includes/header.php');?>
-
+<header class="relative">
+        <?php include_once('includes/header.php'); ?>
+        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
+            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Contact</h1>
+            <p class="text-xs md:text-sm mt-2 text-white">
+                Learn more about our DJ services and what makes us special
+            </p>
+        </div>
+    </header>
 	<!-- Main Content -->
 	<main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
 		<!-- Breadcrumb -->
@@ -169,10 +178,10 @@ if (isset($_POST['submit'])) {
 
 								<div>
 									<label class="block text-gray-400 text-xs mb-1">Mobile Number</label>
-									<input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" 
-                                        class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
-                                        onkeypress="return isNumberKey(event)" 
-                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+									<input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+"
+										class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
+										onkeypress="return isNumberKey(event)"
+										oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 								</div>
 
 								<div>
@@ -216,25 +225,25 @@ if (isset($_POST['submit'])) {
 			// Buat elemen notifikasi baru
 			const notification = document.createElement('div');
 			notification.className = `notification notification-${type}`;
-			
+
 			// Ikon berdasarkan tipe notifikasi
 			const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
-			
+
 			// Isi HTML notifikasi
 			notification.innerHTML = `
 				<span class="notification-icon"><i class="fas fa-${icon}"></i></span>
 				<span>${message}</span>
 				<span class="notification-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></span>
 			`;
-			
+
 			// Tambahkan ke container
 			document.body.appendChild(notification);
-			
+
 			// Tampilkan notifikasi dengan animasi
 			setTimeout(() => {
 				notification.classList.add('show');
 			}, 10);
-			
+
 			// Hapus notifikasi setelah 5 detik
 			setTimeout(() => {
 				notification.classList.remove('show');
@@ -243,7 +252,7 @@ if (isset($_POST['submit'])) {
 				}, 300);
 			}, 5000);
 		}
-	
+
 		// Fungsi untuk memvalidasi input angka
 		function isNumberKey(evt) {
 			var charCode = (evt.which) ? evt.which : evt.keyCode;

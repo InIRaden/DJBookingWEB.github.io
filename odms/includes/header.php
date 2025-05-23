@@ -1,16 +1,20 @@
-<!-- Tambahkan link ke Tailwind CSS dan Font Awesome -->
-<link rel="stylesheet" href="../src/output.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!-- Header dengan Tailwind CSS -->
 <header class="relative">
-    <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
-    <nav class="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-4 text-white bg-black">
+    <nav class="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-4 text-white bg-black bg-opacity-80 z-50">
+        <!-- Logo / Judul -->
         <div class="flex items-center space-x-2 text-sm font-semibold">
-            <i class="fas fa-compact-disc"></i>
-            <span>DjBooking</span>
+            <a href="index.php" class="flex items-center space-x-2">
+                <i class="fas fa-compact-disc"></i>
+                <span>DjBooking</span>
+            </a>
         </div>
+
+        <!-- Menu Navigasi -->
         <ul class="hidden md:flex space-x-8 text-sm font-normal">
             <li><a class="hover:underline" href="index.php">Home</a></li>
             <li><a class="hover:underline" href="services.php">Services</a></li>
@@ -19,14 +23,23 @@
             <li><a class="hover:underline" href="contact.php">Contact</a></li>
             <li><a class="hover:underline" href="admin/login.php">Admin</a></li>
         </ul>
-        <a href="signup.php" class="hidden md:inline-block bg-gray-700 bg-opacity-60 rounded px-3 py-1 text-xs font-semibold hover:bg-gray-600 transition">
-            Sign Up
-        </a>
+
+        <!-- Tombol Sign In / Logout -->
+        <div class="hidden md:flex items-center space-x-4">
+            <?php if(isset($_SESSION['odmsaid'])): ?>
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs text-gray-300">
+                        Welcome, <?php echo htmlspecialchars($_SESSION['fname']); ?>
+                    </span>
+                    <a href="logout.php" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1 rounded transition-colors">
+                        Logout
+                    </a>
+                </div>
+            <?php else: ?>
+                <a href="signin.php" class="bg-gray-700 bg-opacity-60 rounded px-3 py-1 text-xs font-semibold hover:bg-gray-600 transition">
+                    Sign In
+                </a>
+            <?php endif; ?>
+        </div>
     </nav>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-        <h1 class="text-white font-bold text-lg md:text-xl leading-tight">About Us</h1>
-        <p class="text-xs md:text-sm mt-2 text-white">
-            Learn more about our DJ services and what makes us special
-        </p>
-    </div>
 </header>

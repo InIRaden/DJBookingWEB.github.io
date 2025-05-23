@@ -23,7 +23,17 @@ include('includes/dbconnection.php');
 </head>
 
 <body class="bg-black text-white">
-    <?php include_once('./includes/header.php');?>
+    <!-- Header Section -->
+    <header class="relative">
+        <?php include_once('includes/header.php'); ?>
+        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
+            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Services</h1>
+            <p class="text-xs md:text-sm mt-2 text-white">
+                Learn more about our DJ services and what makes us special
+            </p>
+        </div>
+    </header>
     
     <!-- Main Content -->
     <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
