@@ -162,17 +162,19 @@ include('includes/dbconnection.php');
                                 </div>
                             </div>
                         <?php } else { ?>
-                            <div class="bg-gray-800 p-6 rounded-md flex flex-col items-center justify-center h-full">
+                            <div class="bg-gray-800 p-6 rounded-md flex flex-col items-center justify-center h-full w-full">
                                 <i class="fas fa-search text-gray-600 text-4xl mb-4"></i>
-                                <h3 class="text-red-500 text-sm font-semibold">No Records Found</h3>
-                                <p class="text-gray-400 text-xs mt-2 text-center">We couldn't find any bookings matching your details. Please check your information and try again.</p>
+                                <h3 class="text-red-500 text-sm font-semibold mb-2">No Records Found</h3>
+                                <p class="text-gray-400 text-xs mt-2 text-center max-w-md mx-auto">We couldn't find any bookings matching your details. Please check your information and try again.</p>
                             </div>
                         <?php } ?>
                     <?php } else { ?>
-                        <div class="bg-gray-800 p-6 rounded-md flex flex-col items-center justify-center h-full">
-                            <img src="images/1hr.png" alt="DJ Booking" class="w-32 h-32 object-contain mb-4">
-                            <h3 class="text-white text-sm font-semibold">Check Your Booking Status</h3>
-                            <p class="text-gray-400 text-xs mt-2 text-center">Enter your details on the left to check the status of your booking request.</p>
+                        <div class="bg-gray-800 p-6 rounded-md h-full w-full">
+                            <div class="text-center">
+                                <img src="images/1hr.png" alt="DJ Booking" class="w-32 h-32 object-contain mb-4 mx-auto">
+                                <h3 class="text-white text-sm font-semibold mb-2">Check Your Booking Status</h3>
+                                <p class="text-gray-400 text-xs mt-2 mx-auto">Enter your details on the left to check the status of your booking request.</p>
+                            </div>
                         </div>
                     <?php } ?>
                 </div>

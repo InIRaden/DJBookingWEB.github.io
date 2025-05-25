@@ -50,33 +50,31 @@ INSERT INTO `tbladmin` (`ID`, `AdminName`, `UserName`, `MobileNumber`, `Email`, 
 -- Table structure for table `tblbooking`
 --
 
-
--- sementara
-CREATE TABLE `tblpaymentinstallment` (
-  `ID` INT(10) NOT NULL AUTO_INCREMENT,
-  `PaymentID` INT(10) NOT NULL,
-  `InstallmentNumber` INT(5) NOT NULL,
-  `DueDate` DATE NOT NULL,
-  `Amount` DECIMAL(10,2) NOT NULL,
-  `Paid` BOOLEAN DEFAULT FALSE,
-  `PaidDate` DATE DEFAULT NULL,
+-- Tabel untuk pembayaran
+CREATE TABLE `tblpayment` (
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `BookingID` int(10) DEFAULT NULL,
+  `PaymentMethod` varchar(50) DEFAULT NULL,
+  `PaymentStatus` varchar(50) DEFAULT 'Pending',
+  `Amount` decimal(10,2) DEFAULT NULL,
+  `TransactionID` varchar(100) DEFAULT NULL,
+  `PaymentDate` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`ID`),
-  FOREIGN KEY (`PaymentID`) REFERENCES `tblpayment`(`ID`)
-);
+  KEY `BookingID` (`BookingID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
--- sementara
+-- Tabel untuk cicilan pembayaran
 CREATE TABLE `tblpaymentinstallment` (
-  `ID` INT(10) NOT NULL AUTO_INCREMENT,
-  `PaymentID` INT(10) NOT NULL,
-  `InstallmentNumber` INT(5) NOT NULL,
-  `DueDate` DATE NOT NULL,
-  `Amount` DECIMAL(10,2) NOT NULL,
-  `Paid` BOOLEAN DEFAULT FALSE,
-  `PaidDate` DATE DEFAULT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `PaymentID` int(10) NOT NULL,
+  `InstallmentNumber` int(5) NOT NULL,
+  `Amount` decimal(10,2) NOT NULL,
+  `DueDate` date DEFAULT NULL,
+  `PaidStatus` varchar(50) DEFAULT 'Pending',
+  `PaidDate` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  FOREIGN KEY (`PaymentID`) REFERENCES `tblpayment`(`ID`)
-);
+  KEY `PaymentID` (`PaymentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE `tblbooking` (

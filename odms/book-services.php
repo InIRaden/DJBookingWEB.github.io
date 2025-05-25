@@ -15,6 +15,7 @@ if(isset($_POST['submit'])) {
     $eventtype = $_POST['eventtype'];
     $addinfo = $_POST['addinfo'];
     $bookingid = mt_rand(100000000, 999999999);
+    $paymentMethod = $_POST['payment_method'];
     
     $sql = "INSERT INTO tblbooking(BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation) 
             VALUES (:bookingid, :bid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo)";
@@ -36,8 +37,52 @@ if(isset($_POST['submit'])) {
     $LastInsertId = $dbh->lastInsertId();
     
     if ($LastInsertId > 0) {
-        echo '<script>alert("Your Booking Request Has Been Sent. We Will Contact You Soon")</script>';
-        echo "<script>window.location.href ='services.php'</script>";
+        // Get service price
+        $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
+        $queryPrice = $dbh->prepare($sqlPrice);
+        $queryPrice->bindParam(':bid', $bid, PDO::PARAM_STR);
+        $queryPrice->execute();
+        $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
+        $amount = $serviceData['ServicePrice'];
+        
+        // Insert payment record
+        $sqlPayment = "INSERT INTO tblpayment(BookingID, PaymentMethod, Amount) VALUES (:bookingid, :paymentMethod, :amount)";
+        $queryPayment = $dbh->prepare($sqlPayment);
+        $queryPayment->bindParam(':bookingid', $bookingid, PDO::PARAM_STR);
+        $queryPayment->bindParam(':paymentMethod', $paymentMethod, PDO::PARAM_STR);
+        $queryPayment->bindParam(':amount', $amount, PDO::PARAM_STR);
+        $queryPayment->execute();
+        $paymentId = $dbh->lastInsertId();
+        
+        // If installment payment, create installment records
+        if ($paymentMethod == 'installment') {
+            $installmentCount = $_POST['installment_count'];
+            $installmentAmount = $amount / $installmentCount;
+            
+            for ($i = 1; $i <= $installmentCount; $i++) {
+                $dueDate = date('Y-m-d', strtotime("+$i month"));
+                $sqlInstallment = "INSERT INTO tblpaymentinstallment(PaymentID, InstallmentNumber, Amount, DueDate) 
+                                  VALUES (:paymentId, :installmentNumber, :amount, :dueDate)";
+                $queryInstallment = $dbh->prepare($sqlInstallment);
+                $queryInstallment->bindParam(':paymentId', $paymentId, PDO::PARAM_STR);
+                $queryInstallment->bindParam(':installmentNumber', $i, PDO::PARAM_INT);
+                $queryInstallment->bindParam(':amount', $installmentAmount, PDO::PARAM_STR);
+                $queryInstallment->bindParam(':dueDate', $dueDate, PDO::PARAM_STR);
+                $queryInstallment->execute();
+            }
+        }
+        
+        // Redirect based on payment method
+        if ($paymentMethod == 'cash') {
+            echo '<script>alert("Your Booking Request Has Been Sent. We Will Contact You Soon")</script>';
+            echo "<script>window.location.href ='services.php'</script>";
+        } else if ($paymentMethod == 'transfer') {
+            // Redirect to virtual account payment page
+            echo "<script>window.location.href ='payment-virtual-account.php?bookid=$bookingid'</script>";
+        } else if ($paymentMethod == 'installment') {
+            // Redirect to installment payment page
+            echo "<script>window.location.href ='payment-installment.php?bookid=$bookingid'</script>";
+        }
     } else {
         echo '<script>alert("Something Went Wrong. Please try again")</script>';
     }
@@ -233,8 +278,54 @@ if(isset($_POST['submit'])) {
                 </div>
                 <div>
                     <a href="images/431427.jpg" data-fancybox="booking-image">
-                        <img src="images/431427.jpg" alt="DJ Event" class="w-full h-auto rounded-md shadow-lg" />
+                        <img src="images/431427.jpg" alt="DJ Event" class="w-full h-auto rounded-md shadow-lg mb-6" />
                     </a>
+                    <!-- Payment Method Section -->
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-300 mb-2">Payment Method</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition cursor-pointer">
+                                <input type="radio" name="payment_method" id="cash" value="cash" class="hidden payment-radio" checked>
+                                <label for="cash" class="flex flex-col items-center cursor-pointer">
+                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mb-2">
+                                        <i class="fas fa-money-bill-wave text-green-400"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">Cash</span>
+                                    <span class="text-xs text-gray-400 mt-1 text-center">Pay in cash when we meet</span>
+                                </label>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition cursor-pointer">
+                                <input type="radio" name="payment_method" id="transfer" value="transfer" class="hidden payment-radio">
+                                <label for="transfer" class="flex flex-col items-center cursor-pointer">
+                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mb-2">
+                                        <i class="fas fa-credit-card text-blue-400"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">Transfer</span>
+                                    <span class="text-xs text-gray-400 mt-1 text-center">Pay via virtual account</span>
+                                </label>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition cursor-pointer">
+                                <input type="radio" name="payment_method" id="installment" value="installment" class="hidden payment-radio">
+                                <label for="installment" class="flex flex-col items-center cursor-pointer">
+                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mb-2">
+                                        <i class="fas fa-calendar-alt text-purple-400"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">Installment</span>
+                                    <span class="text-xs text-gray-400 mt-1 text-center">Pay in multiple payments</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Installment Options (Hidden by default) -->
+                    <div id="installment-options" class="mb-4 hidden bg-gray-800 p-4 rounded-lg">
+                        <label class="block text-sm text-gray-300 mb-2">Installment Terms</label>
+                        <div class="flex items-center">
+                            <select name="installment_count" class="form-control">
+                                <option value="2">2 payments</option>
+                            </select>
+                            <p class="ml-4 text-xs text-gray-400">* Installment only available via transfer</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -256,6 +347,36 @@ if(isset($_POST['submit'])) {
                     "close"
                 ]
             });
+            
+            // Payment method selection
+            const paymentRadios = document.querySelectorAll('.payment-radio');
+            const installmentOptions = document.getElementById('installment-options');
+            
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Add active class to selected payment method
+                    document.querySelectorAll('.payment-radio').forEach(r => {
+                        const parent = r.parentElement;
+                        if (r.checked) {
+                            parent.classList.add('border-blue-500');
+                            parent.classList.remove('border-gray-700');
+                        } else {
+                            parent.classList.remove('border-blue-500');
+                            parent.classList.add('border-gray-700');
+                        }
+                    });
+                    
+                    // Show/hide installment options
+                    if (this.value === 'installment') {
+                        installmentOptions.classList.remove('hidden');
+                    } else {
+                        installmentOptions.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Trigger change event on page load to set initial state
+            document.querySelector('input[name="payment_method"]:checked').dispatchEvent(new Event('change'));
         });
     </script>
 </body>
