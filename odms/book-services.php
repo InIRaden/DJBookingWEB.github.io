@@ -126,6 +126,25 @@ if(isset($_POST['submit'])) {
         .btn-submit:hover {
             background-color: #6b6b6b;
         }
+        /* Enhanced Payment Method Styles */
+        .payment-radio:checked + label .bg-gray-700 {
+            background-color: #3b82f6; /* Blue background for selected icon */
+        }
+        .payment-radio:checked + label {
+            border-color: #3b82f6;
+        }
+        #installment-options {
+            transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateY(-10px);
+        }
+        #installment-options.show {
+            opacity: 1;
+            max-height: 200px; /* Adjust based on content height */
+            transform: translateY(0);
+        }
+        .payment-radio + label:hover .bg-gray-700 {
+            background-color: #4b5563; /* Subtle hover effect for icon background */
+        }
     </style>
 </head>
 
@@ -281,47 +300,55 @@ if(isset($_POST['submit'])) {
                         <img src="images/431427.jpg" alt="DJ Event" class="w-full h-auto rounded-md shadow-lg mb-6" />
                     </a>
                     <!-- Payment Method Section -->
-                    <div class="mb-4">
-                        <label class="block text-sm text-gray-300 mb-2">Payment Method</label>
+                    <div class="mb-6">
+                        <label class="block text-sm text-gray-300 mb-3 font-medium">Payment Method</label>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition cursor-pointer">
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:scale-102 shadow-md h-32">
                                 <input type="radio" name="payment_method" id="cash" value="cash" class="hidden payment-radio" checked>
-                                <label for="cash" class="flex flex-col items-center cursor-pointer">
-                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mb-2">
-                                        <i class="fas fa-money-bill-wave text-green-400"></i>
+                                <label for="cash" class="flex flex-col items-center justify-center cursor-pointer h-full space-y-2">
+                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-money-bill-wave text-green-400 text-lg"></i>
                                     </div>
-                                    <span class="text-sm font-medium">Cash</span>
-                                    <span class="text-xs text-gray-400 mt-1 text-center">Pay in cash when we meet</span>
+                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                        <span class="text-sm font-medium text-white">Cash</span>
+                                        <span class="text-xs text-gray-400">Pay in cash when we meet</span>
+                                    </div>
                                 </label>
                             </div>
-                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition cursor-pointer">
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:scale-102 shadow-md h-32">
                                 <input type="radio" name="payment_method" id="transfer" value="transfer" class="hidden payment-radio">
-                                <label for="transfer" class="flex flex-col items-center cursor-pointer">
-                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mb-2">
-                                        <i class="fas fa-credit-card text-blue-400"></i>
+                                <label for="transfer" class="flex flex-col items-center justify-center cursor-pointer h-full space-y-2">
+                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-credit-card text-blue-400 text-lg"></i>
                                     </div>
-                                    <span class="text-sm font-medium">Transfer</span>
-                                    <span class="text-xs text-gray-400 mt-1 text-center">Pay via virtual account</span>
+                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                        <span class="text-sm font-medium text-white">Transfer</span>
+                                        <span class="text-xs text-gray-400">Pay via virtual account</span>
+                                    </div>
                                 </label>
                             </div>
-                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition cursor-pointer">
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:scale-102 shadow-md h-32">
                                 <input type="radio" name="payment_method" id="installment" value="installment" class="hidden payment-radio">
-                                <label for="installment" class="flex flex-col items-center cursor-pointer">
-                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mb-2">
-                                        <i class="fas fa-calendar-alt text-purple-400"></i>
+                                <label for="installment" class="flex flex-col items-center justify-center cursor-pointer h-full space-y-2">
+                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-calendar-alt text-purple-400 text-lg"></i>
                                     </div>
-                                    <span class="text-sm font-medium">Installment</span>
-                                    <span class="text-xs text-gray-400 mt-1 text-center">Pay in multiple payments</span>
+                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                        <span class="text-sm font-medium text-white">Installment</span>
+                                        <span class="text-xs text-gray-400">Pay in multiple payments</span>
+                                    </div>
                                 </label>
                             </div>
                         </div>
                     </div>
                     <!-- Installment Options (Hidden by default) -->
-                    <div id="installment-options" class="mb-4 hidden bg-gray-800 p-4 rounded-lg">
-                        <label class="block text-sm text-gray-300 mb-2">Installment Terms</label>
+                    <div id="installment-options" class="mb-6 bg-gray-800 p-4 rounded-lg opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <label class="block text-sm text-gray-300 mb-3 font-medium">Installment Terms</label>
                         <div class="flex items-center">
                             <select name="installment_count" class="form-control">
                                 <option value="2">2 payments</option>
+                                <option value="3">3 payments</option>
+                                <option value="4">4 payments</option>
                             </select>
                             <p class="ml-4 text-xs text-gray-400">* Installment only available via transfer</p>
                         </div>
@@ -347,16 +374,16 @@ if(isset($_POST['submit'])) {
                     "close"
                 ]
             });
-            
+
             // Payment method selection
             const paymentRadios = document.querySelectorAll('.payment-radio');
             const installmentOptions = document.getElementById('installment-options');
-            
+
             paymentRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
-                    // Add active class to selected payment method
+                    // Update border for selected payment method
                     document.querySelectorAll('.payment-radio').forEach(r => {
-                        const parent = r.parentElement;
+                        const parent = r.parentElement.parentElement; // Adjust to target the outer div
                         if (r.checked) {
                             parent.classList.add('border-blue-500');
                             parent.classList.remove('border-gray-700');
@@ -365,18 +392,25 @@ if(isset($_POST['submit'])) {
                             parent.classList.add('border-gray-700');
                         }
                     });
-                    
-                    // Show/hide installment options
+
+                    // Show/hide installment options with transition
                     if (this.value === 'installment') {
+                        installmentOptions.classList.add('show');
                         installmentOptions.classList.remove('hidden');
                     } else {
-                        installmentOptions.classList.add('hidden');
+                        installmentOptions.classList.remove('show');
+                        setTimeout(() => {
+                            installmentOptions.classList.add('hidden');
+                        }, 500); // Match transition duration
                     }
                 });
             });
-            
+
             // Trigger change event on page load to set initial state
-            document.querySelector('input[name="payment_method"]:checked').dispatchEvent(new Event('change'));
+            const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
+            if (checkedRadio) {
+                checkedRadio.dispatchEvent(new Event('change'));
+            }
         });
     </script>
 </body>
