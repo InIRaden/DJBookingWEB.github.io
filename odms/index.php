@@ -18,7 +18,7 @@ include('includes/dbconnection.php');
         body {
             font-family: "Inter", sans-serif;
         }
-        
+
         /* Card hover effects for DJs */
         .dj-card {
             position: relative;
@@ -26,34 +26,34 @@ include('includes/dbconnection.php');
             border-radius: 0.375rem;
             transition: transform 0.3s ease;
         }
-        
+
         .dj-card:hover {
             transform: translateY(-5px);
         }
-        
+
         .dj-card-image {
             transition: transform 0.5s ease;
         }
-        
+
         .dj-card:hover .dj-card-image {
             transform: scale(1.1);
         }
-        
+
         .dj-card-content {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0));
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
             padding: 1rem;
             transform: translateY(100%);
             transition: transform 0.3s ease;
         }
-        
+
         .dj-card:hover .dj-card-content {
             transform: translateY(0);
         }
-        
+
         /* Event card hover effects */
         .event-card {
             position: relative;
@@ -61,13 +61,13 @@ include('includes/dbconnection.php');
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        
+
         .event-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         }
-        
+
         .event-card::after {
             content: "Book Now →";
             position: absolute;
@@ -78,7 +78,7 @@ include('includes/dbconnection.php');
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         .event-card:hover::after {
             opacity: 1;
         }
@@ -88,9 +88,9 @@ include('includes/dbconnection.php');
 <body class="bg-black text-white">
     <!-- Header Section -->
     <header class="relative">
-        <?php include_once('includes/header.php');?>
+        <?php include_once('includes/header.php'); ?>
         <img alt="DJ wearing headphones with raised hands" class="w-full h-[500px] object-cover" src="images/homepage.jpg" />
-        
+
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
             <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Make Your Event Unforgettable</h1>
             <p class="text-xs md:text-sm mt-2 text-white">
