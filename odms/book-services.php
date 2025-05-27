@@ -87,6 +87,7 @@ if (isset($_POST['submit'])) {
         echo '<script>alert("Something Went Wrong. Please try again")</script>';
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -163,28 +164,12 @@ if (isset($_POST['submit'])) {
 <body class="bg-black text-white">
     <!-- Header Section -->
     <header class="relative">
+        <?php include_once('includes/header.php'); ?>
         <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
-        <nav class="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-4 text-white bg-black bg-opacity-60">
-            <div class="flex items-center space-x-2 text-sm font-semibold">
-                <i class="fas fa-compact-disc"></i>
-                <span>DjBooking</span>
-            </div>
-            <ul class="hidden md:flex space-x-8 text-sm font-normal">
-                <li><a class="hover:underline" href="index.php">Home</a></li>
-                <li><a class="hover:underline" href="services.php">Services</a></li>
-                <li><a class="hover:underline" href="status.php">Request Status</a></li>
-                <li><a class="hover:underline" href="about.php">About</a></li>
-                <li><a class="hover:underline" href="contact.php">Contact</a></li>
-                <li><a class="hover:underline" href="admin/login.php">Admin</a></li>
-            </ul>
-            <a href="signup.php" class="hidden md:inline-block bg-gray-700 bg-opacity-60 rounded px-3 py-1 text-xs font-semibold hover:bg-gray-600 transition">
-                Sign Up
-            </a>
-        </nav>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Book Services</h1>
+            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Contact</h1>
             <p class="text-xs md:text-sm mt-2 text-white">
-                Book your DJ event now and make it unforgettable
+                Learn more about our DJ services and what makes us special
             </p>
         </div>
     </header>
@@ -360,7 +345,6 @@ if (isset($_POST['submit'])) {
                             <select name="installment_count" class="form-control">
                                 <option value="2">2 payments</option>
                                 <option value="3">3 payments</option>
-                                <option value="4">4 payments</option>
                             </select>
                             <p class="ml-4 text-xs text-gray-400">* Installment only available via transfer</p>
                         </div>

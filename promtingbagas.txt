@@ -1,0 +1,8 @@
+buatkan ketika dia milih cash maka bisa langsung  ngebook langsung berhasil kalo dia milih tranfer nanti pas pencet book dia bakal nampilin popup bagus gitu nomer virtual account untuk di tf buatkan aja make tailwind atau css ayng bagus bisa di copy juga , kalo dia pilih yang installment atau cicilan a ketika dipencet book dia bakal muncul popup mirip trnasfer tapi diatas v\kode virtual account nya ada tulisan kyak minimal pebayaran pertama nya harus 40% pembayaran dan bakal muncul 40% dari harga dj yang mau di book 
+
+
+// halaman pusat bantuan 
+buatkan pusat bantuan di headernya ada icon tanda tanya kalo dipencet nanti kehalaman pusat bantuan 
+
+
+//ketika sudah login nanti itu yang signgnup dan signin di headernya tidak ada , gantikan ke bentul profil yang ada nama nya gitu di header nya ketika di hover ada tanda nama kek " halo, username kita "
