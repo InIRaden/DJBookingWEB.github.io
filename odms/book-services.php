@@ -3,7 +3,7 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 
-if(isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {
     $bid = $_GET['bookid'];
     $name = $_POST['name'];
     $mobnum = $_POST['mobnum'];
@@ -16,10 +16,10 @@ if(isset($_POST['submit'])) {
     $addinfo = $_POST['addinfo'];
     $bookingid = mt_rand(100000000, 999999999);
     $paymentMethod = $_POST['payment_method'];
-    
+
     $sql = "INSERT INTO tblbooking(BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation) 
             VALUES (:bookingid, :bid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo)";
-    
+
     $query = $dbh->prepare($sql);
     $query->bindParam(':bookingid', $bookingid, PDO::PARAM_STR);
     $query->bindParam(':bid', $bid, PDO::PARAM_STR);
@@ -35,7 +35,7 @@ if(isset($_POST['submit'])) {
 
     $query->execute();
     $LastInsertId = $dbh->lastInsertId();
-    
+
     if ($LastInsertId > 0) {
         // Get service price
         $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
@@ -44,7 +44,7 @@ if(isset($_POST['submit'])) {
         $queryPrice->execute();
         $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
         $amount = $serviceData['ServicePrice'];
-        
+
         // Insert payment record
         $sqlPayment = "INSERT INTO tblpayment(BookingID, PaymentMethod, Amount) VALUES (:bookingid, :paymentMethod, :amount)";
         $queryPayment = $dbh->prepare($sqlPayment);
@@ -53,12 +53,12 @@ if(isset($_POST['submit'])) {
         $queryPayment->bindParam(':amount', $amount, PDO::PARAM_STR);
         $queryPayment->execute();
         $paymentId = $dbh->lastInsertId();
-        
+
         // If installment payment, create installment records
         if ($paymentMethod == 'installment') {
             $installmentCount = $_POST['installment_count'];
             $installmentAmount = $amount / $installmentCount;
-            
+
             for ($i = 1; $i <= $installmentCount; $i++) {
                 $dueDate = date('Y-m-d', strtotime("+$i month"));
                 $sqlInstallment = "INSERT INTO tblpaymentinstallment(PaymentID, InstallmentNumber, Amount, DueDate) 
@@ -71,7 +71,7 @@ if(isset($_POST['submit'])) {
                 $queryInstallment->execute();
             }
         }
-        
+
         // Redirect based on payment method
         if ($paymentMethod == 'cash') {
             echo '<script>alert("Your Booking Request Has Been Sent. We Will Contact You Soon")</script>';
@@ -103,6 +103,7 @@ if(isset($_POST['submit'])) {
         body {
             font-family: "Inter", sans-serif;
         }
+
         .form-control {
             background-color: #1a1a1a;
             border: 1px solid #4a4a4a;
@@ -111,11 +112,13 @@ if(isset($_POST['submit'])) {
             border-radius: 0.375rem;
             width: 100%;
         }
+
         .form-control:focus {
             outline: none;
             border-color: #ffffff;
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
         }
+
         .btn-submit {
             background-color: #4a4a4a;
             color: white;
@@ -123,27 +126,36 @@ if(isset($_POST['submit'])) {
             border-radius: 0.375rem;
             transition: background-color 0.3s;
         }
+
         .btn-submit:hover {
             background-color: #6b6b6b;
         }
+
         /* Enhanced Payment Method Styles */
-        .payment-radio:checked + label .bg-gray-700 {
-            background-color: #3b82f6; /* Blue background for selected icon */
+        .payment-radio:checked+label .bg-gray-700 {
+            background-color: #3b82f6;
+            /* Blue background for selected icon */
         }
-        .payment-radio:checked + label {
+
+        .payment-radio:checked+label {
             border-color: #3b82f6;
         }
+
         #installment-options {
             transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out, transform 0.5s ease-in-out;
             transform: translateY(-10px);
         }
+
         #installment-options.show {
             opacity: 1;
-            max-height: 200px; /* Adjust based on content height */
+            max-height: 200px;
+            /* Adjust based on content height */
             transform: translateY(0);
         }
-        .payment-radio + label:hover .bg-gray-700 {
-            background-color: #4b5563; /* Subtle hover effect for icon background */
+
+        .payment-radio+label:hover .bg-gray-700 {
+            background-color: #4b5563;
+            /* Subtle hover effect for icon background */
         }
     </style>
 </head>
@@ -276,13 +288,13 @@ if(isset($_POST['submit'])) {
                             <label class="block text-sm text-gray-300 mb-2" for="eventtype">Type of Event</label>
                             <select class="form-control" name="eventtype" id="eventtype" required>
                                 <option value="">Choose Event Type</option>
-                                <?php 
+                                <?php
                                 $sql2 = "SELECT * FROM tbleventtype";
                                 $query2 = $dbh->prepare($sql2);
                                 $query2->execute();
                                 $result2 = $query2->fetchAll(PDO::FETCH_OBJ);
-                                foreach($result2 as $row) { ?>  
-                                    <option value="<?php echo htmlentities($row->EventType);?>"><?php echo htmlentities($row->EventType);?></option>
+                                foreach ($result2 as $row) { ?>
+                                    <option value="<?php echo htmlentities($row->EventType); ?>"><?php echo htmlentities($row->EventType); ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -414,4 +426,5 @@ if(isset($_POST['submit'])) {
         });
     </script>
 </body>
+
 </html>

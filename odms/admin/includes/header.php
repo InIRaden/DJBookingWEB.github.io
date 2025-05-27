@@ -7,23 +7,6 @@ if (strlen($_SESSION['odmsaid']) == 0) {
 } else {
 ?>
     <header id="page-header">
-        <style>
-            @keyframes fadeInDown {
-                from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .dropdown-item:hover {
-                transform: translateX(5px);
-            }
-        </style>
         <!-- Header Content -->
         <div class="content-header" style="background-color: #1a1f2e; box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);">
             <!-- Left Section -->
