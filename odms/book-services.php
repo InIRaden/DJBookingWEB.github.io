@@ -158,6 +158,116 @@ if (isset($_POST['submit'])) {
             background-color: #4b5563;
             /* Subtle hover effect for icon background */
         }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color:rgb(0, 0, 0);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .booking-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .form-container {
+            background-color: #E8E8E8;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            color:rgb(0, 0, 0);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #CCCCCC;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .payment-option {
+            text-align: center;
+        }
+
+        .payment-option input[type="radio"] {
+            display: none;
+        }
+
+        .payment-option label {
+            display: block;
+            cursor: pointer;
+        }
+
+        .payment-option img {
+            max-width: 60px;
+            height: auto;
+        }
+
+        .btn-send {
+            background-color: #DC2626;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .btn-send:hover {
+            background-color: #B91C1C;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
     </style>
 </head>
 
@@ -183,232 +293,129 @@ if (isset($_POST['submit'])) {
             <span class="text-white">Book Services</span>
         </div>
 
-        <!-- Booking Form Section -->
-        <section class="mb-12">
-            <h2 class="font-semibold text-white text-lg mb-6">Book Your Event</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <form method="post">
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="name">Name</label>
-                            <input type="text" class="form-control" name="name" id="name" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="email">Email</label>
-                            <input type="email" class="form-control" name="email" id="email" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="mobnum">Mobile Number</label>
-                            <input type="text" class="form-control" name="mobnum" id="mobnum" required maxlength="10" pattern="[0-9]+">
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="edate">Event Date</label>
-                            <input type="date" class="form-control" name="edate" id="edate" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="est">Event Starting Time</label>
-                            <select class="form-control" name="est" id="est" required>
-                                <option value="">Select Starting Time</option>
-                                <option value="1 a.m">1 a.m</option>
-                                <option value="2 a.m">2 a.m</option>
-                                <option value="3 a.m">3 a.m</option>
-                                <option value="4 a.m">4 a.m</option>
-                                <option value="5 a.m">5 a.m</option>
-                                <option value="6 a.m">6 a.m</option>
-                                <option value="7 a.m">7 a.m</option>
-                                <option value="8 a.m">8 a.m</option>
-                                <option value="9 a.m">9 a.m</option>
-                                <option value="10 a.m">10 a.m</option>
-                                <option value="11 a.m">11 a.m</option>
-                                <option value="12 p.m">12 p.m</option>
-                                <option value="1 p.m">1 p.m</option>
-                                <option value="2 p.m">2 p.m</option>
-                                <option value="3 p.m">3 p.m</option>
-                                <option value="4 p.m">4 p.m</option>
-                                <option value="5 p.m">5 p.m</option>
-                                <option value="6 p.m">6 p.m</option>
-                                <option value="7 p.m">7 p.m</option>
-                                <option value="8 p.m">8 p.m</option>
-                                <option value="9 p.m">9 p.m</option>
-                                <option value="10 p.m">10 p.m</option>
-                                <option value="11 p.m">11 p.m</option>
-                                <option value="12 a.m">12 a.m</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="eetime">Event Finish Time</label>
-                            <select class="form-control" name="eetime" id="eetime" required>
-                                <option value="">Select Finish Time</option>
-                                <option value="1 a.m">1 a.m</option>
-                                <option value="2 a.m">2 a.m</option>
-                                <option value="3 a.m">3 a.m</option>
-                                <option value="4 a.m">4 a.m</option>
-                                <option value="5 a.m">5 a.m</option>
-                                <option value="6 a.m">6 a.m</option>
-                                <option value="7 a.m">7 a.m</option>
-                                <option value="8 a.m">8 a.m</option>
-                                <option value="9 a.m">9 a.m</option>
-                                <option value="10 a.m">10 a.m</option>
-                                <option value="11 a.m">11 a.m</option>
-                                <option value="12 p.m">12 p.m</option>
-                                <option value="1 p.m">1 p.m</option>
-                                <option value="2 p.m">2 p.m</option>
-                                <option value="3 p.m">3 p.m</option>
-                                <option value="4 p.m">4 p.m</option>
-                                <option value="5 p.m">5 p.m</option>
-                                <option value="6 p.m">6 p.m</option>
-                                <option value="7 p.m">7 p.m</option>
-                                <option value="8 p.m">8 p.m</option>
-                                <option value="9 p.m">9 p.m</option>
-                                <option value="10 p.m">10 p.m</option>
-                                <option value="11 p.m">11 p.m</option>
-                                <option value="12 a.m">12 a.m</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="vaddress">Venue Address</label>
-                            <textarea class="form-control" name="vaddress" id="vaddress" required rows="4"></textarea>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="eventtype">Type of Event</label>
-                            <select class="form-control" name="eventtype" id="eventtype" required>
-                                <option value="">Choose Event Type</option>
-                                <?php
-                                $sql2 = "SELECT * FROM tbleventtype";
-                                $query2 = $dbh->prepare($sql2);
-                                $query2->execute();
-                                $result2 = $query2->fetchAll(PDO::FETCH_OBJ);
-                                foreach ($result2 as $row) { ?>
-                                    <option value="<?php echo htmlentities($row->EventType); ?>"><?php echo htmlentities($row->EventType); ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-sm text-gray-300 mb-2" for="addinfo">Additional Information</label>
-                            <textarea class="form-control" name="addinfo" id="addinfo" required rows="4"></textarea>
-                        </div>
-                        <div>
-                            <input type="submit" name="submit" value="Book" class="btn-submit">
-                        </div>
-                    </form>
-                </div>
-                <div>
-                    <a href="images/431427.jpg" data-fancybox="booking-image">
-                        <img src="images/431427.jpg" alt="DJ Event" class="w-full h-auto rounded-md shadow-lg mb-6" />
-                    </a>
-                    <!-- Payment Method Section -->
-                    <div class="mb-6">
-                        <label class="block text-sm text-gray-300 mb-3 font-medium">Payment Method</label>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:scale-102 shadow-md h-32">
-                                <input type="radio" name="payment_method" id="cash" value="cash" class="hidden payment-radio" checked>
-                                <label for="cash" class="flex flex-col items-center justify-center cursor-pointer h-full space-y-2">
-                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-money-bill-wave text-green-400 text-lg"></i>
-                                    </div>
-                                    <div class="flex flex-col items-center justify-center space-y-1">
-                                        <span class="text-sm font-medium text-white">Cash</span>
-                                        <span class="text-xs text-gray-400">Pay in cash when we meet</span>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:scale-102 shadow-md h-32">
-                                <input type="radio" name="payment_method" id="transfer" value="transfer" class="hidden payment-radio">
-                                <label for="transfer" class="flex flex-col items-center justify-center cursor-pointer h-full space-y-2">
-                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-credit-card text-blue-400 text-lg"></i>
-                                    </div>
-                                    <div class="flex flex-col items-center justify-center space-y-1">
-                                        <span class="text-sm font-medium text-white">Transfer</span>
-                                        <span class="text-xs text-gray-400">Pay via virtual account</span>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 cursor-pointer hover:scale-102 shadow-md h-32">
-                                <input type="radio" name="payment_method" id="installment" value="installment" class="hidden payment-radio">
-                                <label for="installment" class="flex flex-col items-center justify-center cursor-pointer h-full space-y-2">
-                                    <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-calendar-alt text-purple-400 text-lg"></i>
-                                    </div>
-                                    <div class="flex flex-col items-center justify-center space-y-1">
-                                        <span class="text-sm font-medium text-white">Installment</span>
-                                        <span class="text-xs text-gray-400">Pay in multiple payments</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
+      
+    <div class="booking-section">
+        <form method="post">
+            <!-- Detail Event Section -->
+            <h2 class="section-title">Detail Event</h2>
+            <div class="form-container">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Name Event</label>
+                        <input type="text" class="form-control" name="name" required>
                     </div>
-                    <!-- Installment Options (Hidden by default) -->
-                    <div id="installment-options" class="mb-6 bg-gray-800 p-4 rounded-lg opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                        <label class="block text-sm text-gray-300 mb-3 font-medium">Installment Terms</label>
-                        <div class="flex items-center">
-                            <select name="installment_count" class="form-control">
-                                <option value="2">2 payments</option>
-                                <option value="3">3 payments</option>
-                            </select>
-                            <p class="ml-4 text-xs text-gray-400">* Installment only available via transfer</p>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Type Event</label>
+                        <select class="form-control" name="eventtype" required>
+                            <option value="">Choose Event Type</option>
+                            <?php
+                            $sql2 = "SELECT * FROM tbleventtype";
+                            $query2 = $dbh->prepare($sql2);
+                            $query2->execute();
+                            $result2 = $query2->fetchAll(PDO::FETCH_OBJ);
+                            foreach ($result2 as $row) { ?>
+                                <option value="<?php echo htmlentities($row->EventType); ?>"><?php echo htmlentities($row->EventType); ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date Event</label>
+                        <input type="date" class="form-control" name="edate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">DJ Name</label>
+                        <input type="text" class="form-control" name="djname" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Event Address</label>
+                        <textarea class="form-control" name="vaddress" rows="3" required></textarea>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+
+            <!-- Detail Pemesan Section -->
+            <h2 class="section-title">Detail Pemesan</h2>
+            <div class="form-container">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="customername" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" name="mobnum" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Poin/Voucher</label>
+                        <input type="text" class="form-control" name="voucher">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Pembayaran Section -->
+            <h2 class="section-title">Detail Pembayaran</h2>
+            <div class="form-container">
+                <div class="payment-grid">
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="shopeepay" id="shopeepay">
+                        <label for="shopeepay">
+                            <img src="images/shopeepay.png" alt="ShopeePay">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="bca" id="bca">
+                        <label for="bca">
+                            <img src="images/bca.png" alt="BCA">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="dana" id="dana">
+                        <label for="dana">
+                            <img src="images/dana.png" alt="DANA">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="ovo" id="ovo">
+                        <label for="ovo">
+                            <img src="images/ovo.png" alt="OVO">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="linkaja" id="linkaja">
+                        <label for="linkaja">
+                            <img src="images/linkaja.png" alt="LinkAja">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="mandiri" id="mandiri">
+                        <label for="mandiri">
+                            <img src="images/mandiri.png" alt="Mandiri">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="bni" id="bni">
+                        <label for="bni">
+                            <img src="images/bni.png" alt="BNI">
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment_method" value="bri" id="bri">
+                        <label for="bri">
+                            <img src="images/bri.png" alt="BRI">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" name="submit" class="btn-send">Send</button>
+        </form>
+    </div>
 
     <?php include_once('includes/footer.php'); ?>
-
-    <!-- Fancybox Script -->
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Fancybox.bind("[data-fancybox]", {
-                animationEffect: "fade",
-                transitionEffect: "fade",
-                buttons: [
-                    "zoom",
-                    "slideShow",
-                    "fullScreen",
-                    "close"
-                ]
-            });
-
-            // Payment method selection
-            const paymentRadios = document.querySelectorAll('.payment-radio');
-            const installmentOptions = document.getElementById('installment-options');
-
-            paymentRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    // Update border for selected payment method
-                    document.querySelectorAll('.payment-radio').forEach(r => {
-                        const parent = r.parentElement.parentElement; // Adjust to target the outer div
-                        if (r.checked) {
-                            parent.classList.add('border-blue-500');
-                            parent.classList.remove('border-gray-700');
-                        } else {
-                            parent.classList.remove('border-blue-500');
-                            parent.classList.add('border-gray-700');
-                        }
-                    });
-
-                    // Show/hide installment options with transition
-                    if (this.value === 'installment') {
-                        installmentOptions.classList.add('show');
-                        installmentOptions.classList.remove('hidden');
-                    } else {
-                        installmentOptions.classList.remove('show');
-                        setTimeout(() => {
-                            installmentOptions.classList.add('hidden');
-                        }, 500); // Match transition duration
-                    }
-                });
-            });
-
-            // Trigger change event on page load to set initial state
-            const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
-            if (checkedRadio) {
-                checkedRadio.dispatchEvent(new Event('change'));
-            }
-        });
-    </script>
+    
 </body>
-
 </html>
