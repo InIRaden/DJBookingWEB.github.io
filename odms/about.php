@@ -20,6 +20,45 @@ include('includes/dbconnection.php');
         body {
             font-family: "Inter", sans-serif;
         }
+
+        .photo-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.375rem;
+            /* rounded-md */
+        }
+
+        .photo-card-image {
+            transition: transform 0.3s ease;
+            width: 100%;
+            height: 120px;
+            /* h-[120px] */
+            object-fit: cover;
+            /* object-cover */
+            border-radius: 0.375rem;
+            /* rounded-md */
+        }
+
+        .photo-card:hover .photo-card-image {
+            transform: scale(1.1);
+        }
+
+        .photo-card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+            padding: 0.5rem;
+            /* p-2 */
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            color: white;
+        }
+
+        .photo-card:hover .photo-card-content {
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -74,41 +113,52 @@ include('includes/dbconnection.php');
         <section>
             <h2 class="font-semibold text-white text-lg mb-6">LATEST PHOTOS</h2>
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
-                <div class="group">
-                    <a href="images/4.jpg" data-fancybox="gallery" class="block">
-                        <img src="images/4.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
-                    </a>
-                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
-                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
-                </div>
-                <div class="group">
-                    <a href="images/5.jpg" data-fancybox="gallery" class="block">
-                        <img src="images/5.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
-                    </a>
-                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
-                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
-                </div>
-                <div class="group">
-                    <a href="images/6.jpg" data-fancybox="gallery" class="block">
-                        <img src="images/6.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
-                    </a>
-                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
-                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
-                </div>
-                <div class="group">
-                    <a href="images/7.jpg" data-fancybox="gallery" class="block">
-                        <img src="images/7.jpg" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
-                    </a>
-                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
-                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
-                </div>
-                <div class="group">
-                    <a href="images/paham.png" data-fancybox="gallery" class="block">
-                        <img src="images/paham.png" alt="DJ Event" class="w-full h-[120px] object-cover rounded-md transition duration-300 group-hover:opacity-80" />
-                    </a>
-                    <h3 class="mt-2 text-xs font-bold text-white">Aenean rutrum</h3>
-                    <p class="text-[9px] text-gray-400">Suspendisse posuere enim eu ante</p>
-                </div>
+                <?php
+                $team_members = [
+                    [
+                        'name' => 'Bagas',
+                        'role' => 'Team Leader',
+                        'image' => './images/bagasTutut.jpg',
+                        'description' => 'Halo, nama aku Bagas, mahasiswa RPL angkatan 2023, berperan sebagai team leader dalam proyek ini.'
+                    ],
+                    [
+                        'name' => 'Amalia',
+                        'role' => 'Frontend Developer',
+                        'image' => './images/amaMbaMokaku.jpg',
+                        'description' => 'Saya Amalia, bertanggung jawab untuk tampilan antarmuka pengguna yang menarik dan responsif.'
+                    ],
+                    [
+                        'name' => 'Arul',
+                        'role' => 'Backend Developer',
+                        'image' => './images/arulGenteng.jpg',
+                        'description' => 'Perkenalkan, Arul. Saya fokus pada pengembangan sisi server dan logika aplikasi.'
+                    ],
+                    [
+                        'name' => 'Safia',
+                        'role' => 'UI/UX Designer',
+                        'image' => './images/piaMbokMbokbree.jpg',
+                        'description' => 'Hai, saya Safia. Saya merancang pengalaman pengguna yang intuitif dan estetis untuk aplikasi ini.'
+                    ],
+                    [
+                        'name' => 'Paham',
+                        'role' => 'Database Specialist',
+                        'image' => 'images/paham.png',
+                        'description' => 'Saya Paham, memastikan data tersimpan dengan aman dan efisien.'
+                    ]
+                ];
+
+                foreach ($team_members as $member) { ?>
+                    <div class="photo-card group">
+                        <a href="<?php echo $member['image']; ?>" data-fancybox="gallery" class="block">
+                            <img src="<?php echo $member['image']; ?>" alt="<?php echo $member['name']; ?>" class="photo-card-image" />
+                        </a>
+                        <div class="photo-card-content">
+                            <h3 class="text-xs font-bold"><?php echo $member['name']; ?></h3>
+                            <p class="text-[9px] text-gray-300 mb-1"><?php echo $member['role']; ?></p>
+                            <p class="text-[9px]"><?php echo $member['description']; ?></p>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
         </section>
     </main>
