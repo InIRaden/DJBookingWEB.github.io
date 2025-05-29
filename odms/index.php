@@ -12,6 +12,7 @@ include('includes/dbconnection.php');
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>DjBooking</title>
     <link rel="stylesheet" href="../src/output.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
     <style>
@@ -85,32 +86,24 @@ include('includes/dbconnection.php');
     </style>
 </head>
 
-<body class="bg-black text-white">
+<body class="bg-black text-white font-sans">
     <!-- Header Section -->
-    <header class="relative">
+    <header class="relative text-center">
         <?php include_once('includes/header.php'); ?>
         <img alt="DJ wearing headphones with raised hands" class="w-full h-[500px] object-cover" src="images/homepage.jpg" />
 
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Make Your Event Unforgettable</h1>
-            <p class="text-xs md:text-sm mt-2 text-white">
+        <div class="hero-content absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[40%] text-center max-w-xl px-4">
+            <h1 class="text-white font-bold text-3xl md:text-6xl leading-tight">Make Your Event Unforgettable</h1>
+            <p class="text-sm md:text-base mt-3 text-white">
                 Customize your event with the right DJ. Explore styles, check availability, and book in just a few clicks.
             </p>
-            <a href="services.php" class="mt-3 inline-block bg-red-700 text-white text-xs font-semibold px-3 py-1 rounded hover:bg-red-600 transition">
+            <a href="services.php" class="mt-4 inline-block bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-red-600 transition">
                 Buy Ticket Now
             </a>
         </div>
     </header>
 
-    <!-- Hero Banner Section -->
-    <section class="py-16 bg-gradient-to-r from-red-900 to-red-700 text-white">
-        <div class="max-w-[1280px] mx-auto px-6 md:px-16 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Easily book professional DJs for any occasion with our app</h2>
-            <p class="text-sm md:text-base max-w-2xl mx-auto">
-                This app, developed by students of Universitas Pendidikan Indonesia, is made for all DJ music enthusiasts to make booking a DJ for your special event easier than ever
-            </p>
-        </div>
-    </section>
+
 
     <!-- Main Content -->
     <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
@@ -139,6 +132,24 @@ include('includes/dbconnection.php');
                         </div>
                     </div>
                 <?php } ?>
+            </div>
+        </section>
+
+        <!-- Hero Banner Section -->
+        <section class="py-20 bg-black text-white">
+            <div class="max-w-4xl mx-auto px-6 text-center">
+                <h2 class="text-center text-5xl sm:text-6xl font-bold leading-tight">
+                    Easily book professional <br />
+                    DJs for any occasion with <br />
+                    our <span class="text-red-800">APPS!</span>
+                </h2>
+                <p class="mt-12 mx-auto max-w-md text-sm text-gray-300">
+                    This app, developed by students of Universitas Pendidikan Indonesia, is made for all DJ music enthusiasts to make booking a DJ for your special event easier than ever
+                </p>
+                <div class="flex items-center space-x-2 mt-4 mx-auto max-w-xs justify-center">
+                    <div class="bg-red-600 rounded-full h-3 w-24"></div>
+                    <div class="bg-red-600 rounded-full h-3 w-4"></div>
+                </div>
             </div>
         </section>
 
@@ -172,6 +183,112 @@ include('includes/dbconnection.php');
                 <?php } ?>
             </div>
         </section>
+
+        <!-- FAQ Section -->
+        <section class="bg-black text-white py-20">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-center text-5xl font-bold mb-12">Frequently Asked Questions</h2>
+                <div class="space-y-4" id="faq-container">
+                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                            <span>Bagaimana cara memesan DJ untuk acara saya?</span>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
+                            <p>Proses pemesanan DJ sangat mudah! Cukup ikuti langkah berikut:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Pilih jenis acara Anda</li>
+                                <li>Pilih DJ yang tersedia</li>
+                                <li>Pilih tanggal dan waktu</li>
+                                <li>Isi detail pemesanan</li>
+                                <li>Lakukan pembayaran</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                            <span>Berapa lama sebelumnya saya harus memesan DJ?</span>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
+                            Kami merekomendasikan pemesanan minimal 2 minggu sebelum acara untuk memastikan ketersediaan DJ. Untuk acara besar, sebaiknya pesan 1-2 bulan sebelumnya.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                            <span>Apakah saya bisa request lagu khusus?</span>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
+                            Ya! Anda dapat mengirimkan daftar lagu yang diinginkan saat melakukan pemesanan. DJ kami akan mengakomodasi permintaan lagu sesuai dengan genre dan aliran musik yang sesuai dengan acara Anda.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                            <span>Apa yang termasuk dalam layanan DJ?</span>
+                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
+                            Layanan kami mencakup:
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>DJ profesional sesuai pilihan Anda</li>
+                                <li>Peralatan sound system standar</li>
+                                <li>Pencahayaan dasar</li>
+                                <li>Setup dan soundcheck</li>
+                                <li>Koordinasi dengan penyelenggara acara</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const faqButtons = document.querySelectorAll('.faq-button');
+
+                faqButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const faqItem = button.parentElement;
+                        const answer = button.nextElementSibling;
+                        const icon = button.querySelector('svg');
+
+                        // Toggle answer visibility
+                        answer.classList.toggle('hidden');
+
+                        // Rotate icon
+                        icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+
+                        // Add active state styles
+                        faqItem.classList.toggle('bg-gray-800');
+
+                        // Close other answers
+                        faqButtons.forEach(otherButton => {
+                            if (otherButton !== button) {
+                                const otherAnswer = otherButton.nextElementSibling;
+                                const otherIcon = otherButton.querySelector('svg');
+                                const otherItem = otherButton.parentElement;
+
+                                otherAnswer.classList.add('hidden');
+                                otherIcon.style.transform = 'rotate(0deg)';
+                                otherItem.classList.remove('bg-gray-800');
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
     </main>
 
     <?php include_once('includes/footer.php'); ?>
