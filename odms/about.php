@@ -122,10 +122,10 @@ include('includes/dbconnection.php');
                         'description' => 'Halo, nama aku Bagas, mahasiswa RPL angkatan 2023, berperan sebagai team leader dalam proyek ini.'
                     ],
                     [
-                        'name' => 'Amalia',
+                        'name' => 'Rahma Dina',
                         'role' => 'Frontend Developer',
-                        'image' => './images/amaMbaMokaku.jpg',
-                        'description' => 'Saya Amalia, bertanggung jawab untuk tampilan antarmuka pengguna yang menarik dan responsif.'
+                        'image' => './images/ama.jpg',
+                        'description' => 'Saya Rahma Dina, bertanggung jawab untuk tampilan antarmuka pengguna yang menarik dan responsif.'
                     ],
                     [
                         'name' => 'Arul',
@@ -134,10 +134,10 @@ include('includes/dbconnection.php');
                         'description' => 'Perkenalkan, Arul. Saya fokus pada pengembangan sisi server dan logika aplikasi.'
                     ],
                     [
-                        'name' => 'Safia',
+                        'name' => 'Rifiani',
                         'role' => 'UI/UX Designer',
                         'image' => './images/piaMbokMbokbree.jpg',
-                        'description' => 'Hai, saya Safia. Saya merancang pengalaman pengguna yang intuitif dan estetis untuk aplikasi ini.'
+                        'description' => 'Hai, saya Rifiani. Saya merancang pengalaman pengguna yang intuitif dan estetis untuk aplikasi ini.'
                     ],
                     [
                         'name' => 'Paham',
