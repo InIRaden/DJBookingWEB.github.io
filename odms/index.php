@@ -187,18 +187,18 @@ include('includes/dbconnection.php');
         <!-- FAQ Section -->
         <section class="bg-black text-white py-20">
             <div class="max-w-4xl mx-auto px-6">
-                <h2 class="text-center text-5xl font-bold mb-12">Frequently Asked Questions</h2>
+                <h2 class="text-center text-4xl font-medium mb-12 text-gray-100">Frequently Asked Questions</h2>
                 <div class="space-y-4" id="faq-container">
-                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
                             <span>Bagaimana cara memesan DJ untuk acara saya?</span>
-                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
                             <p>Proses pemesanan DJ sangat mudah! Cukup ikuti langkah berikut:</p>
-                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
                                 <li>Pilih jenis acara Anda</li>
                                 <li>Pilih DJ yang tersedia</li>
                                 <li>Pilih tanggal dan waktu</li>
@@ -208,40 +208,40 @@ include('includes/dbconnection.php');
                         </div>
                     </div>
 
-                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
                             <span>Berapa lama sebelumnya saya harus memesan DJ?</span>
-                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
-                            Kami merekomendasikan pemesanan minimal 2 minggu sebelum acara untuk memastikan ketersediaan DJ. Untuk acara besar, sebaiknya pesan 1-2 bulan sebelumnya.
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p class="text-sm">Kami merekomendasikan pemesanan minimal 2 minggu sebelum acara untuk memastikan ketersediaan DJ. Untuk acara besar, sebaiknya pesan 1-2 bulan sebelumnya.</p>
                         </div>
                     </div>
 
-                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
                             <span>Apakah saya bisa request lagu khusus?</span>
-                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
-                            Ya! Anda dapat mengirimkan daftar lagu yang diinginkan saat melakukan pemesanan. DJ kami akan mengakomodasi permintaan lagu sesuai dengan genre dan aliran musik yang sesuai dengan acara Anda.
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p class="text-sm">Ya! Anda dapat mengirimkan daftar lagu yang diinginkan saat melakukan pemesanan. DJ kami akan mengakomodasi permintaan lagu sesuai dengan genre dan aliran musik yang sesuai dengan acara Anda.</p>
                         </div>
                     </div>
 
-                    <div class="faq-item bg-gray-900 rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-gray-800">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-lg font-semibold text-white focus:outline-none">
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
                             <span>Apa yang termasuk dalam layanan DJ?</span>
-                            <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-300 border-t border-gray-700">
-                            Layanan kami mencakup:
-                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p class="text-sm">Layanan kami mencakup:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
                                 <li>DJ profesional sesuai pilihan Anda</li>
                                 <li>Peralatan sound system standar</li>
                                 <li>Pencahayaan dasar</li>
@@ -254,35 +254,59 @@ include('includes/dbconnection.php');
             </div>
         </section>
 
+        <style>
+            .faq-item {
+                transform: translateY(0);
+                transition: all 0.3s ease;
+            }
+
+            .faq-item:hover {
+                transform: translateY(-2px);
+            }
+
+            .faq-answer {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out;
+            }
+
+            .faq-answer.show {
+                max-height: 500px;
+                transition: max-height 0.5s ease-in;
+            }
+        </style>
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const faqButtons = document.querySelectorAll('.faq-button');
-
+                
                 faqButtons.forEach(button => {
                     button.addEventListener('click', () => {
                         const faqItem = button.parentElement;
                         const answer = button.nextElementSibling;
                         const icon = button.querySelector('svg');
-
-                        // Toggle answer visibility
+                        
+                        // Toggle answer visibility with animation
                         answer.classList.toggle('hidden');
-
+                        answer.classList.toggle('show');
+                        
                         // Rotate icon
                         icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-
+                        
                         // Add active state styles
-                        faqItem.classList.toggle('bg-gray-800');
-
+                        faqItem.classList.toggle('bg-[#2a2a2a]');
+                        
                         // Close other answers
                         faqButtons.forEach(otherButton => {
                             if (otherButton !== button) {
                                 const otherAnswer = otherButton.nextElementSibling;
                                 const otherIcon = otherButton.querySelector('svg');
                                 const otherItem = otherButton.parentElement;
-
+                                
                                 otherAnswer.classList.add('hidden');
+                                otherAnswer.classList.remove('show');
                                 otherIcon.style.transform = 'rotate(0deg)';
-                                otherItem.classList.remove('bg-gray-800');
+                                otherItem.classList.remove('bg-[#2a2a2a]');
                             }
                         });
                     });
