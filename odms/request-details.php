@@ -1,181 +1,187 @@
-<?php //error_reporting(0);
+<?php
+//error_reporting(0);
+session_start(); // Tambahkan ini jika belum ada dan diperlukan untuk header
 include('includes/dbconnection.php');
 
+// Ambil bookingid dari GET request, pastikan aman
+$booking_id_display = isset($_GET['bookingid']) ? htmlspecialchars($_GET['bookingid']) : 'Tidak Diketahui';
+$eid = isset($_GET['bid']) ? $_GET['bid'] : null;
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
+
 <head>
-<title>Online DJ Management System || Request Status</title>
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
-<!-- Custom Theme files -->
-<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-<link rel="stylesheet" href="css/touchTouch.css" type="text/css" media="all" />
-<!-- Custom Theme files -->
-<script src="js/jquery.min.js"></script>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Online DJ Management System || Detail Permintaan</title>
+  <!-- Menggunakan Tailwind CSS dari src/output.css seperti di about.php -->
+  <link rel="stylesheet" href="../src/output.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+    }
 
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!--webfont-->
-<link href='http://fonts.googleapis.com/css?family=Monoton' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-<!---//End-css-style-switecher----->
-<script type="text/javascript" src="js/jquery.fancybox.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css" media="screen" />
-	   <script type="text/javascript">
-			$(document).ready(function() {
-				/*
-				 *  Simple image gallery. Uses default settings
-				 */
+    /* Anda bisa menambahkan custom CSS di sini jika diperlukan, atau memindahkannya ke file CSS terpisah */
+    .table-modern {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-				$('.fancybox').fancybox();
+    .table-modern th,
+    .table-modern td {
+      border: 1px solid #4A5568;
+      /* gray-700 */
+      padding: 0.75rem;
+      /* p-3 */
+      text-align: left;
+    }
 
-			});
-		</script>
+    .table-modern th {
+      background-color: #2D3748;
+      /* gray-800 */
+      color: white;
+      font-weight: 600;
+    }
 
+    .table-modern tr:nth-child(even) {
+      background-color: #1A202C;
+      /* gray-900 */
+    }
+  </style>
 </head>
-<body>
-<?php include_once('includes/header.php');?>
-<div class="contact content">
-	 <div class="container"> 		 
-		 <ol class="breadcrumb">
-		  <li><a href="index.php">Home</a></li>
-		  <li class="active">Request Details</li>	  
-		 </ol>
 
-		 <h2>Request Details #<?php echo $_GET['bookingid'];?></h2>
-		 <div class="contact-main">
+<body class="bg-black text-white">
 
+  <?php include_once('includes/header.php'); ?>
 
-			 <div class="contact-grids">
-<!-- 				 <div class="col-md-6 contact-left">
-					 <form method="post">
-						 <ul>
-			
-							 <li><input type="text" class="text" name="name" required="true" ></li>
-						 </ul>					 				 
-			
-						 <ul>
-							 <li class="text-info">Mobile Number: </li>
-							 <li><input type="text" class="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+"></li>
-						 </ul>					 
-									
-						 <input type="submit" name="submit" value="Submit">					 
-					 </form>
-				 </div>
+  <!-- Konten Utama -->
+  <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
+    <!-- Breadcrumb -->
+    <div class="flex items-center space-x-2 text-xs mb-8">
+      <a href="index.php" class="text-gray-400 hover:text-white">Home</a>
+      <span class="text-gray-600">/</span>
+      <span class="text-white">Detail Permintaan</span>
+    </div>
 
-				 <div class="clearfix"></div> -->
+    <h2 class="font-semibold text-white text-lg mb-6">Detail Permintaan #<?php echo $booking_id_display; ?></h2>
 
-<?php 
-$eid=$_GET['bid'];
-$sql="SELECT tblbooking.BookingID,tblbooking.Name,tblbooking.MobileNumber,tblbooking.Email,tblbooking.EventDate,tblbooking.EventStartingtime,tblbooking.EventEndingtime,tblbooking.VenueAddress,tblbooking.EventType,tblbooking.AdditionalInformation,tblbooking.BookingDate,tblbooking.Remark,tblbooking.Status,tblbooking.UpdationDate,tblservice.ServiceName,tblservice.SerDes,tblservice.ServicePrice from tblbooking join tblservice on tblbooking.ServiceID=tblservice.ID  where tblbooking.ID=:eid";
-$query = $dbh -> prepare($sql);
-$query-> bindParam(':eid', $eid, PDO::PARAM_STR);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
+    <div class="bg-gray-800 shadow-md rounded-lg p-6 md:p-8">
+      <?php
+      if ($eid) {
+        $sql = "SELECT tblbooking.BookingID,tblbooking.Name,tblbooking.MobileNumber,tblbooking.Email,tblbooking.EventDate,tblbooking.EventStartingtime,tblbooking.EventEndingtime,tblbooking.VenueAddress,tblbooking.EventType,tblbooking.AdditionalInformation,tblbooking.BookingDate,tblbooking.Remark,tblbooking.Status,tblbooking.UpdationDate,tblservice.ServiceName,tblservice.SerDes,tblservice.ServicePrice from tblbooking join tblservice on tblbooking.ServiceID=tblservice.ID  where tblbooking.ID=:eid";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':eid', $eid, PDO::PARAM_STR);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row)
-{               ?>
-                            <table border="1" style="color: #000; background-color:#fff;" class="table table-bordered table-striped">
-                                            <tr>
-    <th>Booking Number</th>
-    <td><?php  echo $row->BookingID;?></td>
-    <th>Client Name</th>
-    <td><?php  echo $row->Name;?></td>
-  </tr>
-  
+        if ($query->rowCount() > 0) {
+          foreach ($results as $row) {               ?>
+            <div class="overflow-x-auto">
+              <table class="table-modern">
+                <tbody>
+                  <tr>
+                    <th class="w-1/3 md:w-1/4">Nomor Booking</th>
+                    <td class="w-2/3 md:w-3/4"><?php echo htmlentities($row->BookingID); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Nama Klien</th>
+                    <td><?php echo htmlentities($row->Name); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Nomor HP</th>
+                    <td><?php echo htmlentities($row->MobileNumber); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Email</th>
+                    <td><?php echo htmlentities($row->Email); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Tanggal Acara</th>
+                    <td><?php echo htmlentities($row->EventDate); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Waktu Mulai Acara</th>
+                    <td><?php echo htmlentities($row->EventStartingtime); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Waktu Selesai Acara</th>
+                    <td><?php echo htmlentities($row->EventEndingtime); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Alamat Tempat Acara</th>
+                    <td><?php echo htmlentities($row->VenueAddress); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Tipe Acara</th>
+                    <td><?php echo htmlentities($row->EventType); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Informasi Tambahan</th>
+                    <td><?php echo htmlentities($row->AdditionalInformation); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Nama Layanan</th>
+                    <td><?php echo htmlentities($row->ServiceName); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Deskripsi Layanan</th>
+                    <td><?php echo htmlentities($row->SerDes); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Harga Layanan</th>
+                    <td>$<?php echo htmlentities($row->ServicePrice); ?></td>
+                  </tr>
+                  <tr>
+                    <th>Tanggal Pengajuan</th>
+                    <td><?php echo htmlentities($row->BookingDate); ?></td>
+                  </tr>
+                  <tr class="bg-gray-700">
+                    <th class="font-bold">Status Final Pesanan</th>
+                    <td class="font-semibold">
+                      <?php
+                      $status = $row->Status;
+                      if ($row->Status == "Approved") {
+                        echo "<span class='text-green-400'>Booking Anda telah disetujui</span>";
+                      } else if ($row->Status == "Cancelled") {
+                        echo "<span class='text-red-400'>Booking Anda telah dibatalkan</span>";
+                      } else {
+                        echo "<span class='text-yellow-400'>Belum ada respons</span>";
+                      }
+                      ?>
+                    </td>
+                  </tr>
+                  <tr class="bg-gray-700">
+                    <th class="font-bold">Catatan Admin</th>
+                    <td class="font-semibold">
+                      <?php if ($row->Remark == "") { ?>
+                        <?php echo "Belum diperbarui"; ?>
+                      <?php } else { ?>
+                        <?php echo htmlentities($row->Remark); // Menggunakan Remark sesuai database, bukan Status
+                        ?>
+                      <?php } ?>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+      <?php
+          }
+        } else {
+          echo "<p class='text-center text-gray-400'>Detail permintaan tidak ditemukan.</p>";
+        }
+      } else {
+        echo "<p class='text-center text-gray-400'>ID Permintaan tidak valid.</p>";
+      }
+      ?>
+    </div>
 
-  <tr>
-    <th>Mobile Number</th>
-    <td><?php  echo $row->MobileNumber;?></td>
-   <th>Email</th>
-    <td><?php  echo $row->Email;?></td>
-  </tr>
-  <tr>
-    
-    <th>Event Date</th>
-    <td><?php  echo $row->EventDate;?></td>
-    <th>Event Starting Time</th>
-    <td><?php  echo $row->EventStartingtime;?></td>
-  </tr>
-   <tr>
-    
-    <th>Event Ending Time</th>
-    <td><?php  echo $row->EventEndingtime;?></td>
-    <th>Venue Address</th>
-    <td><?php  echo $row->VenueAddress;?></td>
-  </tr>
-  <tr>
-    
-    <th>Event Type</th>
-    <td><?php  echo $row->EventType;?></td>
-    <th>AdditionalInformation</th>
-    <td><?php  echo $row->AdditionalInformation;?></td>
-  </tr>
-  <tr>
-    
-    <th>Service Name</th>
-    <td><?php  echo $row->ServiceName;?></td>
-    <th>Service Description</th>
-    <td><?php  echo $row->SerDes;?></td>
-  </tr>
-   <tr>
-    <th>Service Price</th>
-    <td>$<?php  echo $row->ServicePrice;?></td>
-    <th>Apply Date</th>
-    <td><?php  echo $row->BookingDate;?></td>
-  </tr>
+  </main>
 
-  <tr>
-    
-     <th>Order Final Status</th>
+  <?php include_once('includes/footer.php'); ?>
 
-    <td> <?php  $status=$row->Status;
-    
-if($row->Status=="Approved")
-{
-  echo "Your Booking has been approved";
-}
-
-if($row->Status=="Cancelled")
-{
- echo "Your Booking has been cancelled";
-}
-
-
-if($row->Status=="")
-{
-  echo "Not Response Yet";
-}
-
-
-     ;?></td>
-     <th >Admin Remark</th>
-    <?php if($row->Status==""){ ?>
-
-                     <td><?php echo "Not Updated Yet"; ?></td>
-<?php } else { ?>                  <td><?php  echo htmlentities($row->Status);?>
-                  </td>
-                  <?php } ?>
-  </tr>
-  
- 
-<?php $cnt=$cnt+1;}} ?>
-
-</table> 
-
-
-
-
-			 </div>
-		 </div>
-		<?php include_once('includes/footer.php');?>
-	 </div>
-</div>
-<!---->
-
-<!---->
 </body>
+
 </html>
