@@ -6,3 +6,6 @@ buatkan pusat bantuan di headernya ada icon tanda tanya kalo dipencet nanti keha
 
 
 //ketika sudah login nanti itu yang signgnup dan signin di headernya tidak ada , gantikan ke bentul profil yang ada nama nya gitu di header nya ketika di hover ada tanda nama kek " halo, username kita "
+
+
+//buatkan yang cash user pencet cash itu nanti dia ketika dia boo dia nampilin popup pesanan anda diproses, ketika dia pencet ransnfer nanti dia muncul dropdown bak kayak bank apa gitu terserah terus ketika nandi pencet book dia bakal munculin popup pembayaran virtua account yang bisa di copy  terus bisa pencet selesai ketika user sudah membayar baru bisa nutup modal popup nya terus ada tulisan pesanan berhasil terbayar , terus ketika yang installment itu mirip yang transfer tapi kasi keternagan dia bakal ada keternagan bayar setengah hargannya bisa di copy dan pencet slesai juga terus munculin kayak notifikasi  gitu aja 

@@ -7,13 +7,15 @@ if (strlen($_SESSION['odmsaid']) == 0) {
     header('location:logout.php');
 } else {
 ?>
-<!doctype html>
-<html lang="en" class="no-focus">
+    <!doctype html>
+    <html lang="en" class="no-focus">
+
     <head>
         <title>Online DJ Management System - Total Booking</title>
         <link rel="stylesheet" href="assets/js/plugins/datatables/dataTables.bootstrap4.min.css">
         <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
     </head>
+
     <body>
         <div id="page-container" class="sidebar-o sidebar-inverse side-scroll page-header-fixed main-content-narrow">
 
@@ -56,35 +58,35 @@ if (strlen($_SESSION['odmsaid']) == 0) {
                                     if ($query->rowCount() > 0) {
                                         foreach ($results as $row) {
                                     ?>
-                                    <tr>
-                                        <td class="text-center"><?php echo htmlentities($cnt); ?></td>
-                                        <td class="font-w600"><?php echo htmlentities($row->BookingID); ?></td>
-                                        <td class="font-w600"><?php echo htmlentities($row->Name); ?></td>
-                                        <td class="font-w600"><?php echo htmlentities($row->MobileNumber); ?></td>
-                                        <td class="font-w600"><?php echo htmlentities($row->Email); ?></td>
-                                        <td class="font-w600">
-                                            <span class="badge badge-primary"><?php echo htmlentities($row->BookingDate); ?></span>
-                                        </td>
-                                        <td>
-                                            <?php 
-                                            $bstatus = $row->Status;
-                                            if ($bstatus == '') { ?>
-                                                <span class="badge badge-warning">Not Processed Yet</span>
-                                            <?php } elseif ($bstatus == 'Approved') { ?>
-                                                <span class="badge badge-success"><?php echo htmlentities($bstatus); ?></span>
-                                            <?php } elseif ($bstatus == 'Rejected') { ?>
-                                                <span class="badge badge-danger"><?php echo htmlentities($bstatus); ?></span>
-                                            <?php } ?>
-                                        </td>
-                                        <td class="d-none d-sm-table-cell">
-                                            <a href="view-booking-detail.php?editid=<?php echo htmlentities($row->ID); ?>" class="btn btn-info btn-sm" target="_blank">View</a>
-                                        </td>
-                                    </tr>
+                                            <tr>
+                                                <td class="text-center"><?php echo htmlentities($cnt); ?></td>
+                                                <td class="font-w600"><?php echo htmlentities($row->BookingID); ?></td>
+                                                <td class="font-w600"><?php echo htmlentities($row->Name); ?></td>
+                                                <td class="font-w600"><?php echo htmlentities($row->MobileNumber); ?></td>
+                                                <td class="font-w600"><?php echo htmlentities($row->Email); ?></td>
+                                                <td class="font-w600">
+                                                    <span class="badge badge-primary"><?php echo htmlentities($row->BookingDate); ?></span>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    $bstatus = $row->Status;
+                                                    if ($bstatus == '') { ?>
+                                                        <span class="badge badge-warning">Not Processed Yet</span>
+                                                    <?php } elseif ($bstatus == 'Approved') { ?>
+                                                        <span class="badge badge-success"><?php echo htmlentities($bstatus); ?></span>
+                                                    <?php } elseif ($bstatus == 'Rejected') { ?>
+                                                        <span class="badge badge-danger"><?php echo htmlentities($bstatus); ?></span>
+                                                    <?php } ?>
+                                                </td>
+                                                <td class="d-none d-sm-table-cell">
+                                                    <a href="view-booking-detail.php?editid=<?php echo htmlentities($row->ID); ?>" class="btn btn-info btn-sm" target="_blank">View</a>
+                                                </td>
+                                            </tr>
                                     <?php
                                             $cnt++;
                                         }
                                     }
-                                    ?> 
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -117,5 +119,6 @@ if (strlen($_SESSION['odmsaid']) == 0) {
         <!-- Page JS Code -->
         <script src="assets/js/pages/be_tables_datatables.js"></script>
     </body>
-</html>
+
+    </html>
 <?php } ?>

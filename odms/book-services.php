@@ -16,6 +16,7 @@ if (isset($_POST['submit'])) {
     $addinfo = $_POST['addinfo'];
     $bookingid = mt_rand(100000000, 999999999);
     $paymentMethod = $_POST['payment_method'];
+    $selectedBank = isset($_POST['selected_bank']) ? $_POST['selected_bank'] : '';
 
     $sql = "INSERT INTO tblbooking(BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation) 
             VALUES (:bookingid, :bid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo)";
@@ -72,17 +73,19 @@ if (isset($_POST['submit'])) {
             }
         }
 
-        // Redirect based on payment method
-        if ($paymentMethod == 'cash') {
-            echo '<script>alert("Your Booking Request Has Been Sent. We Will Contact You Soon")</script>';
-            echo "<script>window.location.href ='services.php'</script>";
-        } else if ($paymentMethod == 'transfer') {
-            // Redirect to virtual account payment page
-            echo "<script>window.location.href ='payment-virtual-account.php?bookid=$bookingid'</script>";
-        } else if ($paymentMethod == 'installment') {
-            // Redirect to installment payment page
-            echo "<script>window.location.href ='payment-installment.php?bookid=$bookingid'</script>";
-        }
+        // Store payment info in session for modal display
+        $_SESSION['payment_info'] = [
+            'bookingid' => $bookingid,
+            'method' => $paymentMethod,
+            'amount' => $amount,
+            'name' => $name,
+            'bank' => $selectedBank,
+            'installment_count' => isset($_POST['installment_count']) ? $_POST['installment_count'] : 0,
+            'installment_amount' => isset($installmentAmount) ? $installmentAmount : 0
+        ];
+
+        // Don't redirect, let JavaScript handle the modal display
+        echo "<script>var showPaymentModal = true;</script>";
     } else {
         echo '<script>alert("Something Went Wrong. Please try again")</script>';
     }
@@ -158,6 +161,162 @@ if (isset($_POST['submit'])) {
             background-color: #4b5563;
             /* Subtle hover effect for icon background */
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-modal {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #4b5563;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #374151;
+        }
+
+        .copy-field {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .copy-field input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 4px 0 0 4px;
+            color: white;
+        }
+
+        .copy-btn {
+            background-color: #4b5563;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: #374151;
+        }
+
+        .bank-select {
+            margin-bottom: 20px;
+        }
+
+        .payment-info {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .payment-info p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .payment-info p span:last-child {
+            font-weight: 600;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #10b981;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Bank dropdown styles */
+        #bank-dropdown {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #bank-dropdown.show {
+            display: block;
+        }
     </style>
 </head>
 
@@ -188,7 +347,7 @@ if (isset($_POST['submit'])) {
             <h2 class="font-semibold text-white text-lg mb-6">Book Your Event</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                    <form method="post">
+                    <form method="post" id="booking-form">
                         <div class="mb-4">
                             <label class="block text-sm text-gray-300 mb-2" for="name">Name</label>
                             <input type="text" class="form-control" name="name" id="name" required>
@@ -338,6 +497,20 @@ if (isset($_POST['submit'])) {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Bank Dropdown (Hidden by default) -->
+                    <div id="bank-dropdown" class="mb-6 bg-gray-800 p-4 rounded-lg transition-all duration-500 ease-in-out">
+                        <label class="block text-sm text-gray-300 mb-3 font-medium">Select Bank</label>
+                        <select name="selected_bank" class="form-control" id="selected-bank">
+                            <option value="">Choose Bank</option>
+                            <option value="BCA">BCA</option>
+                            <option value="BNI">BNI</option>
+                            <option value="BRI">BRI</option>
+                            <option value="Mandiri">Mandiri</option>
+                            <option value="CIMB Niaga">CIMB Niaga</option>
+                        </select>
+                    </div>
+
                     <!-- Installment Options (Hidden by default) -->
                     <div id="installment-options" class="mb-6 bg-gray-800 p-4 rounded-lg opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                         <label class="block text-sm text-gray-300 mb-3 font-medium">Installment Terms</label>
@@ -374,12 +547,13 @@ if (isset($_POST['submit'])) {
             // Payment method selection
             const paymentRadios = document.querySelectorAll('.payment-radio');
             const installmentOptions = document.getElementById('installment-options');
+            const bankDropdown = document.getElementById('bank-dropdown');
 
             paymentRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     // Update border for selected payment method
                     document.querySelectorAll('.payment-radio').forEach(r => {
-                        const parent = r.parentElement.parentElement; // Adjust to target the outer div
+                        const parent = r.parentElement;
                         if (r.checked) {
                             parent.classList.add('border-blue-500');
                             parent.classList.remove('border-gray-700');
@@ -389,15 +563,22 @@ if (isset($_POST['submit'])) {
                         }
                     });
 
-                    // Show/hide installment options with transition
+                    // Show/hide bank dropdown for transfer and installment
+                    if (this.value === 'transfer' || this.value === 'installment') {
+                        bankDropdown.classList.add('show');
+                    } else {
+                        bankDropdown.classList.remove('show');
+                    }
+
+                    // Show/hide installment options
                     if (this.value === 'installment') {
                         installmentOptions.classList.add('show');
-                        installmentOptions.classList.remove('hidden');
+                        installmentOptions.style.opacity = '1';
+                        installmentOptions.style.maxHeight = '200px';
                     } else {
                         installmentOptions.classList.remove('show');
-                        setTimeout(() => {
-                            installmentOptions.classList.add('hidden');
-                        }, 500); // Match transition duration
+                        installmentOptions.style.opacity = '0';
+                        installmentOptions.style.maxHeight = '0';
                     }
                 });
             });
@@ -407,7 +588,95 @@ if (isset($_POST['submit'])) {
             if (checkedRadio) {
                 checkedRadio.dispatchEvent(new Event('change'));
             }
+
+            // Check if we need to show payment modal after form submission
+            if (typeof showPaymentModal !== 'undefined' && showPaymentModal) {
+                // Get payment info from PHP session
+                const paymentInfo = <?php echo isset($_SESSION['payment_info']) ? json_encode($_SESSION['payment_info']) : 'null'; ?>;
+
+                if (paymentInfo) {
+                    showPaymentModalByMethod(paymentInfo);
+                }
+            }
         });
+
+        // Function to show appropriate modal based on payment method
+        function showPaymentModalByMethod(paymentInfo) {
+            if (paymentInfo.method === 'cash') {
+                // Set cash modal values
+                document.getElementById('cash-booking-id').textContent = paymentInfo.bookingid;
+                document.getElementById('cash-amount').textContent = formatCurrency(paymentInfo.amount);
+                openModal('cash-modal');
+            } else if (paymentInfo.method === 'transfer') {
+                // Set transfer modal values
+                document.getElementById('transfer-booking-id').textContent = paymentInfo.bookingid;
+                document.getElementById('transfer-bank').textContent = paymentInfo.bank || 'Not selected';
+                document.getElementById('transfer-amount').textContent = formatCurrency(paymentInfo.amount);
+                document.getElementById('transfer-name').textContent = paymentInfo.name;
+                openModal('transfer-modal');
+            } else if (paymentInfo.method === 'installment') {
+                // Set installment modal values
+                document.getElementById('installment-booking-id').textContent = paymentInfo.bookingid;
+                document.getElementById('installment-bank').textContent = paymentInfo.bank || 'Not selected';
+                document.getElementById('installment-total').textContent = formatCurrency(paymentInfo.amount);
+                document.getElementById('installment-amount').textContent = formatCurrency(paymentInfo.installment_amount);
+                document.getElementById('installment-name').textContent = paymentInfo.name;
+                openModal('installment-modal');
+            }
+        }
+
+        // Open modal function
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        // Close modal function
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(elementId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+
+            // Show copied feedback
+            const copyBtn = copyText.nextElementSibling;
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+            }, 1500);
+        }
+
+        // Simulate payment completion
+        function simulatePayment(method) {
+            closeModal(method + '-modal');
+            setTimeout(() => {
+                openModal('payment-success-modal');
+            }, 300);
+        }
+
+        // Payment completed function
+        function paymentCompleted() {
+            closeModal('payment-success-modal');
+            window.location.href = 'services.php';
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
+        }
     </script>
 </body>
 
