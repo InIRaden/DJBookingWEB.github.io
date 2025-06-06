@@ -20,6 +20,14 @@ if (isset($_POST['confirm_submit'])) {
     $selectedBank = isset($_POST['selected_bank']) ? $_POST['selected_bank'] : '';
     $expiryTime = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
+    // Get service price
+    $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
+    $queryPrice = $dbh->prepare($sqlPrice);
+    $queryPrice->bindParam(':bid', $bid, PDO::PARAM_STR);
+    $queryPrice->execute();
+    $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
+    $amount = $serviceData['ServicePrice'];
+
     // Simpan data booking ke session untuk digunakan nanti
     $_SESSION['temp_booking'] = [
         'bookingid' => $bookingid,
@@ -35,71 +43,62 @@ if (isset($_POST['confirm_submit'])) {
         'addinfo' => $addinfo,
         'paymentMethod' => $paymentMethod,
         'selectedBank' => $selectedBank,
-        'expiryTime' => $expiryTime
+        'expiryTime' => $expiryTime,
+        'amount' => $amount,
+        'va_number' => mt_rand(1000000000000000, 9999999999999999) // Virtual Account number generated here
     ];
-
-    // Get service price
-    $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
-    $queryPrice = $dbh->prepare($sqlPrice);
-    $queryPrice->bindParam(':bid', $bid, PDO::PARAM_STR);
-    $queryPrice->execute();
-    $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
-    $amount = $serviceData['ServicePrice'];
-
-    $_SESSION['temp_booking']['amount'] = $amount;
-    $_SESSION['temp_booking']['va_number'] = mt_rand(1000000000000000, 9999999999999999);
 
     echo json_encode(['success' => true, 'booking_data' => $_SESSION['temp_booking']]);
     exit;
 }
 
-// Final step - Insert data into database after payment confirmation
+// Final step - Insert data into database after payment confirmation using stored procedure
 if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
-        
-        // Begin transaction
-        $dbh->beginTransaction();
-        
-        try {
-            $sql = "INSERT INTO tblbooking(BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation) 
-                    VALUES (:bookingid, :bid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo)";
 
+        try {
+            // Call the stored procedure using named placeholders
+            $sql = "CALL sp_create_booking_and_payment(
+                        :bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate,
+                        :eventstartingtime, :eventendingtime, :venueaddress, :eventtype,
+                        :additionalinformation, :paymentmethod, :amount, :transferbank,
+                        @p_success, @p_message
+                    )";
             $query = $dbh->prepare($sql);
-            $query->bindParam(':bookingid', $bookingData['bookingid'], PDO::PARAM_STR);
-            $query->bindParam(':bid', $bookingData['bid'], PDO::PARAM_STR);
-            $query->bindParam(':name', $bookingData['name'], PDO::PARAM_STR);
-            $query->bindParam(':mobnum', $bookingData['mobnum'], PDO::PARAM_STR);
-            $query->bindParam(':email', $bookingData['email'], PDO::PARAM_STR);
-            $query->bindParam(':edate', $bookingData['edate'], PDO::PARAM_STR);
-            $query->bindParam(':est', $bookingData['est'], PDO::PARAM_STR);
-            $query->bindParam(':eetime', $bookingData['eetime'], PDO::PARAM_STR);
-            $query->bindParam(':vaddress', $bookingData['vaddress'], PDO::PARAM_STR);
-            $query->bindParam(':eventtype', $bookingData['eventtype'], PDO::PARAM_STR);
-            $query->bindParam(':addinfo', $bookingData['addinfo'], PDO::PARAM_STR);
-            $query->execute();
-            
-            // Insert payment record
-            $sqlPayment = "INSERT INTO tblpayment(BookingID, PaymentMethod, Amount, TransferBank) VALUES (:bookingid, :paymentMethod, :amount, :transferBank)";
-            $queryPayment = $dbh->prepare($sqlPayment);
-            $queryPayment->bindParam(':bookingid', $bookingData['bookingid'], PDO::PARAM_STR);
-            $queryPayment->bindParam(':paymentMethod', $bookingData['paymentMethod'], PDO::PARAM_STR);
-            $queryPayment->bindParam(':amount', $bookingData['amount'], PDO::PARAM_STR);
-            $queryPayment->bindParam(':transferBank', $bookingData['selectedBank'], PDO::PARAM_STR);
-            $queryPayment->execute();
-            
-            // Commit transaction
-            $dbh->commit();
-            
-            unset($_SESSION['temp_booking']);
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-            // Rollback transaction on error
-            $dbh->rollBack();
+
+            // Bind values to named placeholders
+            $query->execute([
+                ':bookingid' => $bookingData['bookingid'],
+                ':serviceid' => $bookingData['bid'],
+                ':name' => $bookingData['name'],
+                ':mobilenumber' => $bookingData['mobnum'],
+                ':email' => $bookingData['email'],
+                ':eventdate' => $bookingData['edate'],
+                ':eventstartingtime' => $bookingData['est'],
+                ':eventendingtime' => $bookingData['eetime'],
+                ':venueaddress' => $bookingData['vaddress'],
+                ':eventtype' => $bookingData['eventtype'],
+                ':additionalinformation' => $bookingData['addinfo'],
+                ':paymentmethod' => $bookingData['paymentMethod'],
+                ':amount' => $bookingData['amount'],
+                ':transferbank' => $bookingData['selectedBank']
+            ]);
+
+            // Fetch the output parameters
+            $result = $dbh->query("SELECT @p_success AS success, @p_message AS message")->fetch(PDO::FETCH_ASSOC);
+
+            if ($result['success']) {
+                unset($_SESSION['temp_booking']);
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => $result['message']]);
+            }
+        } catch (PDOException $e) {
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'No booking data found']);
+        echo json_encode(['success' => false, 'message' => 'No temporary booking data found.']);
     }
     exit;
 }
@@ -433,7 +432,7 @@ if (isset($_POST['final_submit'])) {
                                     <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
                                         <i class="fas fa-credit-card text-blue-400 text-lg"></i>
                                     </div>
-                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                    <div class="flex flex-col items-center justify-center cursor-pointer h-full space-y-1">
                                         <span class="text-sm font-medium text-white">Transfer</span>
                                         <span class="text-xs text-gray-400">Pay via virtual account</span>
                                     </div>
@@ -445,7 +444,7 @@ if (isset($_POST['final_submit'])) {
                                     <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
                                         <i class="fas fa-calendar-alt text-purple-400 text-lg"></i>
                                     </div>
-                                    <div class="flex flex-col items-center justify-center space-y-1">
+                                    <div class="flex flex-col items-center justify-center cursor-pointer h-full space-y-1">
                                         <span class="text-sm font-medium text-white">Installment</span>
                                         <span class="text-xs text-gray-400">Pay in multiple payments</span>
                                     </div>
