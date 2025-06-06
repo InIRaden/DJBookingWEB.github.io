@@ -3,7 +3,6 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 
-// First step - Store booking data in session but don't insert into database yet
 if (isset($_POST['confirm_submit'])) {
     $bid = $_POST['bookid'];
     $name = $_POST['name'];
@@ -18,90 +17,81 @@ if (isset($_POST['confirm_submit'])) {
     $bookingid = mt_rand(100000000, 999999999);
     $paymentMethod = $_POST['payment_method'];
     $selectedBank = isset($_POST['selected_bank']) ? $_POST['selected_bank'] : '';
-    $expiryTime = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
-    // Simpan data booking ke session untuk digunakan nanti
-    $_SESSION['temp_booking'] = [
-        'bookingid' => $bookingid,
-        'bid' => $bid,
-        'name' => $name,
-        'mobnum' => $mobnum,
-        'email' => $email,
-        'edate' => $edate,
-        'est' => $est,
-        'eetime' => $eetime,
-        'vaddress' => $vaddress,
-        'eventtype' => $eventtype,
-        'addinfo' => $addinfo,
-        'paymentMethod' => $paymentMethod,
-        'selectedBank' => $selectedBank,
-        'expiryTime' => $expiryTime
-    ];
+    $sql = "INSERT INTO tblbooking(BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation) 
+            VALUES (:bookingid, :bid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo)";
 
-    // Get service price
-    $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
-    $queryPrice = $dbh->prepare($sqlPrice);
-    $queryPrice->bindParam(':bid', $bid, PDO::PARAM_STR);
-    $queryPrice->execute();
-    $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
-    $amount = $serviceData['ServicePrice'];
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':bookingid', $bookingid, PDO::PARAM_STR);
+    $query->bindParam(':bid', $bid, PDO::PARAM_STR);
+    $query->bindParam(':name', $name, PDO::PARAM_STR);
+    $query->bindParam(':mobnum', $mobnum, PDO::PARAM_STR);
+    $query->bindParam(':email', $email, PDO::PARAM_STR);
+    $query->bindParam(':edate', $edate, PDO::PARAM_STR);
+    $query->bindParam(':est', $est, PDO::PARAM_STR);
+    $query->bindParam(':eetime', $eetime, PDO::PARAM_STR);
+    $query->bindParam(':vaddress', $vaddress, PDO::PARAM_STR);
+    $query->bindParam(':eventtype', $eventtype, PDO::PARAM_STR);
+    $query->bindParam(':addinfo', $addinfo, PDO::PARAM_STR);
 
-    $_SESSION['temp_booking']['amount'] = $amount;
-    $_SESSION['temp_booking']['va_number'] = mt_rand(1000000000000000, 9999999999999999);
+    $query->execute();
+    $LastInsertId = $dbh->lastInsertId();
 
-    echo json_encode(['success' => true, 'booking_data' => $_SESSION['temp_booking']]);
-    exit;
-}
+    if ($LastInsertId > 0) {
+        // Get service price
+        $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
+        $queryPrice = $dbh->prepare($sqlPrice);
+        $queryPrice->bindParam(':bid', $bid, PDO::PARAM_STR);
+        $queryPrice->execute();
+        $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
+        $amount = $serviceData['ServicePrice'];
 
-// Final step - Insert data into database after payment confirmation
-if (isset($_POST['final_submit'])) {
-    if (isset($_SESSION['temp_booking'])) {
-        $bookingData = $_SESSION['temp_booking'];
-        
-        // Begin transaction
-        $dbh->beginTransaction();
-        
-        try {
-            $sql = "INSERT INTO tblbooking(BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation) 
-                    VALUES (:bookingid, :bid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo)";
+        // Insert payment record
+        $sqlPayment = "INSERT INTO tblpayment(BookingID, PaymentMethod, Amount, TransferBank) VALUES (:bookingid, :paymentMethod, :amount, :transferBank)";
+        $queryPayment = $dbh->prepare($sqlPayment);
+        $queryPayment->bindParam(':bookingid', $bookingid, PDO::PARAM_STR);
+        $queryPayment->bindParam(':paymentMethod', $paymentMethod, PDO::PARAM_STR);
+        $queryPayment->bindParam(':amount', $amount, PDO::PARAM_STR);
+        $queryPayment->bindParam(':transferBank', $selectedBank, PDO::PARAM_STR);
+        $queryPayment->execute();
+        $paymentId = $dbh->lastInsertId();
 
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':bookingid', $bookingData['bookingid'], PDO::PARAM_STR);
-            $query->bindParam(':bid', $bookingData['bid'], PDO::PARAM_STR);
-            $query->bindParam(':name', $bookingData['name'], PDO::PARAM_STR);
-            $query->bindParam(':mobnum', $bookingData['mobnum'], PDO::PARAM_STR);
-            $query->bindParam(':email', $bookingData['email'], PDO::PARAM_STR);
-            $query->bindParam(':edate', $bookingData['edate'], PDO::PARAM_STR);
-            $query->bindParam(':est', $bookingData['est'], PDO::PARAM_STR);
-            $query->bindParam(':eetime', $bookingData['eetime'], PDO::PARAM_STR);
-            $query->bindParam(':vaddress', $bookingData['vaddress'], PDO::PARAM_STR);
-            $query->bindParam(':eventtype', $bookingData['eventtype'], PDO::PARAM_STR);
-            $query->bindParam(':addinfo', $bookingData['addinfo'], PDO::PARAM_STR);
-            $query->execute();
-            
-            // Insert payment record
-            $sqlPayment = "INSERT INTO tblpayment(BookingID, PaymentMethod, Amount, TransferBank) VALUES (:bookingid, :paymentMethod, :amount, :transferBank)";
-            $queryPayment = $dbh->prepare($sqlPayment);
-            $queryPayment->bindParam(':bookingid', $bookingData['bookingid'], PDO::PARAM_STR);
-            $queryPayment->bindParam(':paymentMethod', $bookingData['paymentMethod'], PDO::PARAM_STR);
-            $queryPayment->bindParam(':amount', $bookingData['amount'], PDO::PARAM_STR);
-            $queryPayment->bindParam(':transferBank', $bookingData['selectedBank'], PDO::PARAM_STR);
-            $queryPayment->execute();
-            
-            // Commit transaction
-            $dbh->commit();
-            
-            unset($_SESSION['temp_booking']);
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-            // Rollback transaction on error
-            $dbh->rollBack();
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        // If installment payment, create installment records
+        if ($paymentMethod == 'installment') {
+            $installmentCount = $_POST['installment_count'];
+            $installmentAmount = $amount / $installmentCount;
+
+            for ($i = 1; $i <= $installmentCount; $i++) {
+                $dueDate = date('Y-m-d', strtotime("+$i month"));
+                $sqlInstallment = "INSERT INTO tblpaymentinstallment(PaymentID, InstallmentNumber, Amount, DueDate) 
+                                  VALUES (:paymentId, :installmentNumber, :amount, :dueDate)";
+                $queryInstallment = $dbh->prepare($sqlInstallment);
+                $queryInstallment->bindParam(':paymentId', $paymentId, PDO::PARAM_STR);
+                $queryInstallment->bindParam(':installmentNumber', $i, PDO::PARAM_INT);
+                $queryInstallment->bindParam(':amount', $installmentAmount, PDO::PARAM_STR);
+                $queryInstallment->bindParam(':dueDate', $dueDate, PDO::PARAM_STR);
+                $queryInstallment->execute();
+            }
         }
+
+        // Store payment info in session for modal display
+        $_SESSION['payment_info'] = [
+            'bookingid' => $bookingid,
+            'method' => $paymentMethod,
+            'amount' => $amount,
+            'name' => $name,
+            'bank' => $selectedBank,
+            'installment_count' => isset($_POST['installment_count']) ? $_POST['installment_count'] : 0,
+            'installment_amount' => isset($installmentAmount) ? $installmentAmount : 0,
+            'va_number' => mt_rand(1000000000000000, 9999999999999999)
+        ];
+
+        echo json_encode(['success' => true, 'payment_info' => $_SESSION['payment_info']]);
+        exit;
     } else {
-        echo json_encode(['success' => false, 'message' => 'No booking data found']);
+        echo json_encode(['success' => false, 'message' => 'Something went wrong. Please try again.']);
+        exit;
     }
-    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -136,64 +126,39 @@ if (isset($_POST['final_submit'])) {
 
         .modal-content {
             background-color: #1a1a1a;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
             width: 90%;
-            max-width: 800px;
             position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            padding-bottom: 15px;
-            border-bottom: 1px solid #333;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body {
-            display: flex;
-            gap: 30px;
-        }
-
-        .modal-body-left {
-            flex: 1;
-            padding-right: 20px;
-            border-right: 1px solid #333;
-        }
-
-        .modal-body-right {
-            flex: 1;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #333;
         }
 
         .close-modal {
             position: absolute;
-            top: 15px;
-            right: 20px;
+            top: 10px;
+            right: 15px;
             font-size: 24px;
             cursor: pointer;
             color: #fff;
         }
 
+        .modal-header {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
         .btn-modal {
-            padding: 10px 25px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
         }
 
         .btn-primary {
@@ -202,83 +167,33 @@ if (isset($_POST['final_submit'])) {
             border: none;
         }
 
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-        }
-
         .btn-secondary {
             background-color: #4b5563;
             color: #fff;
             border: none;
         }
 
-        .btn-secondary:hover {
-            background-color: #374151;
-        }
-
         .copy-field {
             display: flex;
             align-items: center;
             gap: 10px;
-            background-color: #2d2d2d;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
         }
 
         .copy-field input {
             flex-grow: 1;
             padding: 8px;
-            background-color: #1a1a1a;
+            background-color: #2d2d2d;
             color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
         }
 
         .copy-btn {
-            padding: 8px 15px;
+            padding: 8px;
             background-color: #2563eb;
             border: none;
             border-radius: 4px;
             color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .copy-btn:hover {
-            background-color: #1d4ed8;
-        }
-
-        .timer {
-            font-size: 14px;
-            color: #ef4444;
-            margin-top: 10px;
-        }
-
-        .page-indicator {
-            font-size: 14px;
-            color: #9ca3af;
-        }
-
-        .payment-info {
-            background-color: #2d2d2d;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .payment-info p {
-            margin: 5px 0;
-        }
-
-        .payment-info .label {
-            color: #9ca3af;
-            font-size: 14px;
-        }
-
-        .payment-info .value {
-            color: #fff;
-            font-weight: 500;
         }
     </style>
 </head>
@@ -484,101 +399,130 @@ if (isset($_POST['final_submit'])) {
     <?php include_once('includes/footer.php'); ?>
 
     <div id="confirm-modal" class="modal">
-        <div class="modal-content modal-landscape">
+        <div class="modal-content">
             <span class="close-modal" onclick="closeModal('confirm-modal')">×</span>
             <div class="modal-header">
-                <h3 class="text-xl font-semibold text-white">Confirm Your Booking <span class="text-sm text-gray-400 ml-2">Step 1/2</span></h3>
+                <h3 class="text-xl font-semibold text-white">Confirm Your Booking</h3>
             </div>
-            <div class="modal-body">
-                <div class="modal-body-left">
-                    <h4 class="text-lg font-medium text-white mb-4">Booking Details</h4>
-                    <div class="space-y-3">
-                        <p class="text-gray-300">Name: <span id="confirm-name" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Email: <span id="confirm-email" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Phone Number: <span id="confirm-mobnum" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Event Date: <span id="confirm-edate" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Start Time: <span id="confirm-est" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">End Time: <span id="confirm-eetime" class="text-white font-semibold"></span></p>
-                    </div>
-                </div>
-                <div class="modal-body-right">
-                    <h4 class="text-lg font-medium text-white mb-4">Additional Details</h4>
-                    <div class="space-y-3">
-                        <p class="text-gray-300">Venue Address: <span id="confirm-vaddress" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Event Type: <span id="confirm-eventtype" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Additional Information: <span id="confirm-addinfo" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Payment Method: <span id="confirm-payment-method" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Bank: <span id="confirm-selected-bank" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Installment Count: <span id="confirm-installment-count" class="text-white font-semibold"></span></p>
-                    </div>
+            <div class="p-4">
+                <p class="text-gray-300 mb-2">Please review your booking details:</p>
+                <div class="mb-4">
+                    <p class="text-gray-300 mb-1">Name: <span id="confirm-name" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Email: <span id="confirm-email" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Mobile Number: <span id="confirm-mobnum" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Event Date: <span id="confirm-edate" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Event Starting Time: <span id="confirm-est" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Event Finish Time: <span id="confirm-eetime" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Venue Address: <span id="confirm-vaddress" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Event Type: <span id="confirm-eventtype" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Additional Information: <span id="confirm-addinfo" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Payment Method: <span id="confirm-payment-method" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Bank: <span id="confirm-selected-bank" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-1">Installment Count: <span id="confirm-installment-count" class="text-white font-semibold"></span></p>
                 </div>
             </div>
-            <div id="confirm-error-message" class="error-message bg-red-500 text-white p-3 rounded mb-4" style="display: none;"></div>
             <div class="modal-footer">
                 <button class="btn-modal btn-secondary" onclick="closeModal('confirm-modal')">Cancel</button>
-                <button class="btn-modal btn-primary" onclick="showPaymentDetails()">Next</button>
+                <button class="btn-modal btn-primary" onclick="confirmBooking()">Selesai</button>
             </div>
         </div>
     </div>
 
-    <div id="payment-modal" class="modal">
+    <div id="cash-modal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('payment-modal')">×</span>
+            <span class="close-modal" onclick="closeModal('cash-modal')">×</span>
             <div class="modal-header">
-                <h3 class="text-xl font-semibold text-white">Detail Pembayaran</h3>
-                <span class="page-indicator">2/2</span>
+                <h3 class="text-xl font-semibold text-white">Booking Confirmation</h3>
             </div>
-            <div class="modal-body">
-                <div class="modal-body-left">
-                    <h4 class="text-lg font-medium text-white mb-4">Informasi Booking</h4>
-                    <div class="payment-info">
-                        <p><span class="label">Booking ID:</span> <span id="payment-booking-id" class="value"></span></p>
-                        <p><span class="label">Total Pembayaran:</span> <span id="payment-amount" class="value"></span></p>
-                        <p><span class="label">Metode Pembayaran:</span> <span id="payment-method" class="value"></span></p>
-                        <p><span class="label">Bank:</span> <span id="payment-bank" class="value"></span></p>
-                    </div>
-                    <div class="timer mt-4">
-                        <p>Waktu tersisa untuk pembayaran:</p>
-                        <p id="payment-timer" class="font-bold"></p>
-                    </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <p class="text-gray-300 mb-2">Booking ID: <span id="cash-booking-id" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Amount: <span id="cash-amount" class="text-white font-semibold"></span></p>
                 </div>
-                <div class="modal-body-right">
-                    <h4 class="text-lg font-medium text-white mb-4">Instruksi Pembayaran</h4>
-                    <div class="payment-info">
-                        <p class="text-white mb-2">Nomor Virtual Account:</p>
-                        <div class="copy-field">
-                            <input type="text" id="payment-va-number" readonly>
-                            <button class="copy-btn" onclick="copyToClipboard('payment-va-number')">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-300 text-sm mt-4">Silakan transfer sesuai nominal yang tertera ke nomor VA di atas.</p>
-                    </div>
+                <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                    <p class="text-white text-center">Your order is being processed</p>
+                    <p class="text-gray-300 text-sm text-center mt-2">Our team will contact you soon to confirm your booking.</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-modal btn-secondary" onclick="closeModal('payment-modal')">Batal</button>
-                <button class="btn-modal btn-primary" onclick="confirmPayment()">Pembayaran Selesai</button>
+                <button class="btn-modal btn-primary" onclick="closeModal('cash-modal')">Close</button>
             </div>
         </div>
     </div>
 
-    <div id="success-modal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="p-6 text-center">
+    <div id="transfer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('transfer-modal')">×</span>
+            <div class="modal-header">
+                <h3 class="text-xl font-semibold text-white">Virtual Account Payment</h3>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <p class="text-gray-300 mb-2">Booking ID: <span id="transfer-booking-id" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Bank: <span id="transfer-bank" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Amount: <span id="transfer-amount" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Name: <span id="transfer-name" class="text-white font-semibold"></span></p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                    <p class="text-white mb-2">Virtual Account Number:</p>
+                    <div class="copy-field">
+                        <input type="text" id="transfer-va-number" readonly>
+                        <button class="copy-btn" onclick="copyToClipboard('transfer-va-number')"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-2">Please transfer the exact amount to the virtual account number above.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('transfer-modal')">Cancel</button>
+                <button class="btn-modal btn-primary" onclick="simulatePayment('transfer')">I've Paid</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="installment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('installment-modal')">×</span>
+            <div class="modal-header">
+                <h3 class="text-xl font-semibold text-white">Installment Payment</h3>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <p class="text-gray-300 mb-2">Booking ID: <span id="installment-booking-id" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Bank: <span id="installment-bank" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Total Amount: <span id="installment-total" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">First Payment (50%): <span id="installment-amount" class="text-white font-semibold"></span></p>
+                    <p class="text-gray-300 mb-2">Name: <span id="installment-name" class="text-white font-semibold"></span></p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                    <p class="text-white mb-2">Virtual Account Number:</p>
+                    <div class="copy-field">
+                        <input type="text" id="installment-va-number" readonly>
+                        <button class="copy-btn" onclick="copyToClipboard('installment-va-number')"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-2">Please transfer the first payment amount to the virtual account number above.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('installment-modal')">Cancel</button>
+                <button class="btn-modal btn-primary" onclick="simulatePayment('installment')">I've Paid</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="payment-success-modal" class="modal">
+        <div class="modal-content">
+            <div class="p-4 text-center">
                 <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-check text-white text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-white mb-2">Pembayaran Berhasil!</h3>
-                <p class="text-gray-300 mb-4">Booking Anda telah berhasil diproses.</p>
-                <button class="btn-modal btn-primary" onclick="paymentCompleted()">Selesai</button>
+                <h3 class="text-xl font-semibold text-white mb-2">Payment Successful!</h3>
+                <p class="text-gray-300 mb-4">Your payment has been processed successfully.</p>
+                <button class="btn-modal btn-primary" onclick="paymentCompleted()">Continue</button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
-    <script src="./js/book-services.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Fancybox.bind("[data-fancybox]", {
@@ -647,87 +591,57 @@ if (isset($_POST['final_submit'])) {
                 document.getElementById('confirm-addinfo').textContent = data.addinfo || 'N/A';
                 document.getElementById('confirm-payment-method').textContent = data.payment_method || 'N/A';
                 document.getElementById('confirm-selected-bank').textContent = data.selected_bank || 'N/A';
+                document.getElementById('confirm-installment-count').textContent = data.installment_count || 'N/A';
 
                 openModal('confirm-modal');
             });
         });
 
-        function showPaymentDetails() {
+        function confirmBooking() {
             const form = document.getElementById('booking-form');
             const formData = new FormData(form);
             formData.append('confirm_submit', '1');
 
             fetch(window.location.href, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
                     closeModal('confirm-modal');
-                    const bookingData = data.booking_data;
-                    
-                    document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
-                    document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
-                    document.getElementById('payment-method').textContent = bookingData.paymentMethod;
-                    document.getElementById('payment-bank').textContent = bookingData.selectedBank || 'N/A';
-                    document.getElementById('payment-va-number').value = bookingData.va_number;
-
-                    startTimer(bookingData.expiryTime);
-                    openModal('payment-modal');
-                } else {
-                    alert('Terjadi kesalahan. Silakan coba lagi.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
-            });
+                    if (data.success) {
+                        showPaymentModalByMethod(data.payment_info);
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
         }
 
-        function confirmPayment() {
-            const formData = new FormData();
-            formData.append('final_submit', '1');
-
-            fetch(window.location.href, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    closeModal('payment-modal');
-                    openModal('success-modal');
-                } else {
-                    alert(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
-            });
-        }
-
-        function startTimer(expiryTime) {
-            const timerElement = document.getElementById('payment-timer');
-            const expiryDate = new Date(expiryTime).getTime();
-
-            const timer = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = expiryDate - now;
-
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                if (distance < 0) {
-                    clearInterval(timer);
-                    timerElement.textContent = "Waktu pembayaran telah habis";
-                    document.querySelector('#payment-modal .btn-primary').disabled = true;
-                }
-            }, 1000);
+        function showPaymentModalByMethod(paymentInfo) {
+            if (paymentInfo.method === 'cash') {
+                document.getElementById('cash-booking-id').textContent = paymentInfo.bookingid;
+                document.getElementById('cash-amount').textContent = formatCurrency(paymentInfo.amount);
+                openModal('cash-modal');
+            } else if (paymentInfo.method === 'transfer') {
+                document.getElementById('transfer-booking-id').textContent = paymentInfo.bookingid;
+                document.getElementById('transfer-bank').textContent = paymentInfo.bank || 'Not selected';
+                document.getElementById('transfer-amount').textContent = formatCurrency(paymentInfo.amount);
+                document.getElementById('transfer-name').textContent = paymentInfo.name;
+                document.getElementById('transfer-va-number').value = paymentInfo.va_number;
+                openModal('transfer-modal');
+            } else if (paymentInfo.method === 'installment') {
+                document.getElementById('installment-booking-id').textContent = paymentInfo.bookingid;
+                document.getElementById('installment-bank').textContent = paymentInfo.bank || 'Not selected';
+                document.getElementById('installment-total').textContent = formatCurrency(paymentInfo.amount);
+                document.getElementById('installment-amount').textContent = formatCurrency(paymentInfo.installment_amount);
+                document.getElementById('installment-name').textContent = paymentInfo.name;
+                document.getElementById('installment-va-number').value = paymentInfo.va_number;
+                openModal('installment-modal');
+            }
         }
 
         function openModal(modalId) {
@@ -759,8 +673,15 @@ if (isset($_POST['final_submit'])) {
             }, 1500);
         }
 
+        function simulatePayment(method) {
+            closeModal(method + '-modal');
+            setTimeout(() => {
+                openModal('payment-success-modal');
+            }, 300);
+        }
+
         function paymentCompleted() {
-            closeModal('success-modal');
+            closeModal('payment-success-modal');
             window.location.href = 'services.php';
         }
 

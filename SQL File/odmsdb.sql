@@ -51,19 +51,34 @@ INSERT INTO `tbladmin` (`ID`, `AdminName`, `UserName`, `MobileNumber`, `Email`, 
 --
 
 --- Tabel untuk pembayaran
-CREATE TABLE `tblpayment` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `BookingID` int(10) DEFAULT NULL,
-  `PaymentMethod` varchar(50) DEFAULT NULL,
-  `PaymentStatus` varchar(50) DEFAULT 'Pending',
-  `Amount` decimal(10,2) DEFAULT NULL,
-  `TransactionID` varchar(100) DEFAULT NULL,
-  `PaymentDate` timestamp NULL DEFAULT current_timestamp(),
-  `TransferBank` varchar(50) DEFAULT NULL, -- Ditambahkan
-  `PaymentProof` varchar(255) DEFAULT NULL, -- Ditambahkan
-  PRIMARY KEY (`ID`),
-  KEY `BookingID` (`BookingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `tblpayment` (
+--   `ID` int(10) NOT NULL AUTO_INCREMENT,
+--   `BookingID` int(10) DEFAULT NULL,
+--   `PaymentMethod` varchar(50) DEFAULT NULL,
+--   `PaymentStatus` varchar(50) DEFAULT 'Pending',
+--   `Amount` decimal(10,2) DEFAULT NULL,
+--   `TransactionID` varchar(100) DEFAULT NULL,
+--   `PaymentDate` timestamp NULL DEFAULT current_timestamp(),
+--   `TransferBank` varchar(50) DEFAULT NULL, -- Ditambahkan
+--   `PaymentProof` varchar(255) DEFAULT NULL, -- Ditambahkan
+--   PRIMARY KEY (`ID`),
+--   KEY `BookingID` (`BookingID`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE tblpayment (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    BookingID varchar(20) NOT NULL,
+    PaymentMethod enum('cash','transfer','installment') NOT NULL,
+    Amount decimal(10,2) NOT NULL,
+    TransferBank varchar(50) DEFAULT NULL,
+    VirtualAccountNumber varchar(20) DEFAULT NULL,
+    PaymentStatus enum('Pending','Paid','Failed') DEFAULT 'Pending',
+    PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    CompletedDate timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (ID),
+    KEY BookingID (BookingID),
+    FOREIGN KEY (BookingID) REFERENCES tblbooking(BookingID)
+);
 
 -- Tabel untuk cicilan pembayaran
 -- ... existing code ...

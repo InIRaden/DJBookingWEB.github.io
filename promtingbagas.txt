@@ -9,3 +9,31 @@ buatkan pusat bantuan di headernya ada icon tanda tanya kalo dipencet nanti keha
 
 
 //buatkan yang cash user pencet cash itu nanti dia ketika dia boo dia nampilin popup pesanan anda diproses, ketika dia pencet ransnfer nanti dia muncul dropdown bak kayak bank apa gitu terserah terus ketika nandi pencet book dia bakal munculin popup pembayaran virtua account yang bisa di copy  terus bisa pencet selesai ketika user sudah membayar baru bisa nutup modal popup nya terus ada tulisan pesanan berhasil terbayar , terus ketika yang installment itu mirip yang transfer tapi kasi keternagan dia bakal ada keternagan bayar setengah hargannya bisa di copy dan pencet slesai juga terus munculin kayak notifikasi  gitu aja 
+
+
+
+ payment booking servces 
+    //itu kan masi kaya gini pas pencer book nah itu yang payment belom kedetek dari si input user , cba benarkan , terus buatkan landscapet pou[pnya jangan lurus kebawah gitu ,terus itu tulisan nya bukan selesai tapi coba ganti ke next jadi ada kayak halama popup ini 1/2 dan ketik di next nanti 2/2  timer 24 jam kayak shopee gitu lah , baru ada tulisan buttom pembayaran selesai begitu buatkan yang sesuai jangan ngaco benarkan dan yang di js benarkan ladi di php nya juga
+
+
+promt payment 2 
+//itu kan masi kaya gini pas pencet book nah itu yang payment belom kedetek dari si input user harusnya nampilin juga jenis nya di popup, coba benarkan , terus buatkan bentuk pop up nya landscape boleh make css pou[pnya jangan lurus kebawah gitu ,terus itu tulisan nya bukan selesai tapi coba ganti ke next jadi ada kayak halama popup ini 1/2 dan ketik di next nanti 2/2  timer 24 jam  , baru ada tulisan button pembayaran selesai begitu buatkan yang sesuai jangan ngaco benarkan dan yang di js benarkan ladi di php nya juga, buatkan smua nya berfungsi kalo ada yg gak berfungsi hapus aja dan tadi ketika pencet next jangan ada tulisan gini  "tadi muncul local host error occured " ,NOTE jadi data dikirim ke database ketika di popup terakhir yang 2/2 dan ketika sudah pencet pembayaran selesai baru ke kirim kedatasbase
+
+
+
+english ver 
+#Code:book-services.php 528-693 book-services.php 202-523 — these parts are still like that when the "Book" button is clicked. The payment section is not yet detected from the user input. It should also display the selected type in the popup. Please fix this.
+
+Also, design the popup in landscape format using CSS — don't stack everything vertically.
+
+Change the text from "Selesai" to "Next", and show that the popup is Page 1/2 .
+
+When clicking "Next", move to Page 2/2 and display a 24-hour timer .
+
+Only after that, show the button "Complete Payment".
+
+Make sure everything works correctly. If any part doesn't work, delete it.
+
+Also, when "Next" is clicked, don't show error messages like: "localhost error occurred" .
+
+Note: data should only be sent to the database after reaching the final popup (2/2) and clicking "Complete Payment" . Fix the JS, PHP, and any error properly.
