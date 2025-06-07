@@ -140,10 +140,10 @@ include('includes/dbconnection.php');
                         'description' => 'Hai, saya Rifiani. Saya merancang pengalaman pengguna yang intuitif dan estetis untuk aplikasi ini.'
                     ],
                     [
-                        'name' => 'Paham',
+                        'name' => 'Raden Mahesa',
                         'role' => 'Database Specialist',
-                        'image' => 'images/paham.png',
-                        'description' => 'Saya Paham, memastikan data tersimpan dengan aman dan efisien.'
+                        'image' => 'images/mahesaa.jpg',
+                        'description' => 'Insyaallah pekerjaan saya, memastikan data tersimpan dengan aman dan efisien.'
                     ]
                 ];
 

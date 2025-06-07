@@ -112,28 +112,66 @@ include('includes/dbconnection.php');
             <h2 class="font-semibold text-white text-sm mb-6">Featured DJs</h2>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <?php
-                $featured_djs = [
-                    ['name' => 'DJ Alex', 'events' => '246 events', 'image' => 'images/7.jpg', 'description' => 'Specializes in EDM and house music with over 10 years of experience in the industry.'],
-                    ['name' => 'DJ Sarah', 'events' => '178 events', 'image' => 'images/2.jpg', 'description' => 'Known for her unique blend of hip-hop and R&B, creating unforgettable party atmospheres.'],
-                    ['name' => 'DJ Mike', 'events' => '480 events', 'image' => 'images/10.jpg', 'description' => 'Techno specialist with international experience and a massive following in the underground scene.'],
-                    ['name' => 'DJ Lisa', 'events' => '320 events', 'image' => 'images/5.jpg', 'description' => 'Versatile DJ who can adapt to any event type, from corporate gatherings to wedding celebrations.']
-                ];
+                // SQL dengan RANK() untuk memberi peringkat berdasarkan booking_count
+                $sql = "SELECT
+                            s.ID,
+                            s.ServiceName,
+                            s.SerDes,
+                            s.ServicePrice,
+                        COUNT(b.ID) AS booking_count,
+                        RANK() OVER (ORDER BY COUNT(b.ID) DESC) AS ranking
+                        FROM tblservice s
+                        LEFT JOIN tblbooking b ON s.ID = b.ServiceID
+                        GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
+                        ORDER BY booking_count DESC
+                        LIMIT 4";
+                $query = $dbh->prepare($sql);
+                $query->execute();
+                $featured_djs = $query->fetchAll(PDO::FETCH_OBJ);
 
-                foreach ($featured_djs as $dj) { ?>
+                foreach ($featured_djs as $dj) {
+                    // Tentukan gambar berdasarkan nama service
+                    $djImage = '';
+                    switch (strtolower($dj->ServiceName)) {
+                        case 'wedding dj':
+                            $djImage = 'images/weddingDj.jpg';
+                            break;
+                        case 'party dj':
+                            $djImage = 'images/partyDj.jpg';
+                            break;
+                        case 'ceremony music':
+                            $djImage = 'images/blg2.jpg';
+                            break;
+                        case 'photo booth hire':
+                            $djImage = 'images/photobooth.jpg';
+                            break;
+                        case 'karaoke add-on':
+                            $djImage = 'images/karaoke.jpg';
+                            break;
+                        case 'uplighters':
+                            $djImage = 'images/uplighters.jpg';
+                            break;
+                        default:
+                            $djImage = 'images/abt.jpg';
+                    }
+                ?>
                     <div class="dj-card">
                         <div class="overflow-hidden rounded-md">
-                            <img alt="<?php echo $dj['name']; ?>" class="dj-card-image rounded-md w-full h-[150px] object-cover" src="<?php echo $dj['image']; ?>" />
+                            <img alt="<?php echo htmlentities($dj->ServiceName); ?>" class="dj-card-image rounded-md w-full h-[150px] object-cover" src="<?php echo $djImage; ?>" />
                         </div>
-                        <p class="mt-2 text-xs font-bold text-white"><?php echo $dj['name']; ?></p>
+                        <p class="mt-2 text-xs font-bold text-white"><?php echo htmlentities($dj->ServiceName); ?></p>
                         <div class="dj-card-content">
-                            <h3 class="text-sm font-bold text-white"><?php echo $dj['name']; ?></h3>
-                            <p class="text-[9px] text-gray-300 mb-1"><?php echo $dj['events']; ?></p>
-                            <p class="text-[9px] text-white"><?php echo $dj['description']; ?></p>
+                            <h3 class="text-sm font-bold text-white"><?php echo htmlentities($dj->ServiceName); ?></h3>
+                            <p class="text-[9px] text-gray-300 mb-1">
+                                Rank #<?php echo $dj->ranking; ?> — <?php echo $dj->booking_count . ' events'; ?>
+                            </p>
+                            <p class="text-[9px] text-white"><?php echo htmlentities($dj->SerDes); ?></p>
                         </div>
                     </div>
                 <?php } ?>
             </div>
         </section>
+
 
         <!-- Hero Banner Section -->
         <section class="py-20 bg-black text-white">
@@ -279,30 +317,30 @@ include('includes/dbconnection.php');
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const faqButtons = document.querySelectorAll('.faq-button');
-                
+
                 faqButtons.forEach(button => {
                     button.addEventListener('click', () => {
                         const faqItem = button.parentElement;
                         const answer = button.nextElementSibling;
                         const icon = button.querySelector('svg');
-                        
+
                         // Toggle answer visibility with animation
                         answer.classList.toggle('hidden');
                         answer.classList.toggle('show');
-                        
+
                         // Rotate icon
                         icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-                        
+
                         // Add active state styles
                         faqItem.classList.toggle('bg-[#2a2a2a]');
-                        
+
                         // Close other answers
                         faqButtons.forEach(otherButton => {
                             if (otherButton !== button) {
                                 const otherAnswer = otherButton.nextElementSibling;
                                 const otherIcon = otherButton.querySelector('svg');
                                 const otherItem = otherButton.parentElement;
-                                
+
                                 otherAnswer.classList.add('hidden');
                                 otherAnswer.classList.remove('show');
                                 otherIcon.style.transform = 'rotate(0deg)';

@@ -166,7 +166,15 @@ include('includes/dbconnection.php');
         <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php
-            $sql = "SELECT * from tblservice";
+            $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
+            SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
+                   COUNT(b.ID) AS booking_count
+            FROM tblservice s
+            LEFT JOIN tblbooking b ON s.ID = b.ServiceID
+            GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
+            ) AS ranked_services
+            LIMIT 5";
+
             $query = $dbh->prepare($sql);
             $query->execute();
             $results = $query->fetchAll(PDO::FETCH_OBJ);
@@ -199,23 +207,32 @@ include('includes/dbconnection.php');
                     }
             ?>
                     <div class="service-card">
-                        <div class="service-image-container">
+                        <!-- Tambahkan class relative agar posisi absolute anaknya bisa bekerja -->
+                        <div class="service-image-container relative">
+                            <!-- Badge Ranking -->
+                            <div class="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 text-xs font-bold rounded shadow">
+                                #<?php echo $row->ranking; ?>
+                            </div>
+
+                            <!-- Gambar Layanan -->
                             <img src="images/<?php echo $serviceImage; ?>"
                                 alt="<?php echo htmlentities($row->ServiceName); ?>"
                                 class="service-image">
                         </div>
+
+                        <!-- Konten Layanan -->
                         <div class="service-content">
                             <h3 class="service-title"><?php echo htmlentities($row->ServiceName); ?></h3>
                             <p class="service-description"><?php echo htmlentities($row->SerDes); ?></p>
                             <div class="service-footer">
                                 <span class="service-price">$<?php echo htmlentities($row->ServicePrice); ?></span>
-                                <a href="book-services.php?bookid=<?php echo $row->ID; ?>"
-                                    class="book-button">
+                                <a href="book-services.php?bookid=<?php echo $row->ID; ?>" class="book-button">
                                     Book Now <span class="icon">&rarr;</span>
                                 </a>
                             </div>
                         </div>
                     </div>
+
             <?php }
             } ?>
         </div>
