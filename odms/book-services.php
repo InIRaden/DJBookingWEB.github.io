@@ -526,40 +526,40 @@ if (isset($_POST['final_submit'])) {
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('payment-modal')">×</span>
             <div class="modal-header">
-                <h3 class="text-xl font-semibold text-white">Detail Pembayaran</h3>
+                <h3 class="text-xl font-semibold text-white">Payment Details</h3>
                 <span class="page-indicator">2/2</span>
             </div>
             <div class="modal-body">
                 <div class="modal-body-left">
-                    <h4 class="text-lg font-medium text-white mb-4">Informasi Booking</h4>
+                    <h4 class="text-lg font-medium text-white mb-4">Booking Information</h4>
                     <div class="payment-info">
                         <p><span class="label">Booking ID:</span> <span id="payment-booking-id" class="value"></span></p>
-                        <p><span class="label">Total Pembayaran:</span> <span id="payment-amount" class="value"></span></p>
+                        <p><span class="label">Total Payment:</span> <span id="payment-amount" class="value"></span></p>
                         <p><span class="label">Payment Method:</span> <span id="payment-method" class="value"></span></p>
                         <p><span class="label">Bank:</span> <span id="payment-bank" class="value"></span></p>
                     </div>
                     <div class="timer mt-4">
-                        <p>Waktu tersisa untuk pembayaran:</p>
+                        <p>Time remaining for payment:</p>
                         <p id="payment-timer" class="font-bold"></p>
                     </div>
                 </div>
                 <div class="modal-body-right">
-                    <h4 class="text-lg font-medium text-white mb-4">Instruksi Pembayaran</h4>
+                    <h4 class="text-lg font-medium text-white mb-4">Payment Instructions</h4>
                     <div class="payment-info">
-                        <p class="text-white mb-2">Nomor Virtual Account:</p>
+                        <p class="text-white mb-2">Virtual Account Number:</p>
                         <div class="copy-field">
                             <input type="text" id="payment-va-number" readonly>
                             <button class="copy-btn" onclick="copyToClipboard('payment-va-number')">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
-                        <p class="text-gray-300 text-sm mt-4">Silakan transfer sesuai nominal yang tertera ke nomor VA di atas.</p>
+                        <p class="text-gray-300 text-sm mt-4">Please transfer the exact amount to the VA number above.</p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-modal btn-secondary" onclick="closeModal('payment-modal')">Batal</button>
-                <button class="btn-modal btn-primary" onclick="confirmPayment()">Pembayaran Selesai</button>
+                <button class="btn-modal btn-secondary" onclick="closeModal('payment-modal')">Cancel</button>
+                <button class="btn-modal btn-primary" onclick="confirmPayment()">Payment Complete</button>
             </div>
         </div>
     </div>
@@ -570,9 +570,9 @@ if (isset($_POST['final_submit'])) {
                 <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-check text-white text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-white mb-2">Pembayaran Berhasil!</h3>
-                <p class="text-gray-300 mb-4">Booking Anda telah berhasil diproses.</p>
-                <button class="btn-modal btn-primary" onclick="paymentCompleted()">Selesai</button>
+                <h3 class="text-xl font-semibold text-white mb-2">Payment Successful!</h3>
+                <p class="text-gray-300 mb-4">Your booking has been successfully processed.</p>
+                <button class="btn-modal btn-primary" onclick="paymentCompleted()">Done</button>
             </div>
         </div>
     </div>
@@ -588,12 +588,15 @@ if (isset($_POST['final_submit'])) {
                 buttons: ["zoom", "slideShow", "fullScreen", "close"]
             });
 
+            // Get references to payment-related elements
             const paymentRadios = document.querySelectorAll('.payment-radio');
             const installmentOptions = document.getElementById('installment-options');
             const bankDropdown = document.getElementById('bank-dropdown');
 
+            // Add event listeners to payment method radio buttons
             paymentRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
+                    // Update border styling for selected payment method
                     document.querySelectorAll('.payment-radio').forEach(r => {
                         const parent = r.parentElement;
                         if (r.checked) {
@@ -605,12 +608,14 @@ if (isset($_POST['final_submit'])) {
                         }
                     });
 
+                    // Show/hide bank dropdown based on payment method
                     if (this.value === 'transfer' || this.value === 'installment') {
                         bankDropdown.classList.add('show');
                     } else {
                         bankDropdown.classList.remove('show');
                     }
 
+                    // Show/hide installment options only for installment payment method
                     if (this.value === 'installment') {
                         installmentOptions.classList.add('show');
                         installmentOptions.style.opacity = '1';
@@ -623,11 +628,13 @@ if (isset($_POST['final_submit'])) {
                 });
             });
 
+            // Trigger change event for any pre-selected payment method
             const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
             if (checkedRadio) {
                 checkedRadio.dispatchEvent(new Event('change'));
             }
 
+            // Handle form submission and populate confirmation modal
             const form = document.getElementById('booking-form');
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -637,6 +644,7 @@ if (isset($_POST['final_submit'])) {
                     data[key] = value;
                 });
 
+                // Populate confirmation modal with form data
                 document.getElementById('confirm-name').textContent = data.name || 'N/A';
                 document.getElementById('confirm-email').textContent = data.email || 'N/A';
                 document.getElementById('confirm-mobnum').textContent = data.mobnum || 'N/A';
@@ -646,69 +654,103 @@ if (isset($_POST['final_submit'])) {
                 document.getElementById('confirm-vaddress').textContent = data.vaddress || 'N/A';
                 document.getElementById('confirm-eventtype').textContent = data.eventtype || 'N/A';
                 document.getElementById('confirm-addinfo').textContent = data.addinfo || 'N/A';
-                document.getElementById('confirm-payment-method').textContent = data.payment_method || 'N/A';
-                document.getElementById('confirm-selected-bank').textContent = data.selected_bank || 'N/A';
+
+                // Get selected payment method and display it properly
+                const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+                document.getElementById('confirm-payment-method').textContent = selectedPaymentMethod ? selectedPaymentMethod.value : 'N/A';
+
+                // Get selected bank and display it
+                const selectedBank = document.getElementById('selected-bank');
+                document.getElementById('confirm-selected-bank').textContent =
+                    (selectedPaymentMethod && (selectedPaymentMethod.value === 'transfer' || selectedPaymentMethod.value === 'installment')) ?
+                    (selectedBank.value || 'N/A') : 'N/A';
+
+                // Get installment count and display it only if installment is selected
+                const installmentCount = document.querySelector('select[name="installment_count"]');
+                document.getElementById('confirm-installment-count').textContent =
+                    (selectedPaymentMethod && selectedPaymentMethod.value === 'installment') ?
+                    (installmentCount.value || 'N/A') : 'N/A';
 
                 openModal('confirm-modal');
             });
         });
 
+        /**
+         * Shows payment details in the payment modal
+         * Fetches booking data from server and populates the payment modal
+         */
         function showPaymentDetails() {
             const form = document.getElementById('booking-form');
             const formData = new FormData(form);
             formData.append('confirm_submit', '1');
 
             fetch(window.location.href, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    closeModal('confirm-modal');
-                    const bookingData = data.booking_data;
-                    
-                    document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
-                    document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
-                    document.getElementById('payment-method').textContent = bookingData.paymentMethod;
-                    document.getElementById('payment-bank').textContent = bookingData.selectedBank || 'N/A';
-                    document.getElementById('payment-va-number').value = bookingData.va_number;
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal('confirm-modal');
+                        const bookingData = data.booking_data;
 
-                    startTimer(bookingData.expiryTime);
-                    openModal('payment-modal');
-                } else {
-                    alert('Terjadi kesalahan. Silakan coba lagi.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
-            });
+                        document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
+                        document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
+
+                        // Display payment method and bank in payment modal
+                        const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+                        document.getElementById('payment-method').textContent = paymentMethod ? paymentMethod.value : 'N/A';
+
+                        const selectedBank = document.getElementById('selected-bank');
+                        document.getElementById('payment-bank').textContent =
+                            (paymentMethod && (paymentMethod.value === 'transfer' || paymentMethod.value === 'installment')) ?
+                            (selectedBank.value || 'N/A') : 'N/A';
+
+                        document.getElementById('payment-va-number').value = bookingData.va_number;
+
+                        startTimer(bookingData.expiryTime);
+                        openModal('payment-modal');
+                    } else {
+                        alert('An error occurred. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
         }
 
+        /**
+         * Confirms payment and processes final submission
+         * Sends final confirmation to server and shows success modal
+         */
         function confirmPayment() {
             const formData = new FormData();
             formData.append('final_submit', '1');
 
             fetch(window.location.href, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    closeModal('payment-modal');
-                    openModal('success-modal');
-                } else {
-                    alert(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan. Silakan coba lagi.');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal('payment-modal');
+                        openModal('success-modal');
+                    } else {
+                        alert(data.message || 'An error occurred. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
         }
 
+        /**
+         * Starts countdown timer for payment deadline
+         * @param {string} expiryTime - ISO datetime string for payment expiration
+         */
         function startTimer(expiryTime) {
             const timerElement = document.getElementById('payment-timer');
             const expiryDate = new Date(expiryTime).getTime();
@@ -725,12 +767,16 @@ if (isset($_POST['final_submit'])) {
 
                 if (distance < 0) {
                     clearInterval(timer);
-                    timerElement.textContent = "Waktu pembayaran telah habis";
+                    timerElement.textContent = "Payment time has expired";
                     document.querySelector('#payment-modal .btn-primary').disabled = true;
                 }
             }, 1000);
         }
 
+        /**
+         * Opens a modal by ID
+         * @param {string} modalId - ID of the modal to open
+         */
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.style.display = 'flex';
@@ -739,6 +785,10 @@ if (isset($_POST['final_submit'])) {
             }, 10);
         }
 
+        /**
+         * Closes a modal by ID
+         * @param {string} modalId - ID of the modal to close
+         */
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.remove('show');
@@ -747,6 +797,10 @@ if (isset($_POST['final_submit'])) {
             }, 300);
         }
 
+        /**
+         * Copies text to clipboard
+         * @param {string} elementId - ID of the element containing text to copy
+         */
         function copyToClipboard(elementId) {
             const copyText = document.getElementById(elementId);
             copyText.select();
@@ -760,11 +814,20 @@ if (isset($_POST['final_submit'])) {
             }, 1500);
         }
 
+        /**
+         * Handles completion of payment process
+         * Redirects user to services page after successful payment
+         */
         function paymentCompleted() {
             closeModal('success-modal');
             window.location.href = 'services.php';
         }
 
+        /**
+         * Formats currency amount
+         * @param {number} amount - Amount to format
+         * @returns {string} Formatted currency string
+         */
         function formatCurrency(amount) {
             return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
         }
