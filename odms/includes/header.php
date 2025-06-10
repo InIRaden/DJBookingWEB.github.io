@@ -1,11 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+
     include 'dbconnection.php';
 }
 ?>
-
-<!-- Header dengan Tailwind CSS dan optimasi z-index -->
+<!-- Header dengan Tailwind CSS -->
 <style>
     /* Animasi hover untuk menu navigasi */
     .nav-link {
@@ -56,27 +56,10 @@ if (session_status() === PHP_SESSION_NONE) {
         background: rgba(255, 255, 255, 0.2);
         transform: translateY(-3px);
     }
-
-    /* Pastikan header selalu di atas */
-    .header-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 9999;
-        /* Nilai z-index sangat tinggi */
-        background-color: rgba(0, 0, 0, 0.9);
-    }
-
-    /* Hindari konten lain tumpang tindih dengan header */
-    body {
-        padding-top: 80px;
-        /* Sesuaikan dengan tinggi header */
-    }
 </style>
 
 <header class="relative">
-    <nav class="header-nav flex items-center justify-between px-6 py-4 text-white shadow-lg">
+    <nav class="fixed top-0 left-0 w-full flex items-center justify-between px-6 py-4 text-white bg-black bg-opacity-90 z-[1000] shadow-lg">
         <!-- Logo / Judul -->
         <div class="flex items-center space-x-2 text-sm font-semibold">
             <a href="index.php" class="flex items-center space-x-2 hover:text-red-400 transition-colors duration-300">

@@ -37,27 +37,3 @@ Make sure everything works correctly. If any part doesn't work, delete it.
 Also, when "Next" is clicked, don't show error messages like: "localhost error occurred" .
 
 Note: data should only be sent to the database after reaching the final popup (2/2) and clicking "Complete Payment" . Fix the JS, PHP, and any error properly.
-
-
-
-//konekin booking-service payment into view details detected 
-
-buatkan yag payment agar kedetek dan ada di halaman view-details dan harus kedetek ada Amount, TransferBank, PaymentStatus, PaymentDate dan CompletedDate pokoknya ya  kalo user udah pencet selesai nanti kebaca di view detail admin nya kalo installment ya 
-
-
-book-services.php yang modal detail pmebayaran ayakna bikin 2 aja ada trnafer ada yang installment kalo cash ketika pnecett book dia cuma namipin modal yang pertama trus button nya tulisan nya pembayaran selesai trus kirim data , kalo trnasfer udah bener make modal yang lama aja , kalo installment buat modal / tambahin modal baru ada mirik kayak transfer tapi dibawah tulisan vs nya ada tulisan minimal pembayaran 50%, buatkan dengan benar js yang gak kepakae dan gak berfungsi benarkan/ hapus aja gapapa buatkan modalnya di php nya aja juga boleh , logicnya aatur di js
-
-// view detail
-buakan kalau misal nya cash dia bakal tulisan status di admin nya Menunggu Pembayaran dan Lunas , kalo transfer Statusya Pending Defaultnya dan Lunas , kalo cicilan itu buatkan disisi admin nya bisa ngatur juga status payment nya dan ngubah kayak yang 
-
-
-
-//sote procedur biar bisa kirim data 
-ini kan make store procedur buat call gitu teru ini gimana biar kita bisa kirim data ke database ini dari sisi user (booking-services) , soalnya tadi eror tpi kalo make inset into biasa tanpa store procedure lancar coba beikan cara nya dan step nya
-
-//logika modal cash tf dan installment
-itu hapus tblpayment instLLMENT SOALNYA GAKbook-services.php buaktan kalo metode pembayaran cash dia cuma make yang modal cash 1 aj  dan tulisan nya langsung selesaikan pmebayaran bukan next, kalo dia transfer dia make uang modal 1/1 sama 2/2 , kalo metode pembayaran dai instalment dia make modal yang 1/1 sama instalment aja , sama benerin yang metode pembayaran nya belom kedetek itu ganti namanya payment method dan bank dan harus kebaca valuenya BUTUH dan buatkan di modal lain nya itu Payment Method, bukan metode pembayaran trus coba selaraskan biar logikanya bener di html phpp dan js nya sesuai keinginan 
-
-// book-services ke view details 
-buatkan ini payment nya juga ke kirim ke view-detail seperti status , payment metode   PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-    CompletedDate , jadi gak cuma informasi yang udah ada tapi payment nya bisa kedetek disana 
