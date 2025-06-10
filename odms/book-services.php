@@ -116,7 +116,169 @@ if (isset($_POST['final_submit'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
     <link rel="stylesheet" href="./css/book-service.css">
     <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
 
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            display: flex;
+            gap: 30px;
+        }
+
+        .modal-body-left {
+            flex: 1;
+            padding-right: 20px;
+            border-right: 1px solid #333;
+        }
+
+        .modal-body-right {
+            flex: 1;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .btn-modal {
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #374151;
+        }
+
+        .copy-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #2d2d2d;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .copy-field input {
+            flex-grow: 1;
+            padding: 8px;
+            background-color: #1a1a1a;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
+        .copy-btn {
+            padding: 8px 15px;
+            background-color: #2563eb;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .timer {
+            font-size: 14px;
+            color: #ef4444;
+            margin-top: 10px;
+        }
+
+        .page-indicator {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .payment-info {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .payment-info p {
+            margin: 5px 0;
+        }
+
+        .payment-info .label {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .payment-info .value {
+            color: #fff;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -320,8 +482,6 @@ if (isset($_POST['final_submit'])) {
 
     <?php include_once('includes/footer.php'); ?>
 
-    <!-- modal payment  -->
-
     <div id="confirm-modal" class="modal">
         <div class="modal-content modal-landscape">
             <span class="close-modal" onclick="closeModal('confirm-modal')">×</span>
@@ -477,7 +637,6 @@ if (isset($_POST['final_submit'])) {
                     data[key] = value;
                 });
 
-                // Pastikan semua data diambil dengan benar
                 document.getElementById('confirm-name').textContent = data.name || 'N/A';
                 document.getElementById('confirm-email').textContent = data.email || 'N/A';
                 document.getElementById('confirm-mobnum').textContent = data.mobnum || 'N/A';
@@ -488,18 +647,7 @@ if (isset($_POST['final_submit'])) {
                 document.getElementById('confirm-eventtype').textContent = data.eventtype || 'N/A';
                 document.getElementById('confirm-addinfo').textContent = data.addinfo || 'N/A';
                 document.getElementById('confirm-payment-method').textContent = data.payment_method || 'N/A';
-
-                // Perbaikan untuk menampilkan data bank
-                const selectedBank = document.getElementById('selected-bank').value;
-                document.getElementById('confirm-selected-bank').textContent = selectedBank || 'N/A';
-
-                // Tampilkan installment count jika metode pembayaran adalah installment
-                if (data.payment_method === 'installment') {
-                    const installmentCount = document.querySelector('select[name="installment_count"]').value;
-                    document.getElementById('confirm-installment-count').textContent = installmentCount + ' payments';
-                } else {
-                    document.getElementById('confirm-installment-count').textContent = 'N/A';
-                }
+                document.getElementById('confirm-selected-bank').textContent = data.selected_bank || 'N/A';
 
                 openModal('confirm-modal');
             });
@@ -511,31 +659,31 @@ if (isset($_POST['final_submit'])) {
             formData.append('confirm_submit', '1');
 
             fetch(window.location.href, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        closeModal('confirm-modal');
-                        const bookingData = data.booking_data;
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('confirm-modal');
+                    const bookingData = data.booking_data;
+                    
+                    document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
+                    document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
+                    document.getElementById('payment-method').textContent = bookingData.paymentMethod;
+                    document.getElementById('payment-bank').textContent = bookingData.selectedBank || 'N/A';
+                    document.getElementById('payment-va-number').value = bookingData.va_number;
 
-                        document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
-                        document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
-                        document.getElementById('payment-method').textContent = bookingData.paymentMethod;
-                        document.getElementById('payment-bank').textContent = bookingData.selectedBank || 'N/A';
-                        document.getElementById('payment-va-number').value = bookingData.va_number;
-
-                        startTimer(bookingData.expiryTime);
-                        openModal('payment-modal');
-                    } else {
-                        alert('Terjadi kesalahan. Silakan coba lagi.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+                    startTimer(bookingData.expiryTime);
+                    openModal('payment-modal');
+                } else {
                     alert('Terjadi kesalahan. Silakan coba lagi.');
-                });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            });
         }
 
         function confirmPayment() {
@@ -543,22 +691,22 @@ if (isset($_POST['final_submit'])) {
             formData.append('final_submit', '1');
 
             fetch(window.location.href, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        closeModal('payment-modal');
-                        openModal('success-modal');
-                    } else {
-                        alert(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan. Silakan coba lagi.');
-                });
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('payment-modal');
+                    openModal('success-modal');
+                } else {
+                    alert(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            });
         }
 
         function startTimer(expiryTime) {
@@ -569,15 +717,11 @@ if (isset($_POST['final_submit'])) {
                 const now = new Date().getTime();
                 const distance = expiryDate - now;
 
-                // Perbaikan perhitungan waktu untuk menampilkan 24 jam penuh
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Menampilkan hari jika ada
-                const displayHours = days > 0 ? (days * 24) + hours : hours;
-                timerElement.textContent = `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
                 if (distance < 0) {
                     clearInterval(timer);
