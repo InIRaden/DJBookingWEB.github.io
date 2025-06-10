@@ -829,7 +829,7 @@ if (isset($_POST['final_submit'])) {
          * @returns {string} Formatted currency string
          */
         function formatCurrency(amount) {
-            return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
+            return '$ ' + parseFloat(amount).toLocaleString('id-ID');
         }
     </script>
 </body>
