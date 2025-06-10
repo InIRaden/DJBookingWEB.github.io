@@ -143,12 +143,12 @@ include('includes/dbconnection.php');
 
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
-        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
+        <img alt="DJ performing at event" src="images/abt.ppg" /> 
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Services</h1>
+            <!--<h1 class="text-white font-bold text-lg md:text-xl leading-tight">Services</h1>
             <p class="text-xs md:text-sm mt-2 text-white">
                 Learn more about our DJ services and what makes us special
-            </p>
+            </p>-->
         </div>
     </header>
 
