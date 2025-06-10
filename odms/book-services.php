@@ -360,6 +360,8 @@ if (isset($_POST['final_submit'])) {
         </div>
     </div>
 
+
+    <!-- 2/2 modal -->
     <div id="payment-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('payment-modal')">×</span>
@@ -373,7 +375,7 @@ if (isset($_POST['final_submit'])) {
                     <div class="payment-info">
                         <p><span class="label">Booking ID:</span> <span id="payment-booking-id" class="value"></span></p>
                         <p><span class="label">Total Pembayaran:</span> <span id="payment-amount" class="value"></span></p>
-                        <p><span class="label">Metode Pembayaran:</span> <span id="payment-method" class="value"></span></p>
+                        <p><span class="label">Payment Method:</span> <span id="payment-method" class="value"></span></p>
                         <p><span class="label">Bank:</span> <span id="payment-bank" class="value"></span></p>
                     </div>
                     <div class="timer mt-4">
