@@ -536,14 +536,14 @@ if (isset($_POST['final_submit'])) {
                         <p><span class="label">Booking ID:</span> <span id="payment-booking-id" class="value"></span></p>
                         <p><span class="label">Total Payment:</span> <span id="payment-amount" class="value"></span></p>
                         <p><span class="label">Payment Method:</span> <span id="payment-method" class="value"></span></p>
-                        <p><span class="label">Bank:</span> <span id="payment-bank" class="value"></span></p>
+                        <p class="bank-info"><span class="label">Bank:</span> <span id="payment-bank" class="value"></span></p>
                     </div>
-                    <div class="timer mt-4">
+                    <div class="timer mt-4 payment-timer">
                         <p>Time remaining for payment:</p>
                         <p id="payment-timer" class="font-bold"></p>
                     </div>
                 </div>
-                <div class="modal-body-right">
+                <div class="modal-body-right payment-instructions">
                     <h4 class="text-lg font-medium text-white mb-4">Payment Instructions</h4>
                     <div class="payment-info">
                         <p class="text-white mb-2">Virtual Account Number:</p>
@@ -553,12 +553,19 @@ if (isset($_POST['final_submit'])) {
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
+                        <p id="installment-minimum-text" class="text-yellow-400 text-sm mt-2" style="display: none;">Minimum payment 50%</p> 
                         <p class="text-gray-300 text-sm mt-4">Please transfer the exact amount to the VA number above.</p>
+                    </div>
+                </div>
+                <div class="modal-body-right cash-instructions" style="display: none;">
+                    <h4 class="text-lg font-medium text-white mb-4">Payment Instructions</h4>
+                    <div class="payment-info">
+                        <p class="text-gray-300">Please pay the amount in cash at our office or to our representative at the event.</p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-modal btn-secondary" onclick="closeModal('payment-modal')">Cancel</button>
+                <button class="btn-modal btn-secondary" onclick="backToConfirmModal()">Previous</button>
                 <button class="btn-modal btn-primary" onclick="confirmPayment()">Payment Complete</button>
             </div>
         </div>
@@ -657,19 +664,42 @@ if (isset($_POST['final_submit'])) {
 
                 // Get selected payment method and display it properly
                 const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
-                document.getElementById('confirm-payment-method').textContent = selectedPaymentMethod ? selectedPaymentMethod.value : 'N/A';
+                const paymentMethodValue = selectedPaymentMethod ? selectedPaymentMethod.value : 'N/A';
+                document.getElementById('confirm-payment-method').textContent = paymentMethodValue;
 
-                // Get selected bank and display it
-                const selectedBank = document.getElementById('selected-bank');
-                document.getElementById('confirm-selected-bank').textContent =
-                    (selectedPaymentMethod && (selectedPaymentMethod.value === 'transfer' || selectedPaymentMethod.value === 'installment')) ?
-                    (selectedBank.value || 'N/A') : 'N/A';
+                // Get bank element and installment count element
+                const bankElement = document.querySelector('.text-gray-300:has(#confirm-selected-bank)');
+                const installmentElement = document.querySelector('.text-gray-300:has(#confirm-installment-count)');
 
-                // Get installment count and display it only if installment is selected
-                const installmentCount = document.querySelector('select[name="installment_count"]');
-                document.getElementById('confirm-installment-count').textContent =
-                    (selectedPaymentMethod && selectedPaymentMethod.value === 'installment') ?
-                    (installmentCount.value || 'N/A') : 'N/A';
+                // Handle different payment methods
+                if (paymentMethodValue === 'cash') {
+                    // For cash payment, hide both bank and installment count
+                    if (bankElement) bankElement.style.display = 'none';
+                    if (installmentElement) installmentElement.style.display = 'none';
+                    document.getElementById('confirm-selected-bank').textContent = 'N/A';
+                    document.getElementById('confirm-installment-count').textContent = 'N/A';
+                } else if (paymentMethodValue === 'transfer') {
+                    // For transfer, show bank but hide installment count
+                    if (bankElement) bankElement.style.display = 'block';
+                    if (installmentElement) installmentElement.style.display = 'none';
+
+                    // Get selected bank and display it
+                    const selectedBank = document.getElementById('selected-bank');
+                    document.getElementById('confirm-selected-bank').textContent = selectedBank.value || 'N/A';
+                    document.getElementById('confirm-installment-count').textContent = 'N/A';
+                } else if (paymentMethodValue === 'installment') {
+                    // For installment, show both bank and installment count
+                    if (bankElement) bankElement.style.display = 'block';
+                    if (installmentElement) installmentElement.style.display = 'block';
+
+                    // Get selected bank and display it
+                    const selectedBank = document.getElementById('selected-bank');
+                    document.getElementById('confirm-selected-bank').textContent = selectedBank.value || 'N/A';
+
+                    // Get installment count and display it
+                    const installmentCount = document.querySelector('select[name="installment_count"]');
+                    document.getElementById('confirm-installment-count').textContent = installmentCount.value || 'N/A';
+                }
 
                 openModal('confirm-modal');
             });
@@ -697,18 +727,46 @@ if (isset($_POST['final_submit'])) {
                         document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
                         document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
 
-                        // Display payment method and bank in payment modal
                         const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
-                        document.getElementById('payment-method').textContent = paymentMethod ? paymentMethod.value : 'N/A';
+                        const paymentMethodValue = paymentMethod ? paymentMethod.value : 'N/A';
+                        document.getElementById('payment-method').textContent = paymentMethodValue;
 
-                        const selectedBank = document.getElementById('selected-bank');
-                        document.getElementById('payment-bank').textContent =
-                            (paymentMethod && (paymentMethod.value === 'transfer' || paymentMethod.value === 'installment')) ?
-                            (selectedBank.value || 'N/A') : 'N/A';
+                        const bankInfo = document.querySelector('.bank-info');
+                        const paymentTimer = document.querySelector('.payment-timer');
+                        const paymentInstructions = document.querySelector('.payment-instructions');
+                        const cashInstructions = document.querySelector('.cash-instructions');
+                        const installmentMinimumText = document.getElementById('installment-minimum-text'); // Get the new element
 
-                        document.getElementById('payment-va-number').value = bookingData.va_number;
+                        if (paymentMethodValue === 'cash') {
+                            bankInfo.style.display = 'none';
+                            paymentTimer.style.display = 'none';
+                            paymentInstructions.style.display = 'none';
+                            cashInstructions.style.display = 'block';
+                            if (installmentMinimumText) installmentMinimumText.style.display = 'none'; // Hide for cash
+                        } else {
+                            bankInfo.style.display = 'block';
+                            paymentTimer.style.display = 'block';
+                            paymentInstructions.style.display = 'block';
+                            cashInstructions.style.display = 'none';
 
-                        startTimer(bookingData.expiryTime);
+                            const selectedBank = document.getElementById('selected-bank');
+                            document.getElementById('payment-bank').textContent =
+                                (paymentMethod && (paymentMethodValue === 'transfer' || paymentMethodValue === 'installment')) ?
+                                (selectedBank.value || 'N/A') : 'N/A';
+
+                            document.getElementById('payment-va-number').value = bookingData.va_number;
+                            startTimer(bookingData.expiryTime);
+
+                            // Show or hide installment minimum payment text
+                            if (installmentMinimumText) {
+                                if (paymentMethodValue === 'installment') {
+                                    installmentMinimumText.style.display = 'block';
+                                } else {
+                                    installmentMinimumText.style.display = 'none';
+                                }
+                            }
+                        }
+
                         openModal('payment-modal');
                     } else {
                         alert('An error occurred. Please try again.');
@@ -829,7 +887,7 @@ if (isset($_POST['final_submit'])) {
          * @returns {string} Formatted currency string
          */
         function formatCurrency(amount) {
-            return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
+            return '$ ' + parseFloat(amount).toLocaleString('id-ID');
         }
     </script>
 </body>

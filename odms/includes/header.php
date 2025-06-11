@@ -1,10 +1,10 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-
     include 'dbconnection.php';
 }
 ?>
+
 <!-- Header dengan Tailwind CSS -->
 <style>
     /* Animasi hover untuk menu navigasi */
@@ -56,10 +56,39 @@ if (session_status() === PHP_SESSION_NONE) {
         background: rgba(255, 255, 255, 0.2);
         transform: translateY(-3px);
     }
+
+    /* Ensure header is above all elements */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        /* High z-index to stay above other elements */
+        background-color: rgba(0, 0, 0, 0.9);
+        /* Slightly transparent black background */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        /* Subtle shadow for depth */
+    }
+
+    /* Custom animation for spinning icon */
+    @keyframes spin-slow {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .animate-spin-slow {
+        animation: spin-slow 3s linear infinite;
+    }
 </style>
 
-<header class="relative">
-    <nav class="fixed top-0 left-0 w-full flex items-center justify-between px-6 py-4 text-white bg-black bg-opacity-90 z-[1000] shadow-lg">
+<header class="header">
+    <nav class="flex items-center justify-between px-6 py-4 text-white">
         <!-- Logo / Judul -->
         <div class="flex items-center space-x-2 text-sm font-semibold">
             <a href="index.php" class="flex items-center space-x-2 hover:text-red-400 transition-colors duration-300">
