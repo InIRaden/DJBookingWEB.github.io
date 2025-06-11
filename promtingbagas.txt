@@ -37,3 +37,19 @@ Make sure everything works correctly. If any part doesn't work, delete it.
 Also, when "Next" is clicked, don't show error messages like: "localhost error occurred" .
 
 Note: data should only be sent to the database after reaching the final popup (2/2) and clicking "Complete Payment" . Fix the JS, PHP, and any error properly.
+
+//view detail 
+tambahkan agar ada informasi tblpayment nya juga di halaman view detail booking khusnya PaymentMethod enum('cash','transfer','installment') NOT NULL,
+Amount decimal(10,2) NOT NULL,
+TransferBank varchar(50) DEFAULT NULL,
+PaymentStatus enum('Pending','Paid','Failed') DEFAULT 'Pending',
+PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+CompletedDate timestamp NULL DEFAULT NULL,, buatkan ketikadata dikirim dari booking-servoces itu ada tambahan informasi payment bselasraskan dan jangan eror ,yang di bookiing service pake methode stope procedure soalnay coba selaraskan biar kekirim datanya ke view-detail booking buatkan dengan benar 
+
+
+//admin styling 
+sama buatkan ini lebih modern dan bagus fresh lookBelow is the complete code with the modernized main container content. The sidebar and header includes are unchanged, and the CSS is scoped to affect only the main container. The form layout is adjusted for better usability, with a centered card-like design and improved input styling. buatkan tampilan na lebih modern look dan bagus rounded juga sesuaikan dan lebih fressh dan gak kuno pake css di dalme nya dan tuliskan keseluruhan kodeenya
+containernya gaka lebarin dikit biar gak sempit 
+
+perbagus dan buatkan modern fresh look rounded jangan hialngkan ppaun ctapi cukup ubah desain nya
+jangan ubah struktunya nya selain desain ui nya saja, dan buatkan ttp responsiveseperti yang lama ya 
