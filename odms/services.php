@@ -135,6 +135,66 @@ include('includes/dbconnection.php');
         .book-button:hover .icon {
             transform: translateX(3px);
         }
+        
+        /* Styling untuk form pencarian */
+        .search-container {
+            margin-bottom: 2rem;
+            background-color: #1f2937;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #374151;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem 1rem;
+            background-color: #111827;
+            border: 1px solid #4b5563;
+            border-radius: 0.5rem;
+            color: #f3f4f6;
+            font-size: 0.875rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+        }
+        
+        .search-button {
+            background-color: #dc2626;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .search-button:hover {
+            background-color: #b91c1c;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            background-color: #111827;
+            border-radius: 0.75rem;
+            border: 1px solid #374151;
+            color: #9ca3af;
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 
@@ -162,20 +222,55 @@ include('includes/dbconnection.php');
         </div>
 
         <h2 class="font-semibold text-white text-lg mb-6">Our Services</h2>
+        
+        <!-- Search Form -->
+        <div class="search-container">
+            <form method="GET" action="" class="search-form">
+                <input type="text" name="search" placeholder="Search Your DJ Services..." class="search-input" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <?php if(isset($_GET['search']) && !empty($_GET['search'])): ?>
+                <a href="services.php" class="search-button" style="background-color: #4b5563;">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+                <?php endif; ?>
+            </form>
+        </div>
 
         <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php
-            $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
-            SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
-                   COUNT(b.ID) AS booking_count
-            FROM tblservice s
-            LEFT JOIN tblbooking b ON s.ID = b.ServiceID
-            GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
-            ) AS ranked_services
-            LIMIT 5";
+            // Check if search parameter exists
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
+            
+            if (!empty($search)) {
+                // SQL query with search filter
+                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
+                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
+                       COUNT(b.ID) AS booking_count
+                FROM tblservice s
+                LEFT JOIN tblbooking b ON s.ID = b.ServiceID
+                WHERE s.ServiceName LIKE :search OR s.SerDes LIKE :search
+                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
+                ) AS ranked_services";
+                
+                $query = $dbh->prepare($sql);
+                $query->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+            } else {
+                // Original SQL query without search
+                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
+                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
+                       COUNT(b.ID) AS booking_count
+                FROM tblservice s
+                LEFT JOIN tblbooking b ON s.ID = b.ServiceID
+                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
+                ) AS ranked_services
+                LIMIT 5";
+                
+                $query = $dbh->prepare($sql);
+            }
 
-            $query = $dbh->prepare($sql);
             $query->execute();
             $results = $query->fetchAll(PDO::FETCH_OBJ);
 
@@ -234,7 +329,13 @@ include('includes/dbconnection.php');
                     </div>
 
             <?php }
-            } ?>
+            } else { ?>
+                <div class="no-results">
+                    <i class="fas fa-search fa-3x mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">No services found</h3>
+                    <p>We couldn't find any services matching your search criteria.</p>
+                </div>
+            <?php } ?>
         </div>
     </main>
 
