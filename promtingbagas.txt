@@ -38,18 +38,35 @@ Also, when "Next" is clicked, don't show error messages like: "localhost error o
 
 Note: data should only be sent to the database after reaching the final popup (2/2) and clicking "Complete Payment" . Fix the JS, PHP, and any error properly.
 
-//view detail 
-tambahkan agar ada informasi tblpayment nya juga di halaman view detail booking khusnya PaymentMethod enum('cash','transfer','installment') NOT NULL,
-Amount decimal(10,2) NOT NULL,
-TransferBank varchar(50) DEFAULT NULL,
-PaymentStatus enum('Pending','Paid','Failed') DEFAULT 'Pending',
-PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-CompletedDate timestamp NULL DEFAULT NULL,, buatkan ketikadata dikirim dari booking-servoces itu ada tambahan informasi payment bselasraskan dan jangan eror ,yang di bookiing service pake methode stope procedure soalnay coba selaraskan biar kekirim datanya ke view-detail booking buatkan dengan benar 
 
 
-//admin styling 
-sama buatkan ini lebih modern dan bagus fresh lookBelow is the complete code with the modernized main container content. The sidebar and header includes are unchanged, and the CSS is scoped to affect only the main container. The form layout is adjusted for better usability, with a centered card-like design and improved input styling. buatkan tampilan na lebih modern look dan bagus rounded juga sesuaikan dan lebih fressh dan gak kuno pake css di dalme nya dan tuliskan keseluruhan kodeenya
-containernya gaka lebarin dikit biar gak sempit 
+    buatkan ui nya kebentuk modern desain dengan hover yang sesuai dan tataletak sesuai , bandage ijo ya ijo, merah ya merah dan biru ya biru dan kuning ya kuning , buat tulisan lata nya buatkan agak muda dan xetak tebal di tulisan nya birunya , buat tanggal juga biru aja buat view itu buatkan dalem na putih bordenya biru , ubah kedesain yang warnanya biru agak tua gradasi bagus dan yang diubah selain pagination 
+    buatkan rounded desain dan sesuaikan panjang containernya sama smua janga diubah , buatkan ui searchnya juga modern dan bagus kayak web web terknal 
 
-perbagus dan buatkan modern fresh look rounded jangan hialngkan ppaun ctapi cukup ubah desain nya
-jangan ubah struktunya nya selain desain ui nya saja, dan buatkan ttp responsiveseperti yang lama ya 
+
+
+
+    // promt ui admin 
+    Desain UI modern dengan latar warna gradasi biru tua (dark blue gradient). Elemen-elemen utama memiliki latar dengan warna merah muda (#FFE5E5), kuning muda (#FFF9DB), biru muda (#DBF0FF), dan hijau muda (#E0FFE0). Tulisan di atasnya tetap menggunakan warna merah (#FF4D4D), kuning (#FFD700), biru (#007BFF), dan hijau (#28A745), semuanya dalam gaya bold.
+
+Gunakan desain UI modern seperti aplikasi populer (misalnya: Spotify, Notion, Trello). Tata letak rapi dan proporsional. Gunakan komponen rounded dengan border-radius yang konsisten. Badge atau label harus berwarna sesuai: merah = merah, hijau = hijau, kuning = kuning, biru = biru.
+
+Tambahkan komponen “View” dengan latar putih, border biru, dan elemen tanggal berwarna biru. Buat juga komponen search bar bergaya modern dan minimalis dengan hover efek yang smooth.
+
+Jangan ubah panjang container, search , semuanya harus konsisten. Abaikan pagination. Fokuskan perubahan pada tema warna, estetika, dan UX modern. yang diubah containernya aja , buat tabelnya mah putih buatkan rounded latar container juga putih, yang date lataernya tebel tulisan nya putih 
+
+
+buatkan desian nya modern ui rounded itu lah warna biru gradasi kek agak tua 
+
+
+
+
+Desain UI modern dengan latar warna gradasi biru tua (dark blue gradient). Elemen-elemen utama memiliki latar dengan warna merah muda (#FFE5E5), kuning muda (#FFF9DB), biru muda (#DBF0FF), dan hijau muda (#E0FFE0). Tulisan di atasnya tetap menggunakan warna merah (#FF4D4D), kuning (#FFD700), biru (#007BFF), dan hijau (#28A745), semuanya dalam gaya bold.
+
+Gunakan desain UI modern  Tata letak rapi dan proporsional. Gunakan komponen rounded dengan border-radius yang konsisten. Badge atau label harus berwarna sesuai: merah = merah, hijau = hijau, kuning = kuning, biru = biru.
+
+Tambahkan komponen “View” dengan latar putih, border biru, dan elemen tanggal berwarna biru. Buat juga komponen search bar bergaya modern dan minimalis dengan hover efek yang smooth.
+Note jangan ubah bagian ini : 
+Jangan ubah panjang container, search gausah ditambah ataupun gausah diubah ya , semuanya harus konsisten. Abaikan pagination. Fokuskan perubahan padawarna, estetika, dan UX modern. yang diubah containernya aja , booking datenya latarnya bitu tulisan nya putih  buat tabelnya mah putih buatkan rounded latar container juga putih, yang date lataernya tebel tulisan nya putih  latarnya juga putih aja , yang gelapin itu hedaer yang judulx
+latar parent nya ubah putih aja gausa diubah 
+yang kuning buat not proces, yang ijo buat approve , yang merah buat canceled 
