@@ -80,6 +80,18 @@ CREATE TABLE tblpayment (
     FOREIGN KEY (BookingID) REFERENCES tblbooking(BookingID)
 );
 
+
+ PaymentMethod enum('cash','transfer','installment') NOT NULL,
+  Amount decimal(10,2) NOT NULL,
+   TransferBank varchar(50) DEFAULT NULL,
+   PaymentStatus enum('Pending','Paid','Failed') DEFAULT 'Pending',
+    PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    CompletedDate timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (ID),
+    KEY BookingID (BookingID),
+    FOREIGN KEY (BookingID) REFERENCES tblbooking(BookingID)
+
+
 -- Tabel untuk cicilan pembayaran
 -- ... existing code ...
 
