@@ -12,10 +12,11 @@ include('includes/dbconnection.php');
     <title>DjBooking - Request Status</title>
     <link rel="stylesheet" href="../src/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
     <style>
         body {
-            font-family: "Inter", sans-serif;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
         }
         
         /* Styling untuk notifikasi */
@@ -24,15 +25,15 @@ include('includes/dbconnection.php');
             top: 20px;
             right: 20px;
             padding: 15px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             color: white;
             font-size: 14px;
             z-index: 1000;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             transform: translateX(120%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.4s ease-in-out, background 0.3s ease;
             max-width: 350px;
         }
         
@@ -41,13 +42,13 @@ include('includes/dbconnection.php');
         }
         
         .notification-success {
-            background-color: #822B2B; /* Sesuai dengan tema */
-            border-left: 5px solid #ff5252;
+            background: linear-gradient(135deg, #822b2b, #a52a2a);
+            border-left: 6px solid #ff5252;
         }
         
         .notification-error {
-            background-color: #d32f2f;
-            border-left: 5px solid #b71c1c;
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            border-left: 6px solid #b71c1c;
         }
         
         .notification-icon {
@@ -59,6 +60,7 @@ include('includes/dbconnection.php');
             margin-left: 12px;
             cursor: pointer;
             opacity: 0.7;
+            transition: opacity 0.3s ease;
         }
         
         .notification-close:hover {
@@ -73,45 +75,43 @@ include('includes/dbconnection.php');
         <?php include_once('includes/header.php'); ?>
         <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Request Status</h1>
-            <p class="text-xs md:text-sm mt-2 text-white">
-                Learn more about our DJ services and what makes us special
-            </p>
+            <h1 class="text-white font-bold text-lg md:text-xl leading-tight text-shadow">Request Status</h1>
+            <p class="text-xs md:text-sm mt-2 text-white opacity-90">Learn more about our DJ services and what makes us special</p>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
+    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto bg-gray-900 rounded-lg shadow-xl transition-all duration-300 hover:shadow-red-600/30">
         <!-- Breadcrumb -->
-        <div class="flex items-center space-x-2 text-xs mb-8">
-            <a href="index.php" class="text-gray-400 hover:text-white">Home</a>
+        <div class="flex items-center space-x-2 text-xs mb-8 text-gray-400">
+            <a href="index.php" class="hover:text-white transition-colors duration-200">Home</a>
             <span class="text-gray-600">/</span>
             <span class="text-white">Request Status</span>
         </div>
 
         <!-- Request Status Content -->
         <section class="mb-12">
-            <h2 class="font-semibold text-white text-lg mb-6">Check Your Booking Status</h2>
+            <h2 class="font-playfair text-white text-xl mb-6 text-center tracking-wide">Check Your Booking Status</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-gray-800 p-6 rounded-md">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                     <h3 class="text-white text-sm font-semibold mb-4">Enter Your Details</h3>
                     <p class="text-gray-400 text-xs mb-4">Please provide your name and mobile number to check your booking status.</p>
 
                     <form method="post" class="space-y-4">
                         <div>
                             <label class="block text-gray-400 text-xs mb-1">Name</label>
-                            <input type="text" name="name" required="true" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+                            <input type="text" name="name" required="true" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition-colors duration-200">
                         </div>
 
                         <div>
                             <label class="block text-gray-400 text-xs mb-1">Mobile Number</label>
                             <input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" 
-                                class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
+                                class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition-colors duration-200"
                                 onkeypress="return isNumberKey(event)" 
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
 
-                        <button type="submit" name="submit" class="bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded hover:bg-red-600 transition cursor-pointer">
+                        <button type="submit" name="submit" class="bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-md hover:bg-red-600 transition-all duration-200 cursor-pointer">
                             Check Status
                         </button>
                     </form>
@@ -129,7 +129,7 @@ include('includes/dbconnection.php');
                         $results=$query->fetchAll(PDO::FETCH_OBJ);
                         $cnt=1;
                         if($query->rowCount() > 0) { ?>
-                            <div class="bg-gray-800 p-6 rounded-md">
+                            <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                                 <h3 class="text-white text-sm font-semibold mb-4">Your Booking Results</h3>
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full bg-gray-900 rounded-md overflow-hidden">
@@ -144,14 +144,14 @@ include('includes/dbconnection.php');
                                         </thead>
                                         <tbody class="divide-y divide-gray-800">
                                             <?php foreach($results as $row) { ?>
-                                                <tr class="hover:bg-gray-800">
+                                                <tr class="hover:bg-gray-800 transition-colors duration-200">
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->BookingID; ?></td>
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->Name; ?></td>
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->MobileNumber; ?></td>
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->Email; ?></td>
                                                     <td class="px-4 py-3 text-xs">
                                                         <a href="request-details.php?bid=<?php echo htmlentities($row->ID); ?>&&bookingid=<?php echo htmlentities($row->BookingID); ?>" 
-                                                           class="bg-red-700 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition">
+                                                           class="bg-red-700 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600 transition-all duration-200">
                                                             View Details
                                                         </a>
                                                     </td>
@@ -162,16 +162,16 @@ include('includes/dbconnection.php');
                                 </div>
                             </div>
                         <?php } else { ?>
-                            <div class="bg-gray-800 p-6 rounded-md flex flex-col items-center justify-center h-full w-full">
-                                <i class="fas fa-search text-gray-600 text-4xl mb-4"></i>
+                            <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center justify-center h-full w-full">
+                                <i class="fas fa-search text-gray-600 text-4xl mb-4 opacity-50"></i>
                                 <h3 class="text-red-500 text-sm font-semibold mb-2">No Records Found</h3>
                                 <p class="text-gray-400 text-xs mt-2 text-center max-w-md mx-auto">We couldn't find any bookings matching your details. Please check your information and try again.</p>
                             </div>
                         <?php } ?>
                     <?php } else { ?>
-                        <div class="bg-gray-800 p-6 rounded-md h-full w-full">
+                        <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 h-full w-full">
                             <div class="text-center">
-                                <img src="images/1hr.png" alt="DJ Booking" class="w-32 h-32 object-contain mb-4 mx-auto">
+                                <img src="images/1hr.png" alt="DJ Booking" class="w-32 h-32 object-contain mb-4 mx-auto opacity-90 transition-opacity duration-300 hover:opacity-100">
                                 <h3 class="text-white text-sm font-semibold mb-2">Check Your Booking Status</h3>
                                 <p class="text-gray-400 text-xs mt-2 mx-auto">Enter your details on the left to check the status of your booking request.</p>
                             </div>

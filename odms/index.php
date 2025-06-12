@@ -14,10 +14,21 @@ include('includes/dbconnection.php');
     <link rel="stylesheet" href="../src/output.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
+        :root {
+            --heading-font: 'Poppins', sans-serif;
+            --body-font: 'Montserrat', sans-serif;
+        }
+        
         body {
-            font-family: "Inter", sans-serif;
+            font-family: var(--body-font);
+            letter-spacing: 0.015em;
+        }
+        
+        h1, h2, h3, h4, h5, h6, .heading-text {
+            font-family: var(--heading-font);
+            letter-spacing: -0.02em;
         }
 
         /* Card hover effects for DJs */
@@ -78,10 +89,68 @@ include('includes/dbconnection.php');
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.3s ease;
+            font-family: var(--heading-font);
         }
 
         .event-card:hover::after {
             opacity: 1;
+        }
+        
+        /* Perbaikan ukuran font dan spacing */
+        .hero-content h1 {
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.1;
+        }
+        
+        .hero-content p {
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+        }
+        
+        .hero-content a {
+            font-family: var(--heading-font);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        
+        section h2 {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.9rem;
+        }
+        
+        .dj-card p {
+            font-weight: 500;
+        }
+        
+        .dj-card-content h3 {
+            font-weight: 700;
+        }
+        
+        .event-card h3 {
+            font-family: var(--heading-font);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .event-card p {
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+        
+        .faq-button span {
+            font-family: var(--heading-font);
+            font-weight: 600;
+        }
+        
+        .faq-answer p, .faq-answer li {
+            font-family: var(--body-font);
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -162,10 +231,10 @@ include('includes/dbconnection.php');
                         <p class="mt-2 text-xs font-bold text-white"><?php echo htmlentities($dj->ServiceName); ?></p>
                         <div class="dj-card-content">
                             <h3 class="text-sm font-bold text-white"><?php echo htmlentities($dj->ServiceName); ?></h3>
-                            <p class="text-[9px] text-gray-300 mb-1">
+                            <p class="text-[10px] text-gray-300 mb-1">
                                 Rank #<?php echo $dj->ranking; ?> — <?php echo $dj->booking_count . ' events'; ?>
                             </p>
-                            <p class="text-[9px] text-white"><?php echo htmlentities($dj->SerDes); ?></p>
+                            <p class="text-[10px] text-white"><?php echo htmlentities($dj->SerDes); ?></p>
                         </div>
                     </div>
                 <?php } ?>
@@ -229,62 +298,63 @@ include('includes/dbconnection.php');
                 <div class="space-y-4" id="faq-container">
                     <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
                         <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Bagaimana cara memesan DJ untuk acara saya?</span>
+                            <span>How do I book a DJ for my event?</span>
                             <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p>Proses pemesanan DJ sangat mudah! Cukup ikuti langkah berikut:</p>
+                            <p>Booking a DJ is very easy! Just follow these steps :</p>
                             <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
-                                <li>Pilih jenis acara Anda</li>
-                                <li>Pilih DJ yang tersedia</li>
-                                <li>Pilih tanggal dan waktu</li>
-                                <li>Isi detail pemesanan</li>
-                                <li>Lakukan pembayaran</li>
+                                <li>Choose your event type</li>
+                                <li>Select an available DJ</li>
+                                <li>Choose the date and time</li>
+                                <li>Fill in the booking details</li>
+                                <li>Complete the payment</li>
                             </ul>
                         </div>
                     </div>
 
+                    <!-- Bagian FAQ lainnya tetap sama -->
                     <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
                         <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Berapa lama sebelumnya saya harus memesan DJ?</span>
+                            <span>How far in advance should I book a DJ?</span>
                             <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p class="text-sm">Kami merekomendasikan pemesanan minimal 2 minggu sebelum acara untuk memastikan ketersediaan DJ. Untuk acara besar, sebaiknya pesan 1-2 bulan sebelumnya.</p>
+                            <p class="text-sm">We recommend booking at least 2 weeks before your event to ensure DJ availability. For larger events, it's best to book 1-2 months in advance.</p>
                         </div>
                     </div>
 
                     <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
                         <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Apakah saya bisa request lagu khusus?</span>
+                            <span>Can I request specific songs?</span>
                             <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p class="text-sm">Ya! Anda dapat mengirimkan daftar lagu yang diinginkan saat melakukan pemesanan. DJ kami akan mengakomodasi permintaan lagu sesuai dengan genre dan aliran musik yang sesuai dengan acara Anda.</p>
+                            <p class="text-sm">Yes! You can submit a list of desired songs when making your booking. Our DJs will accommodate song requests according to the genre and music style suitable for your event.</p>
                         </div>
                     </div>
 
                     <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
                         <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Apa yang termasuk dalam layanan DJ?</span>
+                            <span>What's included in the DJ service?</span>
                             <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p class="text-sm">Layanan kami mencakup:</p>
+                            <p class="text-sm">Our services include :</p>
                             <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
-                                <li>DJ profesional sesuai pilihan Anda</li>
-                                <li>Peralatan sound system standar</li>
-                                <li>Pencahayaan dasar</li>
+                                <li>Professional DJ of your choice</li>
+                                <li>Standart sound system equipment</li>
+                                <li>Basic lighting</li>
                                 <li>Setup dan soundcheck</li>
-                                <li>Koordinasi dengan penyelenggara acara</li>
+                                <li>Coordination with event organizers</li>
                             </ul>
                         </div>
                     </div>

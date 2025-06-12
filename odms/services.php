@@ -13,76 +13,69 @@ include('includes/dbconnection.php');
     <title>DjBooking - Services</title>
     <link rel="stylesheet" href="../src/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.css" />
     <style>
         body {
-            font-family: "Inter", sans-serif;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
         }
 
         .service-card {
-            background-color: #111827;
-            /* Dark gray, almost black */
+            background: linear-gradient(145deg, #1f2937, #111827);
             border-radius: 0.75rem;
-            /* rounded-xl */
             overflow: hidden;
             margin-bottom: 20px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
-            /* For pseudo-elements if needed */
             border: 1px solid #374151;
-            /* Slightly lighter border */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .service-card:hover {
-            transform: translateY(0.2px);
+            transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
-            /* Red glow effect */
         }
 
         .service-image-container {
             overflow: hidden;
-            /* Ensures the image scaling stays within bounds */
             border-radius: 0.75rem 0.75rem 0 0;
-            /* Match card rounding */
+            position: relative;
         }
 
         .service-image {
             width: 100%;
             height: 220px;
-            /* Increased height */
             object-fit: cover;
-            transition: transform 0.4s ease;
+            transition: transform 0.4s ease, opacity 0.3s ease;
         }
 
         .service-card:hover .service-image {
             transform: scale(1.1);
+            opacity: 0.9;
         }
 
         .service-content {
             padding: 1.5rem;
-            /* p-6 */
+            background: linear-gradient(180deg, #1f2937, #111827);
         }
 
         .service-title {
-            font-size: 1.25rem;
-            /* text-xl */
-            font-weight: 600;
-            /* font-semibold */
+            font-family: "Playfair Display", serif;
+            font-size: 1.5rem;
+            font-weight: 700;
             margin-bottom: 0.75rem;
-            /* mb-3 */
             color: #f3f4f6;
-            /* Lighter text color */
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .service-description {
-            color: #9ca3af;
-            /* text-gray-400 */
+            color: #d1d5db;
             margin-bottom: 1.25rem;
-            /* mb-5 */
-            font-size: 0.875rem;
-            /* text-sm */
-            line-height: 1.6;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 300;
         }
 
         .service-footer {
@@ -90,45 +83,36 @@ include('includes/dbconnection.php');
             justify-content: space-between;
             align-items: center;
             padding-top: 1rem;
-            /* pt-4 */
             border-top: 1px solid #374151;
-            /* Separator line */
+            background: #111827;
         }
 
         .service-price {
             font-size: 1.5rem;
-            /* text-2xl */
             font-weight: 700;
-            /* font-bold */
             color: #dc2626;
-            /* Red color for price */
+            text-shadow: 1px 1px 3px rgba(220, 38, 38, 0.3);
         }
 
         .book-button {
-            background-color: #dc2626;
-            /* bg-red-600 */
+            background: linear-gradient(90deg, #dc2626, #ef4444);
             color: white;
             padding: 0.625rem 1.25rem;
-            /* py-2.5 px-5 */
             border-radius: 0.5rem;
-            /* rounded-lg */
             text-decoration: none;
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 500;
-            /* font-medium */
             display: inline-flex;
             align-items: center;
         }
 
         .book-button:hover {
-            background-color: #b91c1c;
-            /* hover:bg-red-700 */
+            background: linear-gradient(90deg, #b91c1c, #dc2626);
             transform: scale(1.05);
         }
 
         .book-button .icon {
             margin-left: 0.5rem;
-            /* ml-2 */
             transition: transform 0.3s ease;
         }
 
@@ -139,10 +123,17 @@ include('includes/dbconnection.php');
         /* Styling untuk form pencarian */
         .search-container {
             margin-bottom: 2rem;
-            background-color: #1f2937;
+            background: linear-gradient(145deg, #1f2937, #111827);
             padding: 1.5rem;
             border-radius: 0.75rem;
             border: 1px solid #374151;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .search-form {
@@ -160,6 +151,7 @@ include('includes/dbconnection.php');
             border-radius: 0.5rem;
             color: #f3f4f6;
             font-size: 0.875rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         
         .search-input:focus {
@@ -169,7 +161,7 @@ include('includes/dbconnection.php');
         }
         
         .search-button {
-            background-color: #dc2626;
+            background: linear-gradient(90deg, #dc2626, #ef4444);
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
@@ -183,24 +175,45 @@ include('includes/dbconnection.php');
         }
         
         .search-button:hover {
-            background-color: #b91c1c;
+            background: linear-gradient(90deg, #b91c1c, #dc2626);
         }
         
         .no-results {
             text-align: center;
             padding: 2rem;
-            background-color: #111827;
+            background: linear-gradient(145deg, #1f2937, #111827);
             border-radius: 0.75rem;
             border: 1px solid #374151;
             color: #9ca3af;
             grid-column: 1 / -1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .ranking-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #facc15, #fbbf24);
+            color: #1a202c;
+            padding: 6px 12px;
+            border-radius: 50%; /* Mengubah ke lingkaran */
+            font-family: "Poppins", sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover .ranking-badge {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
 
 <body class="bg-black text-white">
     <!-- Header Section -->
-
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
         <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
@@ -213,15 +226,15 @@ include('includes/dbconnection.php');
     </header>
 
     <!-- Main Content -->
-    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
+    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto bg-gray-900 rounded-lg shadow-2xl transition-all duration-300 hover:shadow-red-600/20">
         <!-- Breadcrumb -->
-        <div class="flex items-center space-x-2 text-xs mb-8">
-            <a href="index.php" class="text-gray-400 hover:text-white">Home</a>
+        <div class="flex items-center space-x-2 text-xs mb-8 text-gray-400">
+            <a href="index.php" class="hover:text-white transition-colors duration-200">Home</a>
             <span class="text-gray-600">/</span>
             <span class="text-white">Services</span>
         </div>
 
-        <h2 class="font-semibold text-white text-lg mb-6">Our Services</h2>
+        <h2 class="font-semibold text-white text-lg mb-6 text-center">Our Services</h2>
         
         <!-- Search Form -->
         <div class="search-container">
@@ -286,7 +299,7 @@ include('includes/dbconnection.php');
                             $serviceImage = 'partyDj.jpg';
                             break;
                         case 'ceremony music':
-                            $serviceImage = 'blg2.jpg'; // Anda mungkin ingin mengganti ini dengan gambar yang lebih relevan
+                            $serviceImage = 'blg2.jpg';
                             break;
                         case 'photo booth hire':
                             $serviceImage = 'photobooth.jpg';
@@ -298,36 +311,29 @@ include('includes/dbconnection.php');
                             $serviceImage = 'uplighters.jpg';
                             break;
                         default:
-                            $serviceImage = 'abt.jpg'; // Gambar default
+                            $serviceImage = 'abt.jpg';
                     }
             ?>
                     <div class="service-card">
-                        <!-- Tambahkan class relative agar posisi absolute anaknya bisa bekerja -->
                         <div class="service-image-container relative">
-                            <!-- Badge Ranking -->
-                            <div class="absolute top-2 left-2 bg-yellow-400 text-black px-2 py-1 text-xs font-bold rounded shadow">
+                            <div class="ranking-badge">
                                 #<?php echo $row->ranking; ?>
                             </div>
-
-                            <!-- Gambar Layanan -->
                             <img src="images/<?php echo $serviceImage; ?>"
                                 alt="<?php echo htmlentities($row->ServiceName); ?>"
                                 class="service-image">
                         </div>
-
-                        <!-- Konten Layanan -->
                         <div class="service-content">
                             <h3 class="service-title"><?php echo htmlentities($row->ServiceName); ?></h3>
                             <p class="service-description"><?php echo htmlentities($row->SerDes); ?></p>
                             <div class="service-footer">
                                 <span class="service-price">$<?php echo htmlentities($row->ServicePrice); ?></span>
                                 <a href="book-services.php?bookid=<?php echo $row->ID; ?>" class="book-button">
-                                    Book Now <span class="icon">&rarr;</span>
+                                    Book Now <span class="icon">→</span>
                                 </a>
                             </div>
                         </div>
                     </div>
-
             <?php }
             } else { ?>
                 <div class="no-results">
@@ -340,7 +346,7 @@ include('includes/dbconnection.php');
     </main>
 
     <?php include_once('includes/footer.php'); ?>
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.umd.js"></script>
 </body>
 
 </html>
