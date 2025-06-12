@@ -1,256 +1,182 @@
 <?php
-// Start session to track user login status
 session_start();
-
-// Enable error reporting for debugging (remove in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Include database connection configuration
+error_reporting(0);
 include('includes/dbconnection.php');
 
-// Check if user is logged in, redirect to logout if not
-if (empty($_SESSION['odmsaid'])) {
+// Cek apakah session aktif
+if (strlen($_SESSION['odmsaid']) == 0) {
     header('location:logout.php');
-    exit;
-}
+} else {
+    // Proses saat tombol submit ditekan
+    if (isset($_POST['submit'])) {
+        $etype = $_POST['eventtype'];
 
-// Handle form submission
-if (isset($_POST['submit'])) {
-    $etype = $_POST['eventtype'] ?? '';
+        $sql = "INSERT INTO tbleventtype(EventType) VALUES (:etype)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':etype', $etype, PDO::PARAM_STR);
+        $query->execute();
 
-    // Basic validation
-    if (empty($etype)) {
-        echo '<script>alert("Please enter an event type.")</script>';
-    } else {
-        try {
-            $sql = "INSERT INTO tbleventtype(EventType) VALUES (:etype)";
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':etype', $etype, PDO::PARAM_STR);
-            $query->execute();
+        $LastInsertId = $dbh->lastInsertId();
 
-            $LastInsertId = $dbh->lastInsertId();
-            if ($LastInsertId > 0) {
-                echo '<script>alert("Event Type has been added successfully.")</script>';
-                echo "<script>window.location.href ='add-event-type.php'</script>";
-            } else {
-                echo '<script>alert("Something went wrong. Please try again.")</script>';
-            }
-        } catch (PDOException $e) {
-            echo '<script>alert("Database error: ' . addslashes($e->getMessage()) . '")</script>';
+        if ($LastInsertId > 0) {
+            echo '<script>alert("Event Type has been added.")</script>';
+            echo "<script>window.location.href ='add-event-type.php'</script>";
+        } else {
+            echo '<script>alert("Something Went Wrong. Please try again")</script>';
         }
     }
-}
 ?>
+    <!doctype html>
+    <html lang="en" class="no-focus">
 
-<!doctype html>
-<html lang="en" class="no-focus">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online DJ Management System - Add Event Type</title>
-    <!-- Retain original stylesheet for sidebar and header -->
-    <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
-    <!-- Google Fonts for modern typography in main container -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        /* Scope styles to main-container */
-        #main-container {
-            background-color: #f4f7fc;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        #main-container .content {
-            max-width: 800px;
-            /* Widened from a narrower default for a less cramped look */
-            margin: 0 auto;
-            padding: 30px 24px;
-            /* Increased padding for breathing room */
-        }
-
-        #main-container .content-heading {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #1e3a8a;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        /* Card-like container for the form */
-        #main-container .form-card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 24px;
-            transition: transform 0.3s ease;
-        }
-
-        #main-container .form-card:hover {
-            transform: translateY(-4px);
-        }
-
-        /* Form group styling */
-        #main-container .form-group {
-            margin-bottom: 20px;
-        }
-
-        #main-container .form-group label {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #1e3a8a;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        #main-container .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            color: #374151;
-            background: #f9fafb;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #main-container .form-control:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-            background: #ffffff;
-        }
-
-        /* Button styling */
-        #main-container .btn-submit {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px;
-            background: #3b82f6;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-
-        #main-container .btn-submit:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-        }
-
-        #main-container .btn-submit i {
-            font-size: 1.1rem;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            #main-container .content {
-                padding: 15px 12px;
+    <head>
+        <title>Online DJ Management System - Add Event Type</title>
+        <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
+        <style>
+            body {
+                background: #ffffff;
+                color: #333;
             }
 
-            #main-container .content-heading {
-                font-size: 1.5rem;
+            #page-container {
+                background: transparent;
             }
 
-            #main-container .form-card {
-                padding: 16px;
+            .content {
+                background: #ffffff;
+                border-radius: 12px;
+                padding: 20px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             }
-        }
 
-        /* Alert styling */
-        #main-container .alert {
-            font-family: 'Inter', sans-serif;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
-            text-align: center;
-        }
+            .content-heading {
+                color: #1e3c72;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
 
-        #main-container .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-        }
+            .block {
+                background: #ffffff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            }
 
-        #main-container .alert-danger {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-    </style>
-</head>
+            .block-header {
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                border-bottom: none;
+                padding: 15px 20px;
+            }
 
-<body>
-    <div id="page-container" class="sidebar-o sidebar-inverse side-scroll page-header-fixed main-content-narrow">
-        <!-- Keep original sidebar and header -->
-        <?php include_once('includes/sidebar.php'); ?>
-        <?php include_once('includes/header.php'); ?>
+            .block-title {
+                color: #ffffff;
+                font-weight: bold;
+            }
 
-        <!-- Main Container -->
-        <main id="main-container">
-            <div class="content">
-                <h2 class="content-heading">Add Event Type</h2>
-                <div class="form-card">
-                    <form method="post" onsubmit="return validateForm()">
-                        <div class="form-group">
-                            <label for="eventtype">Event Type</label>
-                            <input type="text" class="form-control" id="eventtype" name="eventtype" required placeholder="e.g., Wedding, Party">
+            .form-control {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 10px;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus {
+                border-color: #007BFF;
+                box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+                outline: none;
+            }
+
+            .form-control::placeholder {
+                color: #999;
+            }
+
+            .btn-alt-success {
+                background: #ffffff;
+                border: 2px solid #28A745;
+                color: #28A745;
+                border-radius: 8px;
+                padding: 8px 20px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+
+            .btn-alt-success:hover {
+                background: #28A745;
+                color: #ffffff;
+                transform: translateY(-1px);
+            }
+
+            .btn-block-option {
+                background: transparent;
+                color: #ffffff;
+                border: none;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            .btn-block-option:hover {
+                color: #DBF0FF;
+                transform: translateY(-1px);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="page-container" class="sidebar-o sidebar-inverse side-scroll page-header-fixed main-content-narrow">
+            <?php include_once('includes/sidebar.php'); ?>
+            <?php include_once('includes/header.php'); ?>
+            <main id="main-container">
+                <div class="content">
+                    <h2 class="content-heading">Add Event Type</h2>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="block block-themed">
+                                <div class="block-header">
+                                    <h3 class="block-title">Add Event Type</h3>
+                                    <div class="block-options">
+                                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+                                            <i class="si si-refresh"></i>
+                                        </button>
+                                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle">
+                                            <i class="si si-arrow-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="block-content">
+                                    <form method="post">
+                                        <div class="form-group row">
+                                            <label class="col-12" for="eventtype">Event Type:</label>
+                                            <div class="col-12">
+                                                <input type="text" class="form-control" name="eventtype" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-alt-success" name="submit">
+                                                    <i class="fa fa-plus mr-5"></i> Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn-submit" name="submit">
-                                <i class="fa fa-plus"></i> Add Event Type
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+            <?php include_once('includes/footer.php'); ?>
+        </div>
+        <script src="assets/js/core/jquery.min.js"></script>
+        <script src="assets/js/core/popper.min.js"></script>
+        <script src="assets/js/core/bootstrap.min.js"></script>
+        <script src="assets/js/core/jquery.slimscroll.min.js"></script>
+        <script src="assets/js/core/jquery.scrollLock.min.js"></script>
+        <script src="assets/js/core/jquery.appear.min.js"></script>
+        <script src="assets/js/core/jquery.countTo.min.js"></script>
+        <script src="assets/js/core/js.cookie.min.js"></script>
+        <script src="assets/js/codebase.js"></script>
+    </body>
 
-        <!-- Keep original footer -->
-        <?php include_once('includes/footer.php'); ?>
-    </div>
-
-    <!-- Retain original JavaScript dependencies -->
-    <script src="assets/js/core/jquery.min.js"></script>
-    <script src="assets/js/core/popper.min.js"></script>
-    <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="assets/js/core/jquery.slimscroll.min.js"></script>
-    <script src="assets/js/core/jquery.scrollLock.min.js"></script>
-    <script src="assets/js/core/jquery.appear.min.js"></script>
-    <script src="assets/js/core/jquery.countTo.min.js"></script>
-    <script src="assets/js/core/js.cookie.min.js"></script>
-    <script src="assets/js/codebase.js"></script>
-
-    <script>
-        // Client-side form validation
-        function validateForm() {
-            const eventtype = document.getElementById('eventtype').value.trim();
-            if (!eventtype) {
-                alert('Please enter an event type.');
-                return false;
-            }
-            return true;
-        }
-
-        // Fade out alerts after 5 seconds
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 300);
-            });
-        }, 5000);
-    </script>
-</body>
-
-</html>
+    </html>
+<?php } ?>
