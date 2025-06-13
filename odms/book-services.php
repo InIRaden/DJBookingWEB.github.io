@@ -57,6 +57,7 @@ if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         try {
             $dbh->beginTransaction();
             // Insert booking to tblbooking with Status NULL
@@ -67,6 +68,11 @@ if (isset($_POST['final_submit'])) {
         
         try {
             $dbh->beginTransaction();
+=======
+        
+        try {
+            $dbh->beginTransaction();
+>>>>>>> Stashed changes
 
             // Insert into tblbooking
             $sql = "INSERT INTO tblbooking (BookingID, ServiceID, Name, MobileNumber, Email, EventDate, 
@@ -91,6 +97,7 @@ if (isset($_POST['final_submit'])) {
                 ':eventtype' => $bookingData['eventtype'],
                 ':additionalinformation' => $bookingData['addinfo']
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             ]);
             // Insert payment to tblpayment
             $sqlPayment = "INSERT INTO tblpayment (BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber, PaymentStatus, InstallmentCount) VALUES (:bookingid, :paymentmethod, :amount, :transferbank, :vanumber, 'Pending', :installmentcount)";
@@ -107,6 +114,8 @@ if (isset($_POST['final_submit'])) {
             unset($_SESSION['temp_booking']);
             echo json_encode(['success' => true]);
 =======
+=======
+>>>>>>> Stashed changes
             ]);
 
             // Insert into tblpayment
@@ -114,6 +123,24 @@ if (isset($_POST['final_submit'])) {
                      Amount, PaymentDate, TransferBank, InstallmentCount) 
                      VALUES (:bookingid, :paymentmethod, 'Pending', :va_number,
                      :amount, NOW(), :transferbank, :installmentcount)";
+<<<<<<< Updated upstream
+
+            $query2 = $dbh->prepare($sql2);
+            $query2->execute([
+                ':bookingid' => $bookingData['bookingid'],
+                ':paymentmethod' => $bookingData['paymentMethod'],
+                ':va_number' => $bookingData['va_number'],
+                ':amount' => $bookingData['amount'],
+                ':transferbank' => $bookingData['selectedBank'],
+                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null
+            ]);
+
+            $dbh->commit();
+            unset($_SESSION['temp_booking']);
+            echo json_encode(['success' => true]);
+
+>>>>>>> Stashed changes
+=======
 
             $query2 = $dbh->prepare($sql2);
             $query2->execute([
