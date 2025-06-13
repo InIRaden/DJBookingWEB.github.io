@@ -37,7 +37,7 @@ include('includes/dbconnection.php');
         }
 
         .dj-card:hover .dj-card-image {
-            transform: scale(1.1);
+            /* transform: scale(1.1); */ /* Commented out to disable zoom effect */
         }
 
         .dj-card-content {
@@ -83,27 +83,108 @@ include('includes/dbconnection.php');
         .event-card:hover::after {
             opacity: 1;
         }
+
+        /* Slider styles */
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+            height: 500px;
+            overflow: hidden; /* Hide any overflow */
+        }
+
+        .slides {
+            display: flex;
+            width: 400%; /* 100% * 4 slides */
+            height: 500px; /* Fixed height */
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide-image {
+            width: 25%; /* 100% / 4 slides = 25% of slides container */
+            height: 500px; /* Match slider height */
+            object-fit: cover; /* Maintain aspect ratio, crop if needed */
+            object-position: center; /* Center the image */
+            flex-shrink: 0;
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+
+        .dot.active {
+            opacity: 1;
+            background-color: #ff3333;
+        }
+
+        /* FAQ styles */
+        .faq-item {
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-answer.show {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
     </style>
 </head>
 
 <body class="bg-black text-white font-sans">
-    <!-- Header Section -->
-    <header class="relative text-center">
-        <?php include_once('includes/header.php'); ?>
-        <img alt="DJ wearing headphones with raised hands" class="w-full h-[500px] object-cover" src="images/homepage.jpg" />
-
-        <div class="hero-content absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[40%] text-center max-w-xl px-4">
-            <h1 class="text-white font-bold text-3xl md:text-6xl leading-tight">Make Your Event Unforgettable</h1>
-            <p class="text-sm md:text-base mt-3 text-white">
-                Customize your event with the right DJ. Explore styles, check availability, and book in just a few clicks.
-            </p>
-            <a href="services.php" class="mt-4 inline-block bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-red-600 transition">
-                Buy Ticket Now
-            </a>
+    <!-- Header Section with Automatic Slider -->
+<!-- Header Section with Automatic Slider -->
+<header class="relative text-center">
+    <?php include_once('includes/header.php'); ?>
+    <div class="slider relative w-full h-[500px] overflow-hidden">
+        <div class="slides flex transition-transform duration-500 ease-in-out">
+            <img alt="DJ wearing headphones with raised hands" class="slide-image" src="images/homepage.jpg" />
+            <img alt="Event image 6" class="slide-image" src="images/homepage1.jpg" />
+            <img alt="Event image 1" class="slide-image" src="images/homepage2.jpg" />
+            <img alt="About image" class="slide-image" src="images/homepage3.jpg" />
         </div>
-    </header>
+        <div class="dots">
+            <span class="dot" onclick="currentSlide(0)"></span>
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </div>
 
-
+    <div class="hero-content absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[40%] text-center max-w-xl px-4">
+        <h1 class="text-white font-bold text-3xl md:text-6xl leading-tight">Make Your Event Unforgettable</h1>
+        <p class="text-sm md:text-base mt-3 text-white">
+            Customize your event with the right DJ. Explore styles, check availability, and book in just a few clicks.
+        </p>
+        <a href="services.php" class="mt-4 inline-block bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-red-600 transition">
+            Buy Ticket Now
+        </a>
+    </div>
+</header>
 
     <!-- Main Content -->
     <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
@@ -112,14 +193,13 @@ include('includes/dbconnection.php');
             <h2 class="font-semibold text-white text-sm mb-6">Featured DJs</h2>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <?php
-                // SQL dengan RANK() untuk memberi peringkat berdasarkan booking_count
                 $sql = "SELECT
                             s.ID,
                             s.ServiceName,
                             s.SerDes,
                             s.ServicePrice,
-                        COUNT(b.ID) AS booking_count,
-                        RANK() OVER (ORDER BY COUNT(b.ID) DESC) AS ranking
+                            COUNT(b.ID) AS booking_count,
+                            RANK() OVER (ORDER BY COUNT(b.ID) DESC) AS ranking
                         FROM tblservice s
                         LEFT JOIN tblbooking b ON s.ID = b.ServiceID
                         GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
@@ -130,7 +210,6 @@ include('includes/dbconnection.php');
                 $featured_djs = $query->fetchAll(PDO::FETCH_OBJ);
 
                 foreach ($featured_djs as $dj) {
-                    // Tentukan gambar berdasarkan nama service
                     $djImage = '';
                     switch (strtolower($dj->ServiceName)) {
                         case 'wedding dj':
@@ -171,7 +250,6 @@ include('includes/dbconnection.php');
                 <?php } ?>
             </div>
         </section>
-
 
         <!-- Hero Banner Section -->
         <section class="py-20 bg-black text-white">
@@ -291,69 +369,73 @@ include('includes/dbconnection.php');
                 </div>
             </div>
         </section>
-
-        <style>
-            .faq-item {
-                transform: translateY(0);
-                transition: all 0.3s ease;
-            }
-
-            .faq-item:hover {
-                transform: translateY(-2px);
-            }
-
-            .faq-answer {
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease-out;
-            }
-
-            .faq-answer.show {
-                max-height: 500px;
-                transition: max-height 0.5s ease-in;
-            }
-        </style>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const faqButtons = document.querySelectorAll('.faq-button');
-
-                faqButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const faqItem = button.parentElement;
-                        const answer = button.nextElementSibling;
-                        const icon = button.querySelector('svg');
-
-                        // Toggle answer visibility with animation
-                        answer.classList.toggle('hidden');
-                        answer.classList.toggle('show');
-
-                        // Rotate icon
-                        icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-
-                        // Add active state styles
-                        faqItem.classList.toggle('bg-[#2a2a2a]');
-
-                        // Close other answers
-                        faqButtons.forEach(otherButton => {
-                            if (otherButton !== button) {
-                                const otherAnswer = otherButton.nextElementSibling;
-                                const otherIcon = otherButton.querySelector('svg');
-                                const otherItem = otherButton.parentElement;
-
-                                otherAnswer.classList.add('hidden');
-                                otherAnswer.classList.remove('show');
-                                otherIcon.style.transform = 'rotate(0deg)';
-                                otherItem.classList.remove('bg-[#2a2a2a]');
-                            }
-                        });
-                    });
-                });
-            });
-        </script>
     </main>
 
     <?php include_once('includes/footer.php'); ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ Toggle Functionality
+            const faqButtons = document.querySelectorAll('.faq-button');
+
+            faqButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const faqItem = button.parentElement;
+                    const answer = button.nextElementSibling;
+                    const icon = button.querySelector('svg');
+
+                    answer.classList.toggle('hidden');
+                    answer.classList.toggle('show');
+                    icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                    faqItem.classList.toggle('bg-[#2a2a2a]');
+
+                    faqButtons.forEach(otherButton => {
+                        if (otherButton !== button) {
+                            const otherAnswer = otherButton.nextElementSibling;
+                            const otherIcon = otherButton.querySelector('svg');
+                            const otherItem = otherButton.parentElement;
+
+                            otherAnswer.classList.add('hidden');
+                            otherAnswer.classList.remove('show');
+                            otherIcon.style.transform = 'rotate(0deg)';
+                            otherItem.classList.remove('bg-[#2a2a2a]');
+                        }
+                    });
+                });
+            });
+
+            // Slider Functionality
+            let slideIndex = 0;
+            const slides = document.querySelector('.slides');
+            const dots = document.querySelectorAll('.dot');
+            const totalSlides = 4; // Explicitly set to 4 slides
+
+            function showSlides() {
+                slideIndex++;
+                if (slideIndex >= totalSlides) {
+                    slideIndex = 0;
+                }
+                updateSlides();
+            }
+
+            function currentSlide(index) {
+                slideIndex = index;
+                updateSlides();
+            }
+
+            function updateSlides() {
+                if (slides) {
+                    slides.style.transform = `translateX(-${slideIndex * 25}%)`; /* 100/4 = 25% per slide */
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === slideIndex);
+                    });
+                }
+            }
+
+            setInterval(showSlides, 5000); // Auto slide every 5 seconds
+            updateSlides(); // Initialize first slide
+        });
+    </script>
 </body>
 
 </html>
