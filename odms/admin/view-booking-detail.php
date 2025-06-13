@@ -192,15 +192,15 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
-                        <form method="post" name="submit">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Take Action</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <table class="table table-bordered table-hover data-tables">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Take Action</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <table class="table table-bordered table-hover data-tables">
+                            <form method="post" name="submit">
                               <tr>
                                 <th>Remark :</th>
                                 <td>
@@ -217,13 +217,13 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                                   </select>
                                 </td>
                               </tr>
-                            </table>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" name="submit" class="btn btn-primary">Update</button>
-                          </div>
-                        </form>
+                            </form>
+                          </table>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" name="submit" class="btn btn-primary">Update</button>
+                        </div>
                       </div>
                     </div>
                   </div>
