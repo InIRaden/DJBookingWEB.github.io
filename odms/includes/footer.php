@@ -2,7 +2,7 @@
     <div class="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-5 gap-8 sm:gap-12 text-[10px] sm:text-xs">
         <div class="flex items-center justify-center sm:justify-start">
             <!-- menampilkan logo pada footer -->
-            <img alt="DJBooking logo" class="w-[80px] h-[80px] rounded-md" src="images/cobaLogo.png" />
+            <img alt="DJBooking logo" class="w-[80px] h-[80px] rounded-md" src="images/logoUhuy.png" />
         </div>
         <div>
             <h4 class="font-bold mb-2 text-[11px]">Learn More</h4>
