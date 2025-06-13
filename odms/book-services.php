@@ -56,12 +56,29 @@ if (isset($_POST['confirm_submit'])) {
 if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
+<<<<<<< Updated upstream
         try {
             $dbh->beginTransaction();
             // Insert booking to tblbooking with Status NULL
             $sqlBooking = "INSERT INTO tblbooking (BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation, Status) VALUES (:bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate, :eventstartingtime, :eventendingtime, :venueaddress, :eventtype, :additionalinformation, NULL)";
             $queryBooking = $dbh->prepare($sqlBooking);
             $queryBooking->execute([
+=======
+        
+        try {
+            $dbh->beginTransaction();
+
+            // Insert into tblbooking
+            $sql = "INSERT INTO tblbooking (BookingID, ServiceID, Name, MobileNumber, Email, EventDate, 
+                    EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation, 
+                    BookingDate, Status) 
+                    VALUES (:bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate,
+                    :eventstartingtime, :eventendingtime, :venueaddress, :eventtype, 
+                    :additionalinformation, NOW(), 'Not Processed Yet')";
+
+            $query = $dbh->prepare($sql);
+            $query->execute([
+>>>>>>> Stashed changes
                 ':bookingid' => $bookingData['bookingid'],
                 ':serviceid' => $bookingData['bid'],
                 ':name' => $bookingData['name'],
@@ -73,6 +90,7 @@ if (isset($_POST['final_submit'])) {
                 ':venueaddress' => $bookingData['vaddress'],
                 ':eventtype' => $bookingData['eventtype'],
                 ':additionalinformation' => $bookingData['addinfo']
+<<<<<<< Updated upstream
             ]);
             // Insert payment to tblpayment
             $sqlPayment = "INSERT INTO tblpayment (BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber, PaymentStatus, InstallmentCount) VALUES (:bookingid, :paymentmethod, :amount, :transferbank, :vanumber, 'Pending', :installmentcount)";
@@ -88,6 +106,30 @@ if (isset($_POST['final_submit'])) {
             $dbh->commit();
             unset($_SESSION['temp_booking']);
             echo json_encode(['success' => true]);
+=======
+            ]);
+
+            // Insert into tblpayment
+            $sql2 = "INSERT INTO tblpayment (BookingID, PaymentMethod, PaymentStatus, VirtualAccountNumber,
+                     Amount, PaymentDate, TransferBank, InstallmentCount) 
+                     VALUES (:bookingid, :paymentmethod, 'Pending', :va_number,
+                     :amount, NOW(), :transferbank, :installmentcount)";
+
+            $query2 = $dbh->prepare($sql2);
+            $query2->execute([
+                ':bookingid' => $bookingData['bookingid'],
+                ':paymentmethod' => $bookingData['paymentMethod'],
+                ':va_number' => $bookingData['va_number'],
+                ':amount' => $bookingData['amount'],
+                ':transferbank' => $bookingData['selectedBank'],
+                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null
+            ]);
+
+            $dbh->commit();
+            unset($_SESSION['temp_booking']);
+            echo json_encode(['success' => true]);
+
+>>>>>>> Stashed changes
         } catch (PDOException $e) {
             $dbh->rollBack();
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
