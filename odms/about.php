@@ -109,9 +109,9 @@ include('includes/dbconnection.php');
             } ?>
         </section>
 
-        <!-- Latest Photos Section -->
+        <!-- Team Photo Section -->
         <section>
-            <h2 class="font-semibold text-white text-lg mb-6">LATEST PHOTOS</h2>
+            <h2 class="font-semibold text-white text-lg mb-6">OUR TEAM</h2>
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
                 <?php
                 $team_members = [
