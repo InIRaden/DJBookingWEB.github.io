@@ -56,19 +56,12 @@ if (isset($_POST['confirm_submit'])) {
 if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
-
         try {
-            // Call the stored procedure using named placeholders
-            $sql = "CALL sp_create_booking_and_payment(
-                        :bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate,
-                        :eventstartingtime, :eventendingtime, :venueaddress, :eventtype,
-                        :additionalinformation, :paymentmethod, :amount, :transferbank,
-                        @p_success, @p_message
-                    )";
-            $query = $dbh->prepare($sql);
-
-            // Bind values to named placeholders
-            $query->execute([
+            $dbh->beginTransaction();
+            // Insert booking to tblbooking with Status NULL
+            $sqlBooking = "INSERT INTO tblbooking (BookingID, ServiceID, Name, MobileNumber, Email, EventDate, EventStartingtime, EventEndingtime, VenueAddress, EventType, AdditionalInformation, Status) VALUES (:bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate, :eventstartingtime, :eventendingtime, :venueaddress, :eventtype, :additionalinformation, NULL)";
+            $queryBooking = $dbh->prepare($sqlBooking);
+            $queryBooking->execute([
                 ':bookingid' => $bookingData['bookingid'],
                 ':serviceid' => $bookingData['bid'],
                 ':name' => $bookingData['name'],
@@ -79,22 +72,24 @@ if (isset($_POST['final_submit'])) {
                 ':eventendingtime' => $bookingData['eetime'],
                 ':venueaddress' => $bookingData['vaddress'],
                 ':eventtype' => $bookingData['eventtype'],
-                ':additionalinformation' => $bookingData['addinfo'],
+                ':additionalinformation' => $bookingData['addinfo']
+            ]);
+            // Insert payment to tblpayment
+            $sqlPayment = "INSERT INTO tblpayment (BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber, PaymentStatus, InstallmentCount) VALUES (:bookingid, :paymentmethod, :amount, :transferbank, :vanumber, 'Pending', :installmentcount)";
+            $queryPayment = $dbh->prepare($sqlPayment);
+            $queryPayment->execute([
+                ':bookingid' => $bookingData['bookingid'],
                 ':paymentmethod' => $bookingData['paymentMethod'],
                 ':amount' => $bookingData['amount'],
-                ':transferbank' => $bookingData['selectedBank']
+                ':transferbank' => $bookingData['selectedBank'],
+                ':vanumber' => $bookingData['va_number'],
+                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null
             ]);
-
-            // Fetch the output parameters
-            $result = $dbh->query("SELECT @p_success AS success, @p_message AS message")->fetch(PDO::FETCH_ASSOC);
-
-            if ($result['success']) {
-                unset($_SESSION['temp_booking']);
-                echo json_encode(['success' => true]);
-            } else {
-                echo json_encode(['success' => false, 'message' => $result['message']]);
-            }
+            $dbh->commit();
+            unset($_SESSION['temp_booking']);
+            echo json_encode(['success' => true]);
         } catch (PDOException $e) {
+            $dbh->rollBack();
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
         }
     } else {
