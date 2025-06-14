@@ -30,6 +30,7 @@ include('includes/dbconnection.php');
             position: relative;
             border: 1px solid #374151;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
         }
 
         .service-card:hover {
@@ -120,50 +121,48 @@ include('includes/dbconnection.php');
             transform: translateX(3px);
         }
         
-        /* Styling untuk form pencarian */
         .search-container {
             margin-bottom: 2rem;
-            background: linear-gradient(145deg, #1f2937, #111827);
-            padding: 1.5rem;
+            background: #1e293b;
+            padding: 0.5rem 1rem;
             border-radius: 0.75rem;
-            border: 1px solid #374151;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.5s ease-in;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
         .search-form {
             display: flex;
+            align-items: center;
             gap: 1rem;
-            flex-wrap: wrap;
+            width: 100%;
         }
-        
+
         .search-input {
             flex: 1;
-            min-width: 200px;
             padding: 0.75rem 1rem;
-            background-color: #111827;
-            border: 1px solid #4b5563;
-            border-radius: 0.5rem;
-            color: #f3f4f6;
+            background: transparent;
+            border: none;
+            color: #d1d5db;
             font-size: 0.875rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .search-input:focus {
             outline: none;
-            border-color: #dc2626;
-            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.6), 0 0 20px rgba(220, 38, 38, 0.4);
         }
         
         .search-button {
             background: linear-gradient(90deg, #dc2626, #ef4444);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border: none;
             border-radius: 0.5rem;
             font-weight: 500;
@@ -190,6 +189,11 @@ include('includes/dbconnection.php');
             animation: fadeIn 0.5s ease-in;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .ranking-badge {
             position: absolute;
             top: 10px;
@@ -197,7 +201,7 @@ include('includes/dbconnection.php');
             background: linear-gradient(135deg, #facc15, #fbbf24);
             color: #1a202c;
             padding: 6px 12px;
-            border-radius: 50%; /* Mengubah ke lingkaran */
+            border-radius: 50%;
             font-family: "Poppins", sans-serif;
             font-weight: 700;
             font-size: 0.9rem;
@@ -208,6 +212,58 @@ include('includes/dbconnection.php');
         .service-card:hover .ranking-badge {
             transform: scale(1.1);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1f2937;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 0.75rem;
+            width: 70%;
+            max-width: 500px;
+            color: #d1d5db;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #dc2626;
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #b91c1c;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .dj-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .dj-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #374151;
+        }
+
+        .dj-list li:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -239,7 +295,7 @@ include('includes/dbconnection.php');
         <!-- Search Form -->
         <div class="search-container">
             <form method="GET" action="" class="search-form">
-                <input type="text" name="search" placeholder="Search Your DJ Services..." class="search-input" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                <input type="text" name="search" placeholder="What do you want to book?" class="search-input" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                 <button type="submit" class="search-button">
                     <i class="fas fa-search"></i> Search
                 </button>
@@ -314,7 +370,7 @@ include('includes/dbconnection.php');
                             $serviceImage = 'abt.jpg';
                     }
             ?>
-                    <div class="service-card">
+                    <div class="service-card" onclick="openDJModal('<?php echo strtolower($row->ServiceName); ?>')">
                         <div class="service-image-container relative">
                             <div class="ranking-badge">
                                 #<?php echo $row->ranking; ?>
@@ -345,8 +401,61 @@ include('includes/dbconnection.php');
         </div>
     </main>
 
+    <!-- Modal -->
+    <div id="djModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDJModal()">&times;</span>
+            <h3 id="modal-title" class="service-title text-center mb-4"></h3>
+            <ul id="dj-list" class="dj-list"></ul>
+        </div>
+    </div>
+
     <?php include_once('includes/footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.umd.js"></script>
+    <script>
+        // Dummy data untuk DJ
+        const djData = {
+            'wedding dj': [
+                'Emily Carter',
+                'James Harper',
+                'Sophia Bennet',
+                'Ethan Reynolds',
+                'Olivia Grayson'
+            ],
+            'party dj': [
+                'Mia Sullivian',
+                'Liam Parker',
+                'Chloe Evans',
+                'Noah Mitchell',
+                'Isabella Brooks'
+            ]
+        };
+
+        function openDJModal(service) {
+            const modal = document.getElementById('djModal');
+            const modalTitle = document.getElementById('modal-title');
+            const djList = document.getElementById('dj-list');
+
+            if (djData[service]) {
+                modalTitle.textContent = `Available DJs for ${service.replace('dj', 'DJ').replace(/\b\w/g, l => l.toUpperCase())}`;
+                djList.innerHTML = djData[service].map(dj => `<li>${dj}</li>`).join('');
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeDJModal() {
+            const modal = document.getElementById('djModal');
+            modal.style.display = 'none';
+        }
+
+        // Menutup modal saat klik di luar konten
+        window.onclick = function(event) {
+            const modal = document.getElementById('djModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 
 </html>
