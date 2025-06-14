@@ -22,18 +22,20 @@ include('includes/dbconnection.php');
         }
 
         .service-card {
-            background: linear-gradient(145deg, #1f2937, #111827);
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d); /* Match body background */
             border-radius: 0.75rem;
             overflow: hidden;
             margin-bottom: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             position: relative;
-            border: 1px solid #374151;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             cursor: pointer;
+            border: none; /* Remove border by default */
         }
 
-        .service-card:hover {
+        .service-card:hover, .service-card:active {
+            background: linear-gradient(145deg, #1f2937, #111827); /* Change on hover/click */
+            border: 1px solid #374151; /* Add border on interaction */
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
         }
@@ -58,7 +60,7 @@ include('includes/dbconnection.php');
 
         .service-content {
             padding: 1.5rem;
-            background: linear-gradient(180deg, #1f2937, #111827);
+            background: transparent; /* Match card background */
         }
 
         .service-title {
@@ -79,13 +81,36 @@ include('includes/dbconnection.php');
             font-weight: 300;
         }
 
+        .dj-names {
+            display: none; /* Hidden by default */
+            color: #f3f4f6;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+            transform: translateY(100%); /* Start from below the image */
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .dj-names, .service-card:active .dj-names {
+            display: block; /* Show on hover/click */
+            transform: translateY(0); /* Slide up to visible position */
+        }
+
         .service-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 1rem;
             border-top: 1px solid #374151;
-            background: #111827;
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d); /* Match with .service-card background */
+            transition: background 0.3s ease;
+        }
+
+        .service-card:hover .service-footer, .service-card:active .service-footer {
+            background: linear-gradient(145deg, #1f2937, #111827); /* Match hover state of .service-card */
         }
 
         .service-price {
@@ -93,6 +118,8 @@ include('includes/dbconnection.php');
             font-weight: 700;
             color: #dc2626;
             text-shadow: 1px 1px 3px rgba(220, 38, 38, 0.3);
+            border: none;
+            padding: 0.25rem 0.5rem;
         }
 
         .book-button {
@@ -123,14 +150,13 @@ include('includes/dbconnection.php');
         
         .search-container {
             margin-bottom: 2rem;
-            background: #1e293b;
             padding: 0.5rem 1rem;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: none;
+            border: none; /* Remove border by default */
+            background: linear-gradient(135deg, #1a1a1a, #0d0d0d); /* Match body background */
         }
 
         .search-form {
@@ -148,7 +174,7 @@ include('includes/dbconnection.php');
             color: #d1d5db;
             font-size: 0.875rem;
             outline: none;
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease, border 0.3s ease;
         }
 
         .search-input::placeholder {
@@ -157,6 +183,7 @@ include('includes/dbconnection.php');
 
         .search-input:focus {
             box-shadow: 0 0 10px rgba(220, 38, 38, 0.6), 0 0 20px rgba(220, 38, 38, 0.4);
+            border: 1px solid #374151; /* Add border on focus */
         }
         
         .search-button {
@@ -213,58 +240,6 @@ include('includes/dbconnection.php');
             transform: scale(1.1);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: #1f2937;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 0.75rem;
-            width: 70%;
-            max-width: 500px;
-            color: #d1d5db;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .close {
-            color: #dc2626;
-            float: right;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #b91c1c;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .dj-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .dj-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid #374151;
-        }
-
-        .dj-list li:last-child {
-            border-bottom: none;
-        }
     </style>
 </head>
 
@@ -310,11 +285,9 @@ include('includes/dbconnection.php');
         <!-- Services Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php
-            // Check if search parameter exists
             $search = isset($_GET['search']) ? $_GET['search'] : '';
             
             if (!empty($search)) {
-                // SQL query with search filter
                 $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
                 SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
                        COUNT(b.ID) AS booking_count
@@ -327,7 +300,6 @@ include('includes/dbconnection.php');
                 $query = $dbh->prepare($sql);
                 $query->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
             } else {
-                // Original SQL query without search
                 $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
                 SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
                        COUNT(b.ID) AS booking_count
@@ -345,14 +317,16 @@ include('includes/dbconnection.php');
 
             if ($query->rowCount() > 0) {
                 foreach ($results as $row) {
-                    // Define image based on service name
                     $serviceImage = '';
+                    $djNames = '';
                     switch (strtolower($row->ServiceName)) {
                         case 'wedding dj':
                             $serviceImage = 'weddingDj.jpg';
+                            $djNames = 'Emily Carter, James Harper, Sophia Bennet';
                             break;
                         case 'party dj':
                             $serviceImage = 'partyDj.jpg';
+                            $djNames = 'Mia Sullivan, Liam Parker, Chloe Evans';
                             break;
                         case 'ceremony music':
                             $serviceImage = 'blg2.jpg';
@@ -370,7 +344,7 @@ include('includes/dbconnection.php');
                             $serviceImage = 'abt.jpg';
                     }
             ?>
-                    <div class="service-card" onclick="openDJModal('<?php echo strtolower($row->ServiceName); ?>')">
+                    <div class="service-card" onclick="this.classList.toggle('active')">
                         <div class="service-image-container relative">
                             <div class="ranking-badge">
                                 #<?php echo $row->ranking; ?>
@@ -378,6 +352,9 @@ include('includes/dbconnection.php');
                             <img src="images/<?php echo $serviceImage; ?>"
                                 alt="<?php echo htmlentities($row->ServiceName); ?>"
                                 class="service-image">
+                            <?php if (!empty($djNames)): ?>
+                                <div class="dj-names"><?php echo $djNames; ?></div>
+                            <?php endif; ?>
                         </div>
                         <div class="service-content">
                             <h3 class="service-title"><?php echo htmlentities($row->ServiceName); ?></h3>
@@ -390,7 +367,8 @@ include('includes/dbconnection.php');
                             </div>
                         </div>
                     </div>
-            <?php }
+            <?php
+                }
             } else { ?>
                 <div class="no-results">
                     <i class="fas fa-search fa-3x mb-4"></i>
@@ -401,60 +379,12 @@ include('includes/dbconnection.php');
         </div>
     </main>
 
-    <!-- Modal -->
-    <div id="djModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeDJModal()">&times;</span>
-            <h3 id="modal-title" class="service-title text-center mb-4"></h3>
-            <ul id="dj-list" class="dj-list"></ul>
-        </div>
-    </div>
+    <!-- Modal (removed as per request) -->
 
     <?php include_once('includes/footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.umd.js"></script>
     <script>
-        // Dummy data untuk DJ
-        const djData = {
-            'wedding dj': [
-                'Emily Carter',
-                'James Harper',
-                'Sophia Bennet',
-                'Ethan Reynolds',
-                'Olivia Grayson'
-            ],
-            'party dj': [
-                'Mia Sullivian',
-                'Liam Parker',
-                'Chloe Evans',
-                'Noah Mitchell',
-                'Isabella Brooks'
-            ]
-        };
-
-        function openDJModal(service) {
-            const modal = document.getElementById('djModal');
-            const modalTitle = document.getElementById('modal-title');
-            const djList = document.getElementById('dj-list');
-
-            if (djData[service]) {
-                modalTitle.textContent = `Available DJs for ${service.replace('dj', 'DJ').replace(/\b\w/g, l => l.toUpperCase())}`;
-                djList.innerHTML = djData[service].map(dj => `<li>${dj}</li>`).join('');
-                modal.style.display = 'block';
-            }
-        }
-
-        function closeDJModal() {
-            const modal = document.getElementById('djModal');
-            modal.style.display = 'none';
-        }
-
-        // Menutup modal saat klik di luar konten
-        window.onclick = function(event) {
-            const modal = document.getElementById('djModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
+        // No modal logic needed anymore
     </script>
 </body>
 
