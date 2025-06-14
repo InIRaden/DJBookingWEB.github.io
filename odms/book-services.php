@@ -18,7 +18,7 @@ if (isset($_POST['confirm_submit'])) {
     $bookingid = mt_rand(100000000, 999999999);
     $paymentMethod = $_POST['payment_method'];
     $selectedBank = isset($_POST['selected_bank']) ? $_POST['selected_bank'] : '';
-    $expiryTime = date('Y-m-d H:i:s', strtotime('+24 hours'));
+    $installmentCount = isset($_POST['installment_count']) ? $_POST['installment_count'] : null;
 
     // Get service price
     $sqlPrice = "SELECT ServicePrice FROM tblservice WHERE ID = :bid";
@@ -43,8 +43,9 @@ if (isset($_POST['confirm_submit'])) {
         'addinfo' => $addinfo,
         'paymentMethod' => $paymentMethod,
         'selectedBank' => $selectedBank,
-        'expiryTime' => $expiryTime,
+        'installmentCount' => $installmentCount,
         'amount' => $amount,
+        'expiryTime' => date('Y-m-d H:i:s', strtotime('+24 hours')),
         'va_number' => mt_rand(1000000000000000, 9999999999999999) // Virtual Account number generated here
     ];
 
@@ -114,6 +115,64 @@ if (isset($_POST['final_submit'])) {
         echo json_encode(['success' => false, 'message' => 'No temporary booking data found.']);
     }
     exit;
+}
+
+// Handle final form submission
+$input = json_decode(file_get_contents('php://input'), true);
+if (isset($input['final_submit']) && $input['final_submit'] === true) {
+    try {
+        $dbh->beginTransaction();
+
+        // Insert booking data
+        $sql = "INSERT INTO tblbooking (UserID, BookingID, ServiceID, Name, Email, EventDate, EventStartTime, EventEndTime, EventType, VenueAddress, AdditionalInformation, BookingDate, Status) VALUES (:userid, :bookingid, :serviceid, :name, :email, :eventdate, :eventstarttime, :eventendtime, :eventtype, :venue, :additionalinfo, :bookingdate, :status)";
+        
+        $bookingId = generateBookingID();
+        $query = $dbh->prepare($sql);
+        
+        $query->bindParam(':userid', $input['userid'], PDO::PARAM_INT);
+        $query->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
+        $query->bindParam(':serviceid', $input['serviceid'], PDO::PARAM_INT);
+        $query->bindParam(':name', $input['name'], PDO::PARAM_STR);
+        $query->bindParam(':email', $input['email'], PDO::PARAM_STR);
+        $query->bindParam(':eventdate', $input['eventdate'], PDO::PARAM_STR);
+        $query->bindParam(':eventstarttime', $input['eventstarttime'], PDO::PARAM_STR);
+        $query->bindParam(':eventendtime', $input['eventendtime'], PDO::PARAM_STR);
+        $query->bindParam(':eventtype', $input['eventtype'], PDO::PARAM_STR);
+        $query->bindParam(':venue', $input['venue'], PDO::PARAM_STR);
+        $query->bindParam(':additionalinfo', $input['additionalinfo'], PDO::PARAM_STR);
+        $query->bindParam(':bookingdate', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $status = 'Pending';
+        $query->bindParam(':status', $status, PDO::PARAM_STR);
+        
+        $query->execute();
+
+        // Insert payment data
+        $sql = "INSERT INTO tblpayment (BookingID, PaymentMethod, Bank, InstallmentCount, AmountPaid, VANumber, PaymentDate, PaymentStatus) VALUES (:bookingid, :paymentmethod, :bank, :installmentcount, :amountpaid, :vanumber, :paymentdate, :paymentstatus)";
+        
+        $query = $dbh->prepare($sql);
+        
+        $query->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
+        $query->bindParam(':paymentmethod', $input['payment_method'], PDO::PARAM_STR);
+        $query->bindParam(':bank', $input['selected_bank'], PDO::PARAM_STR);
+        $query->bindParam(':installmentcount', $input['installment_count'], PDO::PARAM_INT);
+        $query->bindParam(':amountpaid', $input['amount_paid'], PDO::PARAM_STR);
+        $query->bindParam(':vanumber', $input['va_number'], PDO::PARAM_STR);
+        $query->bindParam(':paymentdate', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $paymentStatus = 'Pending';
+        $query->bindParam(':paymentstatus', $paymentStatus, PDO::PARAM_STR);
+        
+        $query->execute();
+
+        $dbh->commit();
+        echo json_encode(['success' => true]);
+        exit;
+
+    } catch (Exception $e) {
+        $dbh->rollBack();
+        error_log($e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Database error occurred: ' . $e->getMessage()]);
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -713,6 +772,16 @@ if (isset($_POST['final_submit'])) {
         function showPaymentDetails() {
             const form = document.getElementById('booking-form');
             const formData = new FormData(form);
+
+            // Tambahkan data payment method, bank, dan installment
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            const selectedBank = document.getElementById('selected-bank').value;
+            const installmentCount = paymentMethod === 'installment' ?
+                document.querySelector('select[name="installment_count"]').value : null;
+
+            formData.append('payment_method', paymentMethod);
+            formData.append('selected_bank', selectedBank);
+            formData.append('installment_count', installmentCount);
             formData.append('confirm_submit', '1');
 
             fetch(window.location.href, {
@@ -888,6 +957,52 @@ if (isset($_POST['final_submit'])) {
          */
         function formatCurrency(amount) {
             return '$ ' + parseFloat(amount).toLocaleString('id-ID');
+        }
+
+        function submitFinalForm() {
+            if (!window._bookingData) {
+                alert('No booking data found. Please try again.');
+                return;
+            }
+
+            // Get payment details
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            const selectedBank = document.getElementById('selected-bank').value;
+            const installmentCount = paymentMethod === 'installment' ?
+                document.querySelector('select[name="installment_count"]').value : null;
+            const amountPaid = document.getElementById('amount_paid').value;
+            const vaNumber = document.getElementById('va_number').value;
+
+            const finalData = {
+                ...window._bookingData,
+                payment_method: paymentMethod,
+                selected_bank: selectedBank,
+                installment_count: installmentCount,
+                amount_paid: amountPaid,
+                va_number: vaNumber,
+                final_submit: true
+            };
+
+            fetch(window.location.href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(finalData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Booking successful!');
+                        window.location.href = 'status.php';
+                    } else {
+                        alert(data.message || 'Something went wrong. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
         }
     </script>
 </body>
