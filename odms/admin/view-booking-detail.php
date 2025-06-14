@@ -175,6 +175,10 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                                 <th>Completed Date</th>
                                 <td><?php echo $row->CompletedDate ? date('d-m-Y H:i:s', strtotime($row->CompletedDate)) : 'N/A'; ?></td>
                               </tr>
+                              <tr>
+                                <th>Installment Count</th>
+                                <td><?php echo htmlentities($row->InstallmentCount) ?: 'N/A'; ?></td>
+                              </tr>
                             </table>
                           </td>
                         </tr>
