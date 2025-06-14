@@ -57,6 +57,17 @@ if (isset($_POST['confirm_submit'])) {
 if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
+        
+        // Set CompletedDate and PaymentStatus based on payment method
+        $completedDate = null;
+        $paymentStatus = 'Pending';
+        if ($bookingData['paymentMethod'] === 'cash' || $bookingData['paymentMethod'] === 'transfer') {
+            $completedDate = date('Y-m-d H:i:s');
+            $paymentStatus = 'Paid';
+        } elseif ($bookingData['paymentMethod'] === 'installment') {
+            $completedDate = '-';
+            $paymentStatus = 'Pending';
+        }
 
         try {
             $dbh->beginTransaction();
@@ -84,7 +95,7 @@ if (isset($_POST['final_submit'])) {
                 ':venueaddress' => $bookingData['vaddress'],
                 ':eventtype' => $bookingData['eventtype'],
                 ':additionalinformation' => $bookingData['addinfo']
-            ]);
+           ] );
 
             // Insert ke tblpayment
             $sql2 = "INSERT INTO tblpayment (
@@ -92,7 +103,7 @@ if (isset($_POST['final_submit'])) {
                         PaymentStatus, PaymentDate, CompletedDate, InstallmentCount
                     ) VALUES (
                         :bookingid, :paymentmethod, :amount, :transferbank, :va_number,
-                        'Pending', NOW(), NULL, :installmentcount
+                        :paymentstatus, NOW(), :completeddate, :installmentcount
                     )";
             $query2 = $dbh->prepare($sql2);
             $query2->execute([
@@ -101,6 +112,8 @@ if (isset($_POST['final_submit'])) {
                 ':amount' => $bookingData['amount'],
                 ':transferbank' => $bookingData['selectedBank'],
                 ':va_number' => $bookingData['va_number'],
+                ':paymentstatus' => $paymentStatus,
+                ':completeddate' => $completedDate,
                 ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null
             ]);
 
@@ -483,6 +496,8 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     </form>
                 </div>
                 <div>
+
+                <!-- payment -->
                     <div class="mb-6">
                         <label class="block text-sm text-gray-300 mb-3 font-medium">Payment Method</label>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -845,15 +860,22 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     console.error('Error:', error);
                     alert('An error occurred. Please try again.');
                 });
-        }
-
-        /**
+        }        /**
          * Confirms payment and processes final submission
          * Sends final confirmation to server and shows success modal
          */
         function confirmPayment() {
             const formData = new FormData();
             formData.append('final_submit', '1');
+            
+            // Get payment method for CompletedDate handling
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            formData.append('payment_method', paymentMethod);
+            
+            // Add CompletedDate if payment method is cash or transfer
+            if (paymentMethod === 'cash' || paymentMethod === 'transfer') {
+                formData.append('completed_date', new Date().toISOString());
+            }
 
             fetch(window.location.href, {
                     method: 'POST',
