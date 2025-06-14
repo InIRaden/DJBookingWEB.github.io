@@ -243,11 +243,11 @@ include('includes/dbconnection.php');
 
 
         <!-- Hero Banner Section -->
-        <section class="py-20 bg-black text-white">
+        <section class="py-10 bg-black text-white">
             <div class="max-w-4xl mx-auto px-6 text-center">
                 <h2 class="text-center text-5xl sm:text-6xl font-bold leading-tight">
-                    Easily book professional <br />
-                    DJs for any occasion with <br />
+                Book Top DJs for Any Event <br />
+                Effortlessly with <br />
                     our <span class="text-red-800">APPS!</span>
                 </h2>
                 <p class="mt-12 mx-auto max-w-md text-sm text-gray-300">
