@@ -57,21 +57,34 @@ if (isset($_POST['confirm_submit'])) {
 if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
-        
+        $userPay = isset($_POST['user_pay']) ? floatval($_POST['user_pay']) : 0;
+        $amount = floatval($bookingData['amount']);
+        $paymentMethod = $bookingData['paymentMethod'];
+        // Validation
+        if ($paymentMethod === 'installment') {
+            $minPay = $amount * 0.5;
+            if ($userPay < $minPay) {
+                echo json_encode(['success' => false, 'message' => 'Minimum payment for installment is 50% of total amount.']);
+                exit;
+            }
+        } else {
+            if ($userPay < $amount) {
+                echo json_encode(['success' => false, 'message' => 'Payment amount must be at least the total price.']);
+                exit;
+            }
+        }
         // Set CompletedDate and PaymentStatus based on payment method
         $completedDate = null;
         $paymentStatus = 'Pending';
-        if ($bookingData['paymentMethod'] === 'cash' || $bookingData['paymentMethod'] === 'transfer') {
+        if ($paymentMethod === 'cash' || $paymentMethod === 'transfer') {
             $completedDate = date('Y-m-d H:i:s');
             $paymentStatus = 'Paid';
-        } elseif ($bookingData['paymentMethod'] === 'installment') {
+        } elseif (strtolower($paymentMethod) === 'installment') {
             $completedDate = '-';
-            $paymentStatus = 'First Payment ';
+            $paymentStatus = 'First Payment'; // Set status to First Payment for first installment
         }
-
         try {
             $dbh->beginTransaction();
-
             // Insert ke tblbooking (Status NULL)
             $sql = "INSERT INTO tblbooking (
                         BookingID, ServiceID, Name, MobileNumber, Email, EventDate,
@@ -96,27 +109,26 @@ if (isset($_POST['final_submit'])) {
                 ':eventtype' => $bookingData['eventtype'],
                 ':additionalinformation' => $bookingData['addinfo']
            ] );
-
             // Insert ke tblpayment
             $sql2 = "INSERT INTO tblpayment (
                         BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber,
-                        PaymentStatus, PaymentDate, CompletedDate, InstallmentCount
+                        PaymentStatus, PaymentDate, CompletedDate, InstallmentCount, UserPay
                     ) VALUES (
                         :bookingid, :paymentmethod, :amount, :transferbank, :va_number,
-                        :paymentstatus, NOW(), :completeddate, :installmentcount
+                        :paymentstatus, NOW(), :completeddate, :installmentcount, :userpay
                     )";
             $query2 = $dbh->prepare($sql2);
             $query2->execute([
                 ':bookingid' => $bookingData['bookingid'],
-                ':paymentmethod' => $bookingData['paymentMethod'],
-                ':amount' => $bookingData['amount'],
+                ':paymentmethod' => $paymentMethod,
+                ':amount' => $amount,
                 ':transferbank' => $bookingData['selectedBank'],
                 ':va_number' => $bookingData['va_number'],
                 ':paymentstatus' => $paymentStatus,
                 ':completeddate' => $completedDate,
-                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null
+                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null,
+                ':userpay' => $userPay
             ]);
-
             $dbh->commit();
             unset($_SESSION['temp_booking']);
             echo json_encode(['success' => true]);
@@ -639,6 +651,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         </div>
                         <p id="installment-minimum-text" class="text-yellow-400 text-sm mt-1" style="display: none;">Minimum payment 50%</p>
                         <p class="text-gray-300 text-sm mt-4">Please transfer the exact amount to the VA number above.</p>
+                        <!-- UserPay input -->
+                        <label for="user-pay" class="text-white mt-4 block">Payment Amount</label>
+                        <input type="number" id="user-pay" name="user_pay" class="form-input mt-1 block w-full" min="0" placeholder="Enter payment amount">
+                        <span id="user-pay-error" class="text-red-400 text-xs mt-1" style="display:none;"></span>
                     </div>
                 </div>
             </div>
@@ -866,18 +882,38 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
          * Sends final confirmation to server and shows success modal
          */
         function confirmPayment() {
+            const userPayInput = document.getElementById('user-pay');
+            const userPayError = document.getElementById('user-pay-error');
+            const paymentAmount = parseFloat(document.getElementById('payment-amount').textContent.replace(/[^\d.]/g, ''));
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            const userPay = parseFloat(userPayInput.value);
+            let minPay = paymentAmount;
+            userPayError.style.display = 'none';
+            userPayError.textContent = '';
+            if (paymentMethod === 'installment') {
+                minPay = paymentAmount * 0.5;
+                if (userPay < minPay) {
+                    userPayError.textContent = 'Minimum payment for installment is 50% of total amount.';
+                    userPayError.style.display = 'block';
+                    userPayInput.focus();
+                    return;
+                }
+            } else {
+                if (userPay < paymentAmount) {
+                    userPayError.textContent = 'Payment amount must be at least the total price.';
+                    userPayError.style.display = 'block';
+                    userPayInput.focus();
+                    return;
+                }
+            }
+            // Add UserPay to formData
             const formData = new FormData();
             formData.append('final_submit', '1');
-            
-            // Get payment method for CompletedDate handling
-            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
             formData.append('payment_method', paymentMethod);
-            
-            // Add CompletedDate if payment method is cash or transfer
+            formData.append('user_pay', userPay);
             if (paymentMethod === 'cash' || paymentMethod === 'transfer') {
                 formData.append('completed_date', new Date().toISOString());
             }
-
             fetch(window.location.href, {
                     method: 'POST',
                     body: formData
@@ -888,12 +924,13 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         closeModal('payment-modal');
                         openModal('success-modal');
                     } else {
-                        alert(data.message || 'An error occurred. Please try again.');
+                        userPayError.textContent = data.message || 'An error occurred. Please try again.';
+                        userPayError.style.display = 'block';
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+                    userPayError.textContent = 'An error occurred. Please try again.';
+                    userPayError.style.display = 'block';
                 });
         }
 
