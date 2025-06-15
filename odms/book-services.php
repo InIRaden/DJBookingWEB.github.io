@@ -96,17 +96,15 @@ if (isset($_POST['final_submit'])) {
             $paymentStatus = 'First Payment'; // Set status to First Payment for first installment
         }
         try {
-            $dbh->beginTransaction();
-            // Insert ke tblbooking (Status NULL)
-            $sql = "INSERT INTO tblbooking (
-                        BookingID, ServiceID, Name, MobileNumber, Email, EventDate,
-                        EventStartingtime, EventEndingtime, VenueAddress, EventType,
-                        AdditionalInformation, BookingDate, Status
-                    ) VALUES (
-                        :bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate,
-                        :eventstartingtime, :eventendingtime, :venueaddress, :eventtype,
-                        :additionalinformation, NOW(), NULL
-                    )";
+            // Call stored procedure to insert booking and payment
+            $sql = "CALL CreateBookingAndPayment(
+                :bookingid, :serviceid, :name, :mobilenumber, :email, 
+                :eventdate, :eventstartingtime, :eventendingtime,
+                :venueaddress, :eventtype, :additionalinformation,
+                :paymentmethod, :amount, :transferbank, :va_number,
+                :paymentstatus, :completeddate, :installmentcount, :userpay
+            )";
+            
             $query = $dbh->prepare($sql);
             $query->execute([
                 ':bookingid' => $bookingData['bookingid'],
@@ -119,19 +117,7 @@ if (isset($_POST['final_submit'])) {
                 ':eventendingtime' => $bookingData['eetime'],
                 ':venueaddress' => $bookingData['vaddress'],
                 ':eventtype' => $bookingData['eventtype'],
-                ':additionalinformation' => $bookingData['addinfo']
-            ]);
-            // Insert ke tblpayment
-            $sql2 = "INSERT INTO tblpayment (
-                        BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber,
-                        PaymentStatus, PaymentDate, CompletedDate, InstallmentCount, UserPay
-                    ) VALUES (
-                        :bookingid, :paymentmethod, :amount, :transferbank, :va_number,
-                        :paymentstatus, NOW(), :completeddate, :installmentcount, :userpay
-                    )";
-            $query2 = $dbh->prepare($sql2);
-            $query2->execute([
-                ':bookingid' => $bookingData['bookingid'],
+                ':additionalinformation' => $bookingData['addinfo'],
                 ':paymentmethod' => $paymentMethod,
                 ':amount' => $amount,
                 ':transferbank' => $bookingData['selectedBank'],
@@ -141,11 +127,10 @@ if (isset($_POST['final_submit'])) {
                 ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null,
                 ':userpay' => $userPay
             ]);
-            $dbh->commit();
+
             unset($_SESSION['temp_booking']);
             echo json_encode(['success' => true]);
         } catch (PDOException $e) {
-            $dbh->rollBack();
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
         }
     } else {
