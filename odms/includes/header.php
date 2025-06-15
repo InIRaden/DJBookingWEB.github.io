@@ -112,7 +112,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <?php if (isset($_SESSION['odmsaid'])): ?>
                 <div class="flex items-center space-x-3">
                     <span class="text-xs text-gray-300">
-                        Welcome, <?php echo htmlspecialchars($_SESSION['NamaUser']); ?>
+                        Welcome, <?php echo htmlspecialchars($_SESSION['NameUser']); ?>
                     </span>
                     <a href="logout.php" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
                         Logout
