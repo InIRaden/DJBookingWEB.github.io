@@ -240,6 +240,12 @@ include('includes/dbconnection.php');
             transform: scale(1.1);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
+
+        /* Tambahan untuk breadcrumb */
+        .breadcrumb {
+            margin-top: 20px; /* Jarak dari atas untuk membuatnya terlihat */
+            padding: 10px 0;
+        }
     </style>
 </head>
 
@@ -247,19 +253,12 @@ include('includes/dbconnection.php');
     <!-- Header Section -->
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
-        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Services</h1>
-            <p class="text-xs md:text-sm mt-2 text-white">
-                Learn more about our DJ services and what makes us special
-            </p>
-        </div>
     </header>
 
     <!-- Main Content -->
     <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto bg-gray-900 rounded-lg shadow-2xl transition-all duration-300 hover:shadow-red-600/20">
         <!-- Breadcrumb -->
-        <div class="flex items-center space-x-2 text-xs mb-8 text-gray-400">
+        <div class="breadcrumb flex items-center space-x-2 text-xs mb-8 text-gray-400">
             <a href="index.php" class="hover:text-white transition-colors duration-200">Home</a>
             <span class="text-gray-600">/</span>
             <span class="text-white">Services</span>
