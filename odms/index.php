@@ -83,6 +83,20 @@ include('includes/dbconnection.php');
         .event-card:hover::after {
             opacity: 1;
         }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            animation: marquee 15s linear infinite;
+        }
     </style>
 </head>
 
@@ -101,9 +115,29 @@ include('includes/dbconnection.php');
                 Book Now
             </a>
         </div>
-    </header>
-
-
+    </header>    <!-- Modern Marquee Section -->
+    <div class="bg-black py-6 mt-8 overflow-hidden border-t border-b border-red-800/20">
+        <div class="animate-marquee whitespace-nowrap flex items-center space-x-12 text-white">
+            <span class="text-base md:text-xl mx-4 font-semibold flex items-center italic">
+                <i class="fas fa-music text-red-600 mr-3 text-xl md:text-2xl"></i> Professional DJs for Your Special Events
+            </span>
+            <span class="text-base md:text-xl mx-4 font-semibold flex items-center italic">
+                <i class="fas fa-headphones text-red-600 mr-3 text-xl md:text-2xl"></i> Book Your Perfect DJ Today
+            </span>
+            <span class="text-base md:text-xl mx-4 font-semibold flex items-center italic">
+                <i class="fas fa-star text-red-600 mr-3 text-xl md:text-2xl"></i> Create Unforgettable Moments
+            </span>
+            <span class="text-base md:text-xl mx-4 font-semibold flex items-center italic">
+                <i class="fas fa-glass-cheers text-red-600 mr-3 text-xl md:text-2xl"></i> Wedding • Party • Corporate Events
+            </span>
+            <span class="text-base md:text-xl mx-4 font-semibold flex items-center italic">
+                <i class="fas fa-crown text-red-600 mr-3 text-xl md:text-2xl"></i> Experience the Best in DJ Entertainment
+            </span>
+            <span class="text-base md:text-xl mx-4 flex items-center italic">
+                <i class="fas fa-sparkles text-red-600 mr-3 text-xl md:text-2xl"></i> Making Your Events Extraordinary
+            </span>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
