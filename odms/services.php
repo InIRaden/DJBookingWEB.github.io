@@ -164,17 +164,16 @@ include('includes/dbconnection.php');
             align-items: center;
             gap: 1rem;
             width: 100%;
-        }
-
-        .search-input {
+        }        .search-input {
             flex: 1;
             padding: 0.75rem 1rem;
             background: transparent;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #d1d5db;
             font-size: 0.875rem;
             outline: none;
-            transition: box-shadow 0.3s ease, border 0.3s ease;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
         }
 
         .search-input::placeholder {
@@ -182,8 +181,7 @@ include('includes/dbconnection.php');
         }
 
         .search-input:focus {
-            box-shadow: 0 0 10px rgba(220, 38, 38, 0.6), 0 0 20px rgba(220, 38, 38, 0.4);
-            border: 1px solid #374151; /* Add border on focus */
+            border-color: rgba(255, 255, 255, 0.5);
         }
         
         .search-button {
@@ -194,10 +192,21 @@ include('includes/dbconnection.php');
             border-radius: 0.5rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        .search-button.cancel-button {
+            background: transparent;
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            transition: all 0.3s ease;
+        }
+
+        .search-button.cancel-button:hover {
+            background: rgba(220, 38, 38, 0.1);
         }
         
         .search-button:hover {
@@ -273,8 +282,7 @@ include('includes/dbconnection.php');
                 <button type="submit" class="search-button">
                     <i class="fas fa-search"></i> Search
                 </button>
-                <?php if(isset($_GET['search']) && !empty($_GET['search'])): ?>
-                <a href="services.php" class="search-button" style="background-color: #4b5563;">
+                <?php if(isset($_GET['search']) && !empty($_GET['search'])): ?>                <a href="services.php" class="search-button cancel-button">
                     <i class="fas fa-times"></i> Clear
                 </a>
                 <?php endif; ?>
