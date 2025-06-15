@@ -70,3 +70,10 @@ Note jangan ubah bagian ini :
 Jangan ubah panjang container, search gausah ditambah ataupun gausah diubah ya , semuanya harus konsisten. Abaikan pagination. Fokuskan perubahan padawarna, estetika, dan UX modern. yang diubah containernya aja , booking datenya latarnya bitu tulisan nya putih  buat tabelnya mah putih buatkan rounded latar container juga putih, yang date lataernya tebel tulisan nya putih  latarnya juga putih aja , yang gelapin itu hedaer yang judulx
 latar parent nya ubah putih aja gausa diubah 
 yang kuning buat not proces, yang ijo buat approve , yang merah buat canceled 
+
+
+
+buatkan juga ketika paymentmethod usernya installment dia payment statusnya di view-detail-booking ketika pencet complete payment itu "payment 1 done" gitu , kalo nanti Statusnya diubah Approve 
+
+
+buatkan disamping payment nya itu ada kayak misal 2 payment samping nya kasih 2x harga amount  sesuai bookid nya dibagi 2 gitu dan seterusnya kalau 3 pun sesuaikan kayak 2x 400$ disamping tulisan 2 payment gitu conothnya , itu harganya otomatis kederek sesuai yang card atauapun bookid yang user pilih 

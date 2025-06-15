@@ -362,8 +362,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                                                                     $statusClass = 'badge-danger';
                                                                     break;
                                                                 default:
-                                                                    $statusClass = 'badge-secondary';
-                                                                    break;
+                                                                    $statusClass = 'badge';
                                                             }
                                                             echo $statusClass;
                                                             ?>"><?php echo htmlentities($row->PaymentStatus) ?: 'N/A'; ?></span>
