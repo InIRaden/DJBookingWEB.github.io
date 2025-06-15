@@ -257,74 +257,74 @@ include('includes/dbconnection.php');
         </section>
 
         <!-- FAQ Section -->
-        <section class="bg-black text-white py-20">
-            <div class="max-w-4xl mx-auto px-6">
-                <h2 class="text-center text-4xl font-medium mb-12 text-gray-100">Frequently Asked Questions</h2>
-                <div class="space-y-4" id="faq-container">
-                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Bagaimana cara memesan DJ untuk acara saya?</span>
-                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p>Proses pemesanan DJ sangat mudah! Cukup ikuti langkah berikut:</p>
-                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
-                                <li>Pilih jenis acara Anda</li>
-                                <li>Pilih DJ yang tersedia</li>
-                                <li>Pilih tanggal dan waktu</li>
-                                <li>Isi detail pemesanan</li>
-                                <li>Lakukan pembayaran</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Berapa lama sebelumnya saya harus memesan DJ?</span>
-                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p class="text-sm">Kami merekomendasikan pemesanan minimal 2 minggu sebelum acara untuk memastikan ketersediaan DJ. Untuk acara besar, sebaiknya pesan 1-2 bulan sebelumnya.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Apakah saya bisa request lagu khusus?</span>
-                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p class="text-sm">Ya! Anda dapat mengirimkan daftar lagu yang diinginkan saat melakukan pemesanan. DJ kami akan mengakomodasi permintaan lagu sesuai dengan genre dan aliran musik yang sesuai dengan acara Anda.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                            <span>Apa yang termasuk dalam layanan DJ?</span>
-                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                            <p class="text-sm">Layanan kami mencakup:</p>
-                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
-                                <li>DJ profesional sesuai pilihan Anda</li>
-                                <li>Peralatan sound system standar</li>
-                                <li>Pencahayaan dasar</li>
-                                <li>Setup dan soundcheck</li>
-                                <li>Koordinasi dengan penyelenggara acara</li>
-                            </ul>
-                        </div>
-                    </div>
+<section class="bg-black text-white py-20">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-center text-4xl font-medium mb-12 text-gray-100">Frequently Asked Questions</h2>
+        <div class="space-y-4" id="faq-container">
+            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                    <span>How do I book a DJ for my event?</span>
+                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                    <p>The booking process is very easy! Just follow these steps:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
+                        <li>Select your event type</li>
+                        <li>Choose an available DJ</li>
+                        <li>Select the date and time</li>
+                        <li>Fill in the booking details</li>
+                        <li>Complete the payment</li>
+                    </ul>
                 </div>
             </div>
-        </section>
+
+            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                    <span>How far in advance should I book a DJ?</span>
+                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                    <p class="text-sm">We recommend booking at least 2 weeks before your event to ensure DJ availability. For larger events, it’s best to book 1-2 months in advance.</p>
+                </div>
+            </div>
+
+            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                    <span>Can I request specific songs?</span>
+                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                    <p class="text-sm">Yes! You can submit a list of desired songs when making your booking. Our DJs will accommodate song requests according to the genre and music style suitable for your event.</p>
+                </div>
+            </div>
+
+            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                    <span>What is included in the DJ service?</span>
+                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                    <p class="text-sm">Our services include:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
+                        <li>Professional DJ of your choice</li>
+                        <li>Standard sound system equipment</li>
+                        <li>Basic lighting</li>
+                        <li>Setup and soundcheck</li>
+                        <li>Coordination with event organizers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
         <style>
             .faq-item {
