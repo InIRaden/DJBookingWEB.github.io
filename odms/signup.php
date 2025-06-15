@@ -125,7 +125,7 @@ if (isset($_POST['register'])) {
             position: relative;
             z-index: 2;
             color: var(--white);
-            font-size: 2.5rem;
+            font-size: 2.1rem;
             font-weight: 700;
             margin-bottom: 1rem;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -137,7 +137,7 @@ if (isset($_POST['register'])) {
 
         .system-name i {
             margin-right: 0.5rem;
-            color: #ffd700;
+            color: var(--white);
         }
 
         .copyright {
@@ -436,7 +436,7 @@ if (isset($_POST['register'])) {
         <!-- Left Side - Image -->
     <div class="register-image">
         <div class="system-name animated">
-            <i class="fas fa-music"></i> Online DJ Management System
+            <i class="fas fa-music">Online Event Booking With DJs System</i> 
         </div>
         <div class="copyright animated delay-1">
             <p>&copy; <span id="current-year"></span> All Rights Reserved • Made with <i class="fas fa-heart"></i></p>
