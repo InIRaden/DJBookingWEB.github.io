@@ -6,13 +6,13 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
     header('location:logout.php');
 } else {
 ?>
-    <nav id="sidebar" style="background-color: #000000; box-shadow: 0 0 15px rgba(0,0,0,0.4);">
+    <nav id="sidebar" style="background-color:#23272b; box-shadow: 0 0 15px rgba(0,0,0,0.4); border-top-right-radius: 20px; border-bottom-right-radius: 20px">
         <!-- Sidebar Scroll Container -->
         <div id="sidebar-scroll">
             <!-- Sidebar Content -->
             <div class="sidebar-content">
                 <!-- Side Header -->
-                <div class="content-header content-header-fullrow px-15" style="background-color: #000000; border-bottom: 1px solid #333333;">
+                <div class="content-header content-header-fullrow px-15" style="background-color: #23272b; border-bottom: 1px solid #333333;">
                     <!-- Mini Mode -->
                     <div class="content-header-section sidebar-mini-visible-b">
                         <!-- Logo -->
@@ -36,7 +36,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                         <div class="content-header-item">
                             <a class="link-effect font-w700" href="dashboard.php">
                                 <i class="si si-music-tone-alt text-primary"></i>
-                                <span class="font-size-xl text-white">OD</span><span class="font-size-xl text-primary">MS</span>
+                                <span class="font-size-xl" style="color:#cfd8dc;">OD</span><span class="font-size-xl text-primary">MS</span>
                             </a>
                         </div>
                         <!-- END Logo -->
@@ -46,7 +46,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                 <!-- END Side Header -->
 
                 <!-- Side User -->
-                <div class="content-side content-side-full content-side-user px-10 align-parent" style="background-color: #000000; border-bottom: 1px solid #333333;">
+                <div class="content-side content-side-full content-side-user px-10 align-parent" style="background-color: #23272b; border-bottom: 1px solid #333333;">
                     <!-- Visible only in mini mode -->
                     <div class="sidebar-mini-visible-b align-v animated fadeIn">
                         <img class="img-avatar img-avatar32" src="assets/img/avatars/avatar15.jpg" alt="">
@@ -60,15 +60,15 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                         </a>
                         <ul class="list-inline mt-10">
                             <li class="list-inline-item">
-                                <a class="link-effect text-white font-size-sm font-w600 text-uppercase" href="admin-profile.php">Admin</a>
+                                <a class="link-effect" style="color:#cfd8dc; font-size:smaller; font-w600; text-transform:uppercase;" href="admin-profile.php">Admin</a>
                             </li>
                             <li class="list-inline-item">
-                                <a class="link-effect text-white" data-toggle="layout" data-action="sidebar_style_inverse_toggle" href="admin-profile.php">
+                                <a class="link-effect" style="color:#cfd8dc;" data-toggle="layout" data-action="sidebar_style_inverse_toggle" href="admin-profile.php">
                                     <i class="si si-drop"></i>
                                 </a>
                             </li>
                             <li class="list-inline-item">
-                                <a class="link-effect text-white" href="logout.php">
+                                <a class="link-effect" style="color:#cfd8dc;" href="logout.php">
                                     <i class="si si-logout"></i>
                                 </a>
                             </li>
@@ -80,84 +80,84 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
 
                 <!-- Side Navigation -->
                 <div class="content-side content-side-full">
-                    <ul class="nav-main" style="color: #e0e0e0;">
-                        <li class="open">
-                            <a href="dashboard.php" style="color: #e0e0e0; background-color: #000000;"><i class="si si-cup" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Dashboard</span></a>
+                    <ul class="nav-main" style="color: #cfd8dc;">
+                        <li class="open" style="margin-bottom: 10px;">
+                            <a href="dashboard.php" style="color: #cfd8dc; background-color: #23272b;"><i class="si si-cup" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Dashboard</span></a>
                         </li>
 
-                        <li class="nav-main-heading" style="color: #4f9fff; margin-top: 10px;"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Menu</span></li>
-                        <li>
-                            <a class="nav-submenu" data-toggle="nav-submenu" style="color: #e0e0e0;"><i class="si si-volume-2" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">DJ Services</span></a>
-                            <ul style="background-color: #000000; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
-                                <li>
-                                    <a href="add-services.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Add Services</a>
+                        <li class="nav-main-heading" style="color: #4f9fff; margin-top: 10px; margin-bottom: 10px;"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Menu</span></li>
+                        <li style="margin-bottom: 10px;">
+                            <a class="nav-submenu" data-toggle="nav-submenu" style="color: #cfd8dc;"><i class="si si-volume-2" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">DJ Services</span></a>
+                            <ul style="background-color: #2c2f34; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="add-services.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Add Services</a>
                                 </li>
-                                <li>
-                                    <a href="manage-services.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Manage Services</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-energy" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Type of Events</span></a>
-                            <ul style="background-color: #000000; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
-                                <li>
-                                    <a href="add-event-type.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Add Event Types</a>
-                                </li>
-                                <li>
-                                    <a href="manage-event-type.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Manage Event Types</a>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="manage-services.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Manage Services</a>
                                 </li>
                             </ul>
                         </li>
-                        <li>
-                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-note" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Booking</span></a>
-                            <ul style="background-color: #000000; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
-                                <li>
-                                    <a href="new-booking.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">New Booking</a>
+                        <li style="margin-bottom: 10px;">
+                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #cfd8dc;"><i class="si si-energy" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Type of Events</span></a>
+                            <ul style="background-color: #2c2f34; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="add-event-type.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Add Event Types</a>
                                 </li>
-                                <li>
-                                    <a href="approved-booking.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Approved Booking</a>
-                                </li>
-                                <li>
-                                    <a href="cancelled-booking.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Cancelled Booking</a>
-                                </li>
-                                <li>
-                                    <a href="all-booking.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">All Booking</a>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="manage-event-type.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Manage Event Types</a>
                                 </li>
                             </ul>
                         </li>
-                        <li>
-                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-users" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Contact Us Queries</span></a>
-                            <ul style="background-color: #000000; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
-                                <li>
-                                    <a href="unread-queries.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Unread Queries</a>
+                        <li style="margin-bottom: 10px;">
+                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #cfd8dc;"><i class="si si-note" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Booking</span></a>
+                            <ul style="background-color: #2c2f34; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="new-booking.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">New Booking</a>
                                 </li>
-                                <li>
-                                    <a href="read-queries.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Read Queries</a>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="approved-booking.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Approved Booking</a>
                                 </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="between-dates-report.php" style="color: #e0e0e0;"><i class="si si-doc" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">B/w Dates Report</span></a>
-                        </li>
-                        <li>
-                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-magnifier" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Search</span></a>
-                            <ul style="background-color: #000000; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
-                                <li>
-                                    <a href="user-search.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">User Search</a>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="cancelled-booking.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Cancelled Booking</a>
                                 </li>
-                                <li>
-                                    <a href="booking-search.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Booking Search</a>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="all-booking.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">All Booking</a>
                                 </li>
                             </ul>
                         </li>
-                        <li>
-                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #e0e0e0;"><i class="si si-docs" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Pages</span></a>
-                            <ul style="background-color: #000000; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
-                                <li>
-                                    <a href="aboutus.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">About Us</a>
+                        <li style="margin-bottom: 10px;">
+                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #cfd8dc;"><i class="si si-users" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Contact Us Queries</span></a>
+                            <ul style="background-color: #2c2f34; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="unread-queries.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Unread Queries</a>
                                 </li>
-                                <li>
-                                    <a href="contactus.php" style="color: #e0e0e0; padding-left: 40px; margin: 0;">Contact Us</a>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="read-queries.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Read Queries</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="between-dates-report.php" style="color: #cfd8dc;"><i class="si si-doc" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">B/w Dates Report</span></a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #cfd8dc;"><i class="si si-magnifier" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Search</span></a>
+                            <ul style="background-color: #2c2f34; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="user-search.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">User Search</a>
+                                </li>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="booking-search.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Booking Search</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a class="nav-submenu" data-toggle="nav-submenu" href="#" style="color: #cfd8dc;"><i class="si si-docs" style="color: #4f9fff;"></i><span class="sidebar-mini-hide">Pages</span></a>
+                            <ul style="background-color: #2c2f34; border-left: 3px solid #4f9fff; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="aboutus.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">About Us</a>
+                                </li>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="contactus.php" style="color: #cfd8dc; padding-left: 40px; margin: 0;">Contact Us</a>
                                 </li>
                             </ul>
                         </li>
