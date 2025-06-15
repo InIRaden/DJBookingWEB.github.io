@@ -67,6 +67,7 @@ INSERT INTO `tbladmin` (`ID`, `AdminName`, `UserName`, `MobileNumber`, `Email`, 
 
 CREATE TABLE tblpayment (
     ID int(11) NOT NULL AUTO_INCREMENT,
+    UserID INT(10) NOT NULL,
     BookingID varchar(20) NOT NULL,
     PaymentMethod enum('cash','transfer','installment') NOT NULL,
     Amount decimal(10,2) NOT NULL,
@@ -76,24 +77,15 @@ CREATE TABLE tblpayment (
     PaymentStatus enum('Pending','Paid','Failed') DEFAULT 'Pending',
     PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     CompletedDate timestamp NULL DEFAULT NULL,
+    UserPay INT(11) DEFAULT NULL,
     PRIMARY KEY (ID),
+    DueDate DATE DEFAULT NULL,
     KEY BookingID (BookingID),
     FOREIGN KEY (BookingID) REFERENCES tblbooking(BookingID)
+    FOREIGN KEY (UserID) REFERENCES tbluser_login(ID);
 );
 
 
-
-ini yang perlu ditampilin di view-detail-booking 
- PaymentMethod enum('cash','transfer','installment') NOT NULL,
-  Amount decimal(10,2) NOT NULL,
-   TransferBank varchar(50) DEFAULT NULL,
-   PaymentStatus enum('Pending','Paid','Failed') DEFAULT 'Pending',
-    PaymentDate timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-    CompletedDate timestamp NULL DEFAULT NULL,
-    
-    PRIMARY KEY (ID),
-    KEY BookingID (BookingID),
-    FOREIGN KEY (BookingID) REFERENCES tblbooking(BookingID)
 
 
 -- Tabel untuk cicilan pembayaran
@@ -101,6 +93,7 @@ ini yang perlu ditampilin di view-detail-booking
 
 CREATE TABLE `tblbooking` (
   `ID` int(10) NOT NULL,
+  'UserID' INT(10) NOT NULL,
   `BookingID` int(10) DEFAULT NULL,
   `ServiceID` int(10) DEFAULT NULL,
   `Name` varchar(200) DEFAULT NULL,
@@ -116,6 +109,7 @@ CREATE TABLE `tblbooking` (
   `Remark` varchar(200) DEFAULT NULL,
   `Status` varchar(200) DEFAULT NULL,
   `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+  FOREIGN KEY (UserID) REFERENCES tbluser_login(ID);
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
