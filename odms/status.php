@@ -17,63 +17,6 @@ include('includes/dbconnection.php');
         body {
             font-family: "Inter", sans-serif;
         }
-
-        .header-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            overflow: hidden;
-        }
-
-        .header-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-            transform: scale(1.02);
-            transition: transform 0.5s ease;
-        }
-
-        .header-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top,
-                    rgba(0, 0, 0, 0.95),
-                    rgba(0, 0, 0, 0.1)
-                );
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-        }
-
-        .header-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 10;
-            width: 100%;
-            max-width: 500px;
-            padding: 0 20px;
-        }
-
-        .header-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header-text {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-        }
         
         /* Styling untuk notifikasi */
         .notification {
@@ -126,20 +69,19 @@ include('includes/dbconnection.php');
 
 <body class="bg-black text-white">
     <!-- Header Section -->
-    <header>
+    <header class="relative">
         <?php include_once('includes/header.php'); ?>
-        <div class="header-container">
-            <img src="images/abt.jpg" alt="Request Status" class="header-image">
-            <div class="header-overlay"></div>
-            <div class="header-content">
-                <h1 class="header-title">Request Status</h1>
-                <p class="header-text">Check the current status of your booking request</p>
-            </div>
+        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
+            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Request Status</h1>
+            <p class="text-xs md:text-sm mt-2 text-white">
+                Learn more about our DJ services and what makes us special
+            </p>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="px-6 md:px-10 lg:px-2 xl:px-3 py-10 max-w-[1280px] mx-auto">
+    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
         <!-- Breadcrumb -->
         <div class="flex items-center space-x-2 text-xs mb-8">
             <a href="index.php" class="text-gray-400 hover:text-white">Home</a>

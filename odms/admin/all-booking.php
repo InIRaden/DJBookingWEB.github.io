@@ -151,15 +151,16 @@
                                             <td class="font-w600"><?php echo htmlentities($row->Email); ?></td>
                                             <td class="font-w600">
                                                 <span class="badge badge-primary"><?php echo htmlentities($row->BookingDate); ?></span>
-                                            </td>                            <td>
+                                            </td>
+                                            <td>
                                                 <?php
                                                 $bstatus = $row->Status;
                                                 if ($bstatus == '') { ?>
                                                     <span class="badge badge-warning">Not Processed Yet</span>
                                                 <?php } elseif ($bstatus == 'Approved') { ?>
                                                     <span class="badge badge-success"><?php echo htmlentities($bstatus); ?></span>
-                                                <?php } elseif ($bstatus == 'Cancelled') { ?>
-                                                    <span class="badge badge-danger" style="background: #FFE5E5 !important; color: #dc3545 !important;"><?php echo htmlentities($bstatus); ?></span>
+                                                <?php } elseif ($bstatus == 'Rejected') { ?>
+                                                    <span class="badge badge-danger"><?php echo htmlentities($bstatus); ?></span>
                                                 <?php } ?>
                                             </td>
                                             <td class="d-none d-sm-table-cell">
