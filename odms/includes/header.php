@@ -93,7 +93,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="flex items-center space-x-2 text-sm font-semibold">
             <a href="index.php" class="flex items-center space-x-2 hover:text-red-400 transition-colors duration-300">
                 <i class="fas fa-compact-disc animate-spin-slow"></i>
-                <span>DjBooking</span>
+                <span>SPINUP</span>
             </a>
         </div>
 
