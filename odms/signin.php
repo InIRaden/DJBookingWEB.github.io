@@ -4,59 +4,39 @@ error_reporting(0);
 include('includes/dbconnection.php');
 
 if (isset($_POST['login'])) {
-  $username = $_POST['username'];
-  $password = md5($_POST['password']);
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
 
-  $sql = "SELECT ID FROM tbluser_login WHERE UserName = :username AND Password = :password";
-  $query = $dbh->prepare($sql);
-  $query->bindParam(':username', $username, PDO::PARAM_STR);
-  $query->bindParam(':password', $password, PDO::PARAM_STR);
-  $query->execute();
-  $results = $query->fetchAll(PDO::FETCH_OBJ);
+    $sql = "SELECT ID, UserName, NameUser FROM tbluser_login WHERE UserName = :username AND Password = :password";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':username', $username, PDO::PARAM_STR);
+    $query->bindParam(':password', $password, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
 
-  if ($query->rowCount() > 0) {
-    foreach ($results as $result) {
-      $_SESSION['odmsaid'] = $result->ID;
-    }
+    if ($result) {
+        // Simpan data ke session
+        $_SESSION['odmsaid'] = $result->ID;
+        $_SESSION['UserName'] = $result->UserName;
+        $_SESSION['NameUser'] = $result->NameUser;
 
-    if (!empty($_POST["remember"])) {
-      setcookie("user_login", $_POST["username"], time() + (10 * 365 * 24 * 60 * 60));
-      setcookie("userpassword", $_POST["password"], time() + (10 * 365 * 24 * 60 * 60));
-    } else {
-      setcookie("user_login", "");
-      setcookie("userpassword", "");
-    }
+        // Remember me (jika dicentang)
+        if (!empty($_POST["remember"])) {
+            setcookie("user_login", $_POST["username"], time() + (10 * 365 * 24 * 60 * 60));
+            setcookie("userpassword", $_POST["password"], time() + (10 * 365 * 24 * 60 * 60));
+        } else {
+            setcookie("user_login", "");
+            setcookie("userpassword", "");
+        }
 
     $_SESSION['login'] = $_POST['username'];
-    echo "<script>
-      window.onload = function() {
-        Toastify({
-          text: 'Login successful! Welcome back.',
-          duration: 3000,
-          gravity: 'top',
-          position: 'right',
-          backgroundColor: '#28a745',
-        }).showToast();
-        setTimeout(function() {
-          window.location.href = 'index.php';
-        }, 1000);
-      }
-    </script>";
+    echo "<script>location.href='index.php';</script>";
   } else {
-    echo "<script>
-      window.onload = function() {
-        Toastify({
-          text: 'Invalid username or password!',
-          duration: 3000,
-          gravity: 'top',
-          position: 'right',
-          backgroundColor: '#dc3545',
-        }).showToast();
-      }
-    </script>";
+    echo "<script>alert('Username atau password salah');</script>";
   }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

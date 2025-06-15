@@ -193,8 +193,8 @@ include('includes/dbconnection.php');
                     ],
                     [
                         'name' => 'Raden Mahesa',
-                        'role' => 'Database Specialist',
-                        'image' => 'images/mahesaa.jpg',
+                        'role' => 'Database & BackEnd Developer',
+                        'image' => './images/mahesaaa.jpg',
                         'description' => 'Insyaallah pekerjaan saya, memastikan data tersimpan dengan aman dan efisien.'
                     ]
                 ];
