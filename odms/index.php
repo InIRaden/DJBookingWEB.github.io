@@ -84,6 +84,54 @@ include('includes/dbconnection.php');
             opacity: 1;
         }
 
+        /* Slider styles from Codingan 1 */
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 100vw;
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .slides {
+            display: flex;
+            width: 400%;
+            height: 500px;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide-image {
+            width: 25%;
+            height: 500px;
+            object-fit: cover;
+            object-position: center;
+            flex-shrink: 0;
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+
+        .dot.active {
+            opacity: 1;
+            background-color: #ff3333;
+        }
+
         @keyframes marquee {
             0% {
                 transform: translateX(0);
@@ -97,14 +145,48 @@ include('includes/dbconnection.php');
         .animate-marquee {
             animation: marquee 15s linear infinite;
         }
+
+        /* FAQ styles */
+        .faq-item {
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-answer.show {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
     </style>
 </head>
 
 <body class="bg-black text-white font-sans">
-    <!-- Header Section -->
+    <!-- Header Section with Slider from Codingan 1 -->
     <header class="relative text-center">
         <?php include_once('includes/header.php'); ?>
-        <img alt="DJ wearing headphones with raised hands" class="w-full h-[500px] object-cover" src="images/homepage.jpg" />
+        <div class="slider relative w-full h-[500px] overflow-hidden">
+            <div class="slides flex transition-transform duration-500 ease-in-out">
+                <img alt="DJ wearing headphones with raised hands" class="slide-image" src="images/homepage.jpg" />
+                <img alt="Event image 6" class="slide-image" src="images/homepage1.jpg" />
+                <img alt="Event image 1" class="slide-image" src="images/homepage2.jpg" />
+                <img alt="About image" class="slide-image" src="images/homepage3.jpg" />
+            </div>
+            <div class="dots">
+                <span class="dot" onclick="currentSlide(0)"></span>
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
+        </div>
 
         <div class="hero-content absolute top-1/2 left-1/2 -translate-x-[50%] -translate-y-[40%] text-center max-w-xl px-4">
             <h1 class="text-white font-bold text-3xl md:text-6xl leading-tight">Make Your Event Unforgettable</h1>
@@ -115,7 +197,9 @@ include('includes/dbconnection.php');
                 Book Now
             </a>
         </div>
-    </header>    <!-- Modern Marquee Section -->
+    </header>
+
+    <!-- Modern Marquee Section -->
     <div class="bg-black py-6 mt-8 overflow-hidden border-t border-b border-red-800/20">
         <div class="animate-marquee whitespace-nowrap flex items-center space-x-12 text-white">
             <span class="text-base md:text-xl mx-4 font-semibold flex items-center italic">
@@ -146,14 +230,13 @@ include('includes/dbconnection.php');
             <h2 class="font-semibold text-white text-sm mb-6">Featured DJs</h2>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <?php
-                // SQL dengan RANK() untuk memberi peringkat berdasarkan booking_count
                 $sql = "SELECT
                             s.ID,
                             s.ServiceName,
                             s.SerDes,
                             s.ServicePrice,
-                        COUNT(b.ID) AS booking_count,
-                        RANK() OVER (ORDER BY COUNT(b.ID) DESC) AS ranking
+                            COUNT(b.ID) AS booking_count,
+                            RANK() OVER (ORDER BY COUNT(b.ID) DESC) AS ranking
                         FROM tblservice s
                         LEFT JOIN tblbooking b ON s.ID = b.ServiceID
                         GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
@@ -164,7 +247,6 @@ include('includes/dbconnection.php');
                 $featured_djs = $query->fetchAll(PDO::FETCH_OBJ);
 
                 foreach ($featured_djs as $dj) {
-                    // Tentukan gambar berdasarkan nama service
                     $djImage = '';
                     switch (strtolower($dj->ServiceName)) {
                         case 'wedding dj':
@@ -205,7 +287,6 @@ include('includes/dbconnection.php');
                 <?php } ?>
             </div>
         </section>
-
 
         <!-- Hero Banner Section -->
         <section class="py-20 bg-black text-white">
@@ -257,137 +338,141 @@ include('includes/dbconnection.php');
         </section>
 
         <!-- FAQ Section -->
-<section class="bg-black text-white py-20">
-    <div class="max-w-4xl mx-auto px-6">
-        <h2 class="text-center text-4xl font-medium mb-12 text-gray-100">Frequently Asked Questions</h2>
-        <div class="space-y-4" id="faq-container">
-            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                    <span>How do I book a DJ for my event?</span>
-                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                    <p>The booking process is very easy! Just follow these steps:</p>
-                    <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
-                        <li>Select your event type</li>
-                        <li>Choose an available DJ</li>
-                        <li>Select the date and time</li>
-                        <li>Fill in the booking details</li>
-                        <li>Complete the payment</li>
-                    </ul>
+        <section class="bg-black text-white py-20">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-center text-4xl font-medium mb-12 text-gray-100">Frequently Asked Questions</h2>
+                <div class="space-y-4" id="faq-container">
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                            <span>How do I book a DJ for my event?</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p>The booking process is very easy! Just follow these steps:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
+                                <li>Select your event type</li>
+                                <li>Choose an available DJ</li>
+                                <li>Select the date and time</li>
+                                <li>Fill in the booking details</li>
+                                <li>Complete the payment</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                            <span>How far in advance should I book a DJ?</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p class="text-sm">We recommend booking at least 2 weeks before your event to ensure DJ availability. For larger events, it’s best to book 1-2 months in advance.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                            <span>Can I request specific songs?</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p class="text-sm">Yes! You can submit a list of desired songs when making your booking. Our DJs will accommodate song requests according to the genre and music style suitable for your event.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
+                        <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
+                            <span>What is included in the DJ service?</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
+                            <p class="text-sm">Our services include:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
+                                <li>Professional DJ of your choice</li>
+                                <li>Standard sound system equipment</li>
+                                <li>Basic lighting</li>
+                                <li>Setup and soundcheck</li>
+                                <li>Coordination with event organizers</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                    <span>How far in advance should I book a DJ?</span>
-                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                    <p class="text-sm">We recommend booking at least 2 weeks before your event to ensure DJ availability. For larger events, it’s best to book 1-2 months in advance.</p>
-                </div>
-            </div>
-
-            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                    <span>Can I request specific songs?</span>
-                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                    <p class="text-sm">Yes! You can submit a list of desired songs when making your booking. Our DJs will accommodate song requests according to the genre and music style suitable for your event.</p>
-                </div>
-            </div>
-
-            <div class="faq-item bg-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:bg-[#2a2a2a] shadow-lg shadow-black/50">
-                <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center text-base font-medium text-gray-100 focus:outline-none">
-                    <span>What is included in the DJ service?</span>
-                    <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-answer hidden px-6 py-4 text-gray-400 border-t border-gray-800 bg-[#222222]">
-                    <p class="text-sm">Our services include:</p>
-                    <ul class="list-disc pl-5 mt-2 space-y-1 text-sm">
-                        <li>Professional DJ of your choice</li>
-                        <li>Standard sound system equipment</li>
-                        <li>Basic lighting</li>
-                        <li>Setup and soundcheck</li>
-                        <li>Coordination with event organizers</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-        <style>
-            .faq-item {
-                transform: translateY(0);
-                transition: all 0.3s ease;
-            }
-
-            .faq-item:hover {
-                transform: translateY(-2px);
-            }
-
-            .faq-answer {
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease-out;
-            }
-
-            .faq-answer.show {
-                max-height: 500px;
-                transition: max-height 0.5s ease-in;
-            }
-        </style>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const faqButtons = document.querySelectorAll('.faq-button');
-
-                faqButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const faqItem = button.parentElement;
-                        const answer = button.nextElementSibling;
-                        const icon = button.querySelector('svg');
-
-                        // Toggle answer visibility with animation
-                        answer.classList.toggle('hidden');
-                        answer.classList.toggle('show');
-
-                        // Rotate icon
-                        icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-
-                        // Add active state styles
-                        faqItem.classList.toggle('bg-[#2a2a2a]');
-
-                        // Close other answers
-                        faqButtons.forEach(otherButton => {
-                            if (otherButton !== button) {
-                                const otherAnswer = otherButton.nextElementSibling;
-                                const otherIcon = otherButton.querySelector('svg');
-                                const otherItem = otherButton.parentElement;
-
-                                otherAnswer.classList.add('hidden');
-                                otherAnswer.classList.remove('show');
-                                otherIcon.style.transform = 'rotate(0deg)';
-                                otherItem.classList.remove('bg-[#2a2a2a]');
-                            }
-                        });
-                    });
-                });
-            });
-        </script>
+        </section>
     </main>
 
     <?php include_once('includes/footer.php'); ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ Toggle Functionality
+            const faqButtons = document.querySelectorAll('.faq-button');
+
+            faqButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const faqItem = button.parentElement;
+                    const answer = button.nextElementSibling;
+                    const icon = button.querySelector('svg');
+
+                    answer.classList.toggle('hidden');
+                    answer.classList.toggle('show');
+                    icon.style.transform = answer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                    faqItem.classList.toggle('bg-[#2a2a2a]');
+
+                    faqButtons.forEach(otherButton => {
+                        if (otherButton !== button) {
+                            const otherAnswer = otherButton.nextElementSibling;
+                            const otherIcon = otherButton.querySelector('svg');
+                            const otherItem = otherButton.parentElement;
+
+                            otherAnswer.classList.add('hidden');
+                            otherAnswer.classList.remove('show');
+                            otherIcon.style.transform = 'rotate(0deg)';
+                            otherItem.classList.remove('bg-[#2a2a2a]');
+                        }
+                    });
+                });
+            });
+
+            // Slider Functionality from Codingan 1
+            let slideIndex = 0;
+            const slides = document.querySelector('.slides');
+            const dots = document.querySelectorAll('.dot');
+            const totalSlides = 4;
+
+            function showSlides() {
+                slideIndex++;
+                if (slideIndex >= totalSlides) {
+                    slideIndex = 0;
+                }
+                updateSlides();
+            }
+
+            function currentSlide(index) {
+                slideIndex = index;
+                updateSlides();
+            }
+
+            function updateSlides() {
+                if (slides) {
+                    slides.style.transform = `translateX(-${slideIndex * 25}%)`;
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === slideIndex);
+                    });
+                }
+            }
+
+            setInterval(showSlides, 5000);
+            updateSlides();
+        });
+    </script>
 </body>
 
 </html>
