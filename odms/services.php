@@ -243,7 +243,7 @@ include('includes/dbconnection.php');
 
         /* Tambahan untuk breadcrumb */
         .breadcrumb {
-            margin-top: 20px; /* Jarak dari atas untuk membuatnya terlihat */
+            margin-top: 40px; /* Jarak dari atas ditingkatkan menjadi 40px untuk lebih rendah */
             padding: 10px 0;
         }
     </style>
