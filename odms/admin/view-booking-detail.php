@@ -212,7 +212,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
             display: block;
         }
 
-        .payment-info span, .payment-info p {
+        .payment-info , .payment-info p {
             color: #333;
             font-size: 0.95rem;
         }
@@ -240,7 +240,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                             <div class="block-content">
                                 <?php
                                 $eid = $_GET['editid'];
-                                $sql = "SELECT tblbooking.BookingID,tblbooking.Name,tblbooking.MobileNumber,tblbooking.Email,tblbooking.EventDate,tblbooking.EventStartingtime,tblbooking.EventEndingtime,tblbooking.VenueAddress,tblbooking.EventType,tblbooking.AdditionalInformation,tblbooking.BookingDate,tblbooking.Remark,tblbooking.Status,tblbooking.UpdationDate,tblservice.ServiceName,tblservice.SerDes,tblservice.ServicePrice,tblpayment.PaymentMethod,tblpayment.PaymentStatus,tblpayment.PaymentDate,tblpayment.CompletedDate,tblpayment.TransferBank,tblpayment.Amount,tblpayment.InstallmentCount from tblbooking join tblservice on tblbooking.ServiceID=tblservice.ID left join tblpayment on tblbooking.BookingID=tblpayment.BookingID where tblbooking.ID=:eid";
+                                $sql = "SELECT tblbooking.BookingID,tblbooking.Name,tblbooking.MobileNumber,tblbooking.Email,tblbooking.EventDate,tblbooking.EventStartingtime,tblbooking.EventEndingtime,tblbooking.VenueAddress,tblbooking.EventType,tblbooking.AdditionalInformation,tblbooking.BookingDate,tblbooking.Remark,tblbooking.Status,tblbooking.UpdationDate,tblservice.ServiceName,tblservice.SerDes,tblservice.ServicePrice,tblpayment.PaymentMethod,tblpayment.PaymentStatus,tblpayment.PaymentDate,tblpayment.CompletedDate,tblpayment.TransferBank,tblpayment.Amount,tblpayment.InstallmentCount, tblpayment.UserPay from tblbooking join tblservice on tblbooking.ServiceID=tblservice.ID left join tblpayment on tblbooking.BookingID=tblpayment.BookingID where tblbooking.ID=:eid";
                                 $query = $dbh->prepare($sql);
                                 $query->bindParam(':eid', $eid, PDO::PARAM_STR);
                                 $query->execute();
@@ -325,12 +325,19 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                                                             <p>$<?php echo htmlentities(number_format($row->Amount, 2)) ?: 'N/A'; ?></p>
                                                         </div>
                                                         <div>
+                                                            <label>Payment Amount </label>
+                                                            <p>$<?php echo isset($row->UserPay) ? htmlentities(number_format($row->UserPay, 2)) : 'N/A'; ?></p>
+                                                        </div>
+                                                        <div>
                                                             <label>Payment Status</label>
                                                             <span class="badge <?php
                                                             $statusClass = '';
                                                             switch ($row->PaymentStatus) {
                                                                 case 'Paid':
                                                                     $statusClass = 'badge-success';
+                                                                    break;
+                                                                case 'First Payment':
+                                                                    $statusClass = 'badge-warning';
                                                                     break;
                                                                 case 'Pending':
                                                                     $statusClass = 'badge-warning';
