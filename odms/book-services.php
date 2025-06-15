@@ -57,69 +57,52 @@ if (isset($_POST['confirm_submit'])) {
 if (isset($_POST['final_submit'])) {
     if (isset($_SESSION['temp_booking'])) {
         $bookingData = $_SESSION['temp_booking'];
-        
-        // Set CompletedDate and PaymentStatus based on payment method
-        $completedDate = null;
-        $paymentStatus = 'Pending';
-        if ($bookingData['paymentMethod'] === 'cash' || $bookingData['paymentMethod'] === 'transfer') {
-            $completedDate = date('Y-m-d H:i:s');
-            $paymentStatus = 'Paid';
-        } elseif ($bookingData['paymentMethod'] === 'installment') {
-            $completedDate = '-';
-            $paymentStatus = 'First Payment ';
-        }
 
         try {
             $dbh->beginTransaction();
 
-            // Insert ke tblbooking (Status NULL)
-            $sql = "INSERT INTO tblbooking (
-                        BookingID, ServiceID, Name, MobileNumber, Email, EventDate,
-                        EventStartingtime, EventEndingtime, VenueAddress, EventType,
-                        AdditionalInformation, BookingDate, Status
-                    ) VALUES (
-                        :bookingid, :serviceid, :name, :mobilenumber, :email, :eventdate,
-                        :eventstartingtime, :eventendingtime, :venueaddress, :eventtype,
-                        :additionalinformation, NOW(), NULL
-                    )";
-            $query = $dbh->prepare($sql);
-            $query->execute([
+            // ✅ Ganti manual INSERT dengan Stored Procedure
+            $stmt = $dbh->prepare("CALL sp_create_booking_and_payment(
+                :bookingid, :serviceid, :name, :mobnum, :email,
+                :edate, :est, :eetime, :vaddress, :eventtype, :addinfo,
+                :paymentmethod, :amount, :bank,
+                @out_success, @out_message
+            )");
+
+            $stmt->execute([
                 ':bookingid' => $bookingData['bookingid'],
                 ':serviceid' => $bookingData['bid'],
                 ':name' => $bookingData['name'],
-                ':mobilenumber' => $bookingData['mobnum'],
+                ':mobnum' => $bookingData['mobnum'],
                 ':email' => $bookingData['email'],
-                ':eventdate' => $bookingData['edate'],
-                ':eventstartingtime' => $bookingData['est'],
-                ':eventendingtime' => $bookingData['eetime'],
-                ':venueaddress' => $bookingData['vaddress'],
+                ':edate' => $bookingData['edate'],
+                ':est' => $bookingData['est'],
+                ':eetime' => $bookingData['eetime'],
+                ':vaddress' => $bookingData['vaddress'],
                 ':eventtype' => $bookingData['eventtype'],
-                ':additionalinformation' => $bookingData['addinfo']
-           ] );
-
-            // Insert ke tblpayment
-            $sql2 = "INSERT INTO tblpayment (
-                        BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber,
-                        PaymentStatus, PaymentDate, CompletedDate, InstallmentCount
-                    ) VALUES (
-                        :bookingid, :paymentmethod, :amount, :transferbank, :va_number,
-                        :paymentstatus, NOW(), :completeddate, :installmentcount
-                    )";
-            $query2 = $dbh->prepare($sql2);
-            $query2->execute([
-                ':bookingid' => $bookingData['bookingid'],
+                ':addinfo' => $bookingData['addinfo'],
                 ':paymentmethod' => $bookingData['paymentMethod'],
                 ':amount' => $bookingData['amount'],
-                ':transferbank' => $bookingData['selectedBank'],
-                ':va_number' => $bookingData['va_number'],
-                ':paymentstatus' => $paymentStatus,
-                ':completeddate' => $completedDate,
-                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null
+                ':bank' => $bookingData['selectedBank']
             ]);
+
+            // ✅ Ambil hasil output dari SP
+            $result = $dbh->query("SELECT @out_success AS success, @out_message AS message")->fetch(PDO::FETCH_ASSOC);
+
+            // ✅ Jika metode cicilan, jalankan SP cicilan
+            if (strtolower($bookingData['paymentMethod']) === 'installment') {
+                $stmt2 = $dbh->prepare("CALL sp_create_installments(:bookingid, :amount, :bank, :count)");
+                $stmt2->bindParam(':bookingid', $bookingData['bookingid']);
+                $stmt2->bindParam(':amount', $bookingData['amount']);
+                $stmt2->bindParam(':bank', $bookingData['selectedBank']);
+                $stmt2->bindParam(':count', $bookingData['installmentCount']);
+                $stmt2->execute();
+            }
 
             $dbh->commit();
             unset($_SESSION['temp_booking']);
-            echo json_encode(['success' => true]);
+
+            echo json_encode(['success' => $result['success'], 'message' => $result['message']]);
         } catch (PDOException $e) {
             $dbh->rollBack();
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
@@ -130,6 +113,7 @@ if (isset($_POST['final_submit'])) {
     exit;
 }
 
+
 // Handle final form submission
 $input = json_decode(file_get_contents('php://input'), true);
 if (isset($input['final_submit']) && $input['final_submit'] === true) {
@@ -139,7 +123,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         // Insert booking data
         $sql = "INSERT INTO tblbooking (UserID, BookingID, ServiceID, Name, Email, EventDate, EventStartTime, EventEndTime, EventType, VenueAddress, AdditionalInformation, BookingDate, Status) VALUES (:userid, :bookingid, :serviceid, :name, :email, :eventdate, :eventstarttime, :eventendtime, :eventtype, :venue, :additionalinfo, :bookingdate, :status)";
         
-        $bookingId = generateBookingID();
+        $bookingId = mt_rand(100000000, 999999999); // Generate random 9-digit booking ID
         $query = $dbh->prepare($sql);
         
         $query->bindParam(':userid', $input['userid'], PDO::PARAM_INT);
