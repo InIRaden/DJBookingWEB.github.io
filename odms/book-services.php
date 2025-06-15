@@ -3,6 +3,18 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 
+$userInfo = null;
+
+if (isset($_SESSION['odmsaid'])) {
+    $uid = $_SESSION['odmsaid'];
+    $sqlUser = "SELECT NameUser, Email, MobileNumber FROM tbluser_login WHERE ID = :uid";
+    $queryUser = $dbh->prepare($sqlUser);
+    $queryUser->bindParam(':uid', $uid, PDO::PARAM_INT);
+    $queryUser->execute();
+    $userInfo = $queryUser->fetch(PDO::FETCH_ASSOC);
+}
+
+
 // First step - Store booking data in session but don't insert into database yet
 if (isset($_POST['confirm_submit'])) {
     $bid = $_POST['bookid'];
@@ -108,7 +120,7 @@ if (isset($_POST['final_submit'])) {
                 ':venueaddress' => $bookingData['vaddress'],
                 ':eventtype' => $bookingData['eventtype'],
                 ':additionalinformation' => $bookingData['addinfo']
-           ] );
+            ]);
             // Insert ke tblpayment
             $sql2 = "INSERT INTO tblpayment (
                         BookingID, PaymentMethod, Amount, TransferBank, VirtualAccountNumber,
@@ -150,10 +162,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
 
         // Insert booking data
         $sql = "INSERT INTO tblbooking (UserID, BookingID, ServiceID, Name, Email, EventDate, EventStartTime, EventEndTime, EventType, VenueAddress, AdditionalInformation, BookingDate, Status) VALUES (:userid, :bookingid, :serviceid, :name, :email, :eventdate, :eventstarttime, :eventendtime, :eventtype, :venue, :additionalinfo, :bookingdate, :status)";
-        
+
         $bookingId = generateBookingID();
         $query = $dbh->prepare($sql);
-        
+
         $query->bindParam(':userid', $input['userid'], PDO::PARAM_INT);
         $query->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
         $query->bindParam(':serviceid', $input['serviceid'], PDO::PARAM_INT);
@@ -168,14 +180,14 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         $query->bindParam(':bookingdate', date('Y-m-d H:i:s'), PDO::PARAM_STR);
         $status = 'Pending';
         $query->bindParam(':status', $status, PDO::PARAM_STR);
-        
+
         $query->execute();
 
         // Insert payment data
         $sql = "INSERT INTO tblpayment (BookingID, PaymentMethod, Bank, InstallmentCount, AmountPaid, VANumber, PaymentDate, PaymentStatus) VALUES (:bookingid, :paymentmethod, :bank, :installmentcount, :amountpaid, :vanumber, :paymentdate, :paymentstatus)";
-        
+
         $query = $dbh->prepare($sql);
-        
+
         $query->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
         $query->bindParam(':paymentmethod', $input['payment_method'], PDO::PARAM_STR);
         $query->bindParam(':bank', $input['selected_bank'], PDO::PARAM_STR);
@@ -185,13 +197,12 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         $query->bindParam(':paymentdate', date('Y-m-d H:i:s'), PDO::PARAM_STR);
         $paymentStatus = 'Pending';
         $query->bindParam(':paymentstatus', $paymentStatus, PDO::PARAM_STR);
-        
+
         $query->execute();
 
         $dbh->commit();
         echo json_encode(['success' => true]);
         exit;
-
     } catch (Exception $e) {
         $dbh->rollBack();
         error_log($e->getMessage());
@@ -406,15 +417,15 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         <input type="hidden" name="bookid" value="<?php echo isset($_GET['bookid']) ? htmlentities($_GET['bookid']) : ''; ?>">
                         <div class="mb-4">
                             <label class="block text-sm text-gray-300 mb-2" for="name">Name</label>
-                            <input type="text" class="form-control" name="name" id="name" required>
+                            <input type="text" class="form-control" name="name" id="name" value="<?php echo htmlspecialchars($userInfo['NameUser'] ?? ''); ?>" required>
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm text-gray-300 mb-2" for="email">Email</label>
-                            <input type="email" class="form-control" name="email" id="email" required>
+                            <input type="email" class="form-control" name="email" id="email" value="<?php echo htmlspecialchars($userInfo['Email'] ?? ''); ?>" required>
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm text-gray-300 mb-2" for="mobnum">Mobile Number</label>
-                            <input type="text" class="form-control" name="mobnum" id="mobnum" required maxlength="10" pattern="[0-9]+">
+                            <input type="text" class="form-control" name="mobnum" id="mobnum" value="<?php echo htmlspecialchars($userInfo['MobileNumber'] ?? ''); ?>" required maxlength="10" pattern="[0-9]+">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm text-gray-300 mb-2" for="edate">Event Date</label>
@@ -509,7 +520,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 </div>
                 <div>
 
-                <!-- payment -->
+                    <!-- payment -->
                     <div class="mb-6">
                         <label class="block text-sm text-gray-300 mb-3 font-medium">Payment Method</label>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -578,7 +589,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             </div>
         </section>
     </main>
-     <div id="confirm-modal" class="modal">
+    <div id="confirm-modal" class="modal">
         <div class="modal-content modal-landscape">
             <span class="close-modal" onclick="closeModal('confirm-modal')">×</span>
             <div class="modal-header">
@@ -681,7 +692,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
 
     <?php include_once('includes/footer.php'); ?>
 
-   
+
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
     <script src="./js/book-services.js"></script>
 
@@ -877,7 +888,8 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     console.error('Error:', error);
                     alert('An error occurred. Please try again.');
                 });
-        }        /**
+        }
+        /**
          * Confirms payment and processes final submission
          * Sends final confirmation to server and shows success modal
          */
@@ -911,6 +923,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             formData.append('final_submit', '1');
             formData.append('payment_method', paymentMethod);
             formData.append('user_pay', userPay);
+            formData.append('selected_bank', document.getElementById('selected-bank').value);
+            formData.append('va_number', document.getElementById('payment-va-number').value);
+            formData.append('installment_count', document.querySelector('select[name="installment_count"]')?.value || '');
+
             if (paymentMethod === 'cash' || paymentMethod === 'transfer') {
                 formData.append('completed_date', new Date().toISOString());
             }
