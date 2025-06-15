@@ -98,7 +98,7 @@ include('includes/dbconnection.php');
                 Customize your event with the right DJ. Explore styles, check availability, and book in just a few clicks.
             </p>
             <a href="services.php" class="mt-4 inline-block bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-red-600 transition">
-                Buy Ticket Now
+                Book Now
             </a>
         </div>
     </header>

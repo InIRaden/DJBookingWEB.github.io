@@ -41,8 +41,8 @@ include('includes/dbconnection.php');
         }
         
         .notification-success {
-            background-color: #822B2B; /* Sesuai dengan tema */
-            border-left: 5px solid #ff5252;
+            background-color: #218838;
+            border-left: 5px solid #43e97b;
         }
         
         .notification-error {
@@ -113,6 +113,60 @@ include('includes/dbconnection.php');
             font-size: 1.1rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
+
+        .bg-card {
+            background: #212121 !important;
+        }
+
+        .soft-input {
+            background: #30343b;
+            border: 1.5px solid #393939;
+            border-radius: 8px;
+            padding: 11px 15px;
+            color: #fff;
+            font-size: 14px;
+            transition: border-color 0.18s, box-shadow 0.18s;
+            outline: none;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .soft-input:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 2px rgba(220,38,38,0.10);
+            background: #363a42;
+        }
+
+        textarea.soft-input {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .modern-table {
+            background: #30343b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .modern-table th, .modern-table td {
+            border: 1px solid #393939;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .modern-table th {
+            background-color: #30343b;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .modern-table tr:nth-child(even) {
+            background-color: #232323;
+        }
+
+        .modern-table tr:nth-child(odd) {
+            background-color: #30343b;
+        }
     </style>
 </head>
 
@@ -131,7 +185,7 @@ include('includes/dbconnection.php');
     </header>
 
     <!-- Main Content -->
-    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto">
+    <main class="px-10 md:px-13 lg:px-10 xl:px-10 py-10 max-w-[1280px] mx-auto">
         <!-- Breadcrumb -->
         <div class="flex items-center space-x-2 text-xs mb-8">
             <a href="index.php" class="text-gray-400 hover:text-white">Home</a>
@@ -143,22 +197,19 @@ include('includes/dbconnection.php');
         <section class="mb-12">
             <h2 class="font-semibold text-white text-lg mb-6">Check Your Booking Status</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-gray-800 p-6 rounded-md">
+                <div class="bg-card p-6 rounded-md">
                     <h3 class="text-white text-sm font-semibold mb-4">Enter Your Details</h3>
                     <p class="text-gray-400 text-xs mb-4">Please provide your name and mobile number to check your booking status.</p>
 
                     <form method="post" class="space-y-4">
                         <div>
-                            <label class="block text-gray-400 text-xs mb-1">Name</label>
-                            <input type="text" name="name" required="true" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+                            <label class="block text-gray-300 text-xs mb-1">Name</label>
+                            <input type="text" name="name" required="true" class="w-full soft-input">
                         </div>
 
                         <div>
-                            <label class="block text-gray-400 text-xs mb-1">Mobile Number</label>
-                            <input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" 
-                                class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
-                                onkeypress="return isNumberKey(event)" 
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <label class="block text-gray-300 text-xs mb-1">Mobile Number</label>
+                            <input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" class="w-full soft-input" onkeypress="return isNumberKey(event)" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
 
                         <button type="submit" name="submit" class="bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded hover:bg-red-600 transition cursor-pointer">
@@ -179,29 +230,29 @@ include('includes/dbconnection.php');
                         $results=$query->fetchAll(PDO::FETCH_OBJ);
                         $cnt=1;
                         if($query->rowCount() > 0) { ?>
-                            <div class="bg-gray-800 p-6 rounded-md">
+                            <script>document.addEventListener('DOMContentLoaded',function(){showSuccessNotification('Booking data found!');});</script>
+                            <div class="bg-card p-6 rounded-md">
                                 <h3 class="text-white text-sm font-semibold mb-4">Your Booking Results</h3>
                                 <div class="overflow-x-auto">
-                                    <table class="min-w-full bg-gray-900 rounded-md overflow-hidden">
-                                        <thead class="bg-gray-700">
+                                    <table class="modern-table min-w-full rounded-md overflow-hidden">
+                                        <thead>
                                             <tr>
-                                                <th class="px-4 py-2 text-xs text-left text-gray-300">Booking Number</th>
-                                                <th class="px-4 py-2 text-xs text-left text-gray-300">Client Name</th>
-                                                <th class="px-4 py-2 text-xs text-left text-gray-300">Mobile Number</th>
-                                                <th class="px-4 py-2 text-xs text-left text-gray-300">Email</th>
-                                                <th class="px-4 py-2 text-xs text-left text-gray-300">Action</th>
+                                                <th class="px-4 py-2 text-xs text-left">Booking Number</th>
+                                                <th class="px-4 py-2 text-xs text-left">Client Name</th>
+                                                <th class="px-4 py-2 text-xs text-left">Mobile Number</th>
+                                                <th class="px-4 py-2 text-xs text-left">Email</th>
+                                                <th class="px-4 py-2 text-xs text-left">Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-gray-800">
+                                        <tbody>
                                             <?php foreach($results as $row) { ?>
-                                                <tr class="hover:bg-gray-800">
+                                                <tr class="hover:bg-[#232323]">
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->BookingID; ?></td>
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->Name; ?></td>
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->MobileNumber; ?></td>
                                                     <td class="px-4 py-3 text-xs text-gray-300"><?php echo $row->Email; ?></td>
                                                     <td class="px-4 py-3 text-xs">
-                                                        <a href="request-details.php?bid=<?php echo htmlentities($row->ID); ?>&&bookingid=<?php echo htmlentities($row->BookingID); ?>" 
-                                                           class="bg-red-700 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition">
+                                                        <a href="request-details.php?bid=<?php echo htmlentities($row->ID); ?>&&bookingid=<?php echo htmlentities($row->BookingID); ?>" class="bg-red-700 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition">
                                                             View Details
                                                         </a>
                                                     </td>
@@ -212,14 +263,17 @@ include('includes/dbconnection.php');
                                 </div>
                             </div>
                         <?php } else { ?>
-                            <div class="bg-gray-800 p-6 rounded-md flex flex-col items-center justify-center h-full w-full">
-                                <i class="fas fa-search text-gray-600 text-4xl mb-4"></i>
-                                <h3 class="text-red-500 text-sm font-semibold mb-2">No Records Found</h3>
-                                <p class="text-gray-400 text-xs mt-2 text-center max-w-md mx-auto">We couldn't find any bookings matching your details. Please check your information and try again.</p>
+                            <script>document.addEventListener('DOMContentLoaded',function(){showErrorNotification('No booking data found for the provided details.');});</script>
+                            <div class="bg-card p-6 rounded-md flex flex-col items-center justify-center h-full w-full text-center gap-2">
+                                <div>
+                                    <i class="fas fa-search text-gray-500 text-5xl mb-3"></i>
+                                </div>
+                                <h3 class="text-red-500 text-base font-semibold mb-1">No Records Found</h3>
+                                <p class="text-gray-400 text-sm mt-0 text-center max-w-md mx-auto">We couldn't find any bookings matching your details. Please check your information and try again.</p>
                             </div>
                         <?php } ?>
                     <?php } else { ?>
-                        <div class="bg-gray-800 p-6 rounded-md h-full w-full">
+                        <div class="bg-card p-6 rounded-md h-full w-full">
                             <div class="text-center">
                                 <img src="images/1hr.png" alt="DJ Booking" class="w-32 h-32 object-contain mb-4 mx-auto">
                                 <h3 class="text-white text-sm font-semibold mb-2">Check Your Booking Status</h3>

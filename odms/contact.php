@@ -71,9 +71,10 @@ if (isset($_POST['submit'])) {
 		}
 
 		.notification-success {
-			background-color: #822b2b;
-			/* Sesuai dengan tema */
-			border-left: 5px solid #ff5252;
+			background-color: #218838;
+			/* Hijau tua untuk sukses */
+			border-left: 5px solid #43e97b;
+			/* Hijau muda untuk border */
 		}
 
 		.notification-error {
@@ -94,6 +95,29 @@ if (isset($_POST['submit'])) {
 
 		.notification-close:hover {
 			opacity: 1;
+		}
+
+		.soft-input {
+			background: #30343b;
+			border: 1.5px solid #393939;
+			border-radius: 8px;
+			padding: 11px 15px;
+			color: #fff;
+			font-size: 14px;
+			transition: border-color 0.18s, box-shadow 0.18s;
+			outline: none;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+		}
+
+		.soft-input:focus {
+			border-color: #dc2626;
+			box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.10);
+			background: #363a42;
+		}
+
+		textarea.soft-input {
+			min-height: 90px;
+			resize: vertical;
 		}
 	</style>
 </head>
@@ -132,11 +156,11 @@ if (isset($_POST['submit'])) {
 				foreach ($results as $row) { ?>
 					<h2 class="font-semibold text-white text-lg mb-6"><?php echo htmlentities($row->PageTitle); ?></h2>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-						<div>
-							<div class="bg-gray-800 p-6 rounded-md">
-								<h3 class="text-white text-sm font-semibold mb-4">Contact Information</h3>
-								<div class="space-y-4 text-gray-300 text-xs">
-									<p class="flex items-center">
+    <div>
+        <div class="p-6 rounded-md" style="background:#212121;">
+            <h3 class="text-white text-sm font-semibold mb-4">Contact Information</h3>
+            <div class="space-y-4 text-gray-300 text-xs">
+                                    <p class="flex items-center">
 										<span class="mr-2"><i class="fas fa-map-marker-alt"></i></span>
 										<?php echo htmlentities($row->PageDescription); ?>
 									</p>
@@ -149,53 +173,50 @@ if (isset($_POST['submit'])) {
 										<?php echo htmlentities($row->MobileNumber); ?>
 									</p>
 								</div>
-							</div>
+        </div>
 
-							<!-- Map -->
-							<div class="mt-6 h-[250px] rounded-md overflow-hidden">
-								<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15842.5451974668!2d107.72809224999999!3d-6.9339996500000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68c323777ca3a1%3A0x355eff6734ed9167!2sUniversitas%20Pendidikan%20Indonesia%20(UPI)%20Kampus%20Cibiru!5e0!3m2!1sid!2sid!4v1747864079973!5m2!1sid!2sid"
+        <!-- Map -->
+        <div class="mt-6 h-[250px] rounded-md overflow-hidden">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15842.5451974668!2d107.72809224999999!3d-6.9339996500000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68c323777ca3a1%3A0x355eff6734ed9167!2sUniversitas%20Pendidikan%20Indonesia%20(UPI)%20Kampus%20Cibiru!5e0!3m2!1sid!2sid!4v1747864079973!5m2!1sid!2sid"
 									class="w-full h-full"
 									style="border:0;"
 									allowfullscreen=""
 									loading="lazy">
 								</iframe>
-							</div>
-						</div>
+        </div>
+    </div>
 
-						<div class="bg-gray-800 p-6 rounded-md">
-							<h3 class="text-white text-sm font-semibold mb-4">Send Us a Message</h3>
-							<p class="text-gray-400 text-xs mb-4">Drop us a message and we'll get back to you soon.</p>
+    <div class="p-6 rounded-md" style="background:#212121;">
+        <h3 class="text-white text-sm font-semibold mb-4">Send Us a Message</h3>
+        <p class="text-gray-400 text-xs mb-4">Drop us a message and we'll get back to you soon.</p>
 
-							<form method="post" class="space-y-4">
-								<div>
-									<label class="block text-gray-400 text-xs mb-1">Name</label>
-									<input type="text" name="name" required="true" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
-								</div>
+        <form method="post" class="space-y-4">
+            <div>
+                <label class="block text-gray-300 text-xs mb-1">Name</label>
+                <input type="text" name="name" required="true" class="w-full soft-input">
+            </div>
 
-								<div>
-									<label class="block text-gray-400 text-xs mb-1">Email</label>
-									<input type="email" name="email" required="true" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500">
-								</div>
+            <div>
+                <label class="block text-gray-300 text-xs mb-1">Email</label>
+                <input type="email" name="email" required="true" class="w-full soft-input">
+            </div>
 
-								<div>
-									<label class="block text-gray-400 text-xs mb-1">Mobile Number</label>
-									<input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+"
-										class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
-										onkeypress="return isNumberKey(event)"
-										oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-								</div>
+            <div>
+                <label class="block text-gray-300 text-xs mb-1">Mobile Number</label>
+                <input type="text" name="mobnum" required="true" maxlength="10" pattern="[0-9]+" class="w-full soft-input" onkeypress="return isNumberKey(event)" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
 
-								<div>
-									<label class="block text-gray-400 text-xs mb-1">Message</label>
-									<textarea name="message" required="true" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"></textarea>
-								</div>
+            <div>
+                <label class="block text-gray-300 text-xs mb-1">Message</label>
+                <textarea name="message" required="true" rows="4" class="w-full soft-input"></textarea>
+            </div>
 
-								<button type="submit" name="submit" class="bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded hover:bg-red-600 transition cursor-pointer">
-									Send Message
-								</button>
-							</form>
-						</div>
-					</div>
+            <button type="submit" name="submit" class="bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded hover:bg-red-600 transition cursor-pointer">
+                Send Message
+            </button>
+        </form>
+    </div>
+</div>
 			<?php }
 			} ?>
 		</section>
