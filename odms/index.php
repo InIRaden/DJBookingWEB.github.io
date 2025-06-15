@@ -176,9 +176,9 @@ include('includes/dbconnection.php');
         <div class="slider relative w-full h-[500px] overflow-hidden">
             <div class="slides flex transition-transform duration-500 ease-in-out">
                 <img alt="DJ wearing headphones with raised hands" class="slide-image" src="images/homepage.jpg" />
-                <img alt="Event image 6" class="slide-image" src="images/homepage1.jpg" />
-                <img alt="Event image 1" class="slide-image" src="images/homepage2.jpg" />
-                <img alt="About image" class="slide-image" src="images/homepage3.jpg" />
+                <img alt="Event image 6" class="slide-image" src="images/partyDj.jpg" />
+                <img alt="Event image 1" class="slide-image" src="images/uplighters.jpg" />
+                <img alt="About image" class="slide-image" src="images/3.jpg" />
             </div>
             <div class="dots">
                 <span class="dot" onclick="currentSlide(0)"></span>

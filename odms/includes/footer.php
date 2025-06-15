@@ -8,8 +8,8 @@
             <h4 class="font-bold mb-2 text-[11px]">Learn More</h4>
             <ul class="space-y-1 text-gray-200">
                 <li><a href="about.php">About Us</a></li>
-                <li><a href="#">Press Releases</a></li>
-                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="services.php">Services</a></li>
+                <li><a href="status.php">Request Status</a></li>
                 <li><a href="#">Terms of Service</a></li>
                 <li><a href="contact.php">Contact Us</a></li>
             </ul>
