@@ -8,7 +8,7 @@ if (strlen($_SESSION['odmsaid']) == 0) {
 ?>
     <header id="page-header">
         <!-- Header Content -->
-        <div class="content-header" style="background-color: #1a1f2e; box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+        <div class="content-header" style="background-color: #1a1f2e; box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);">
             <!-- Left Section -->
             <div class="content-header-section">
                 <!-- Toggle Sidebar -->

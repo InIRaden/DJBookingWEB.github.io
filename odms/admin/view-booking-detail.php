@@ -19,34 +19,8 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
 
     $query->execute();
 
-    echo "<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let toastClass = 'modern-toast-success';
-            let icon = 'fas fa-check';
-            let title = 'Success!';
-            let message = 'Remark has been successfully updated';
-
-            if ('" . $status . "' === 'Cancelled') {
-                toastClass = 'modern-toast-danger';
-                icon = 'fas fa-times';
-                title = 'Booking Cancelled';
-                message = 'The booking has been cancelled';
-            }
-
-            Toastify({
-                node: createCustomToast(title, message, icon),
-                duration: 3000,
-                gravity: 'top',
-                position: 'right',
-                className: toastClass,
-                stopOnFocus: true
-            }).showToast();
-            
-            setTimeout(function() {
-                window.location.href = 'new-booking.php';
-            }, 2000);
-        });
-    </script>";
+    echo '<script>alert("Remark has been updated")</script>';
+    echo "<script>window.location.href ='new-booking.php'</script>";
   }
 ?>
 
@@ -55,7 +29,6 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
 <head>
     <title>Online DJ Management System - View Booking</title>
     <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         body {
             background: #ffffff;
@@ -121,26 +94,19 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
             font-size: 0.9rem;
         }
 
-
-        .badge-primary {
-                background: #007BFF;
-                color: #ffffff;
-                font-weight: bold;
-            }
-
-        .badge-success {
-                background: #E0FFE0;
-                color: #28A745;
-            }
+        .badge-primary, .badge-success {
+            background: #007BFF;
+            color: #ffffff;
+        }
 
         .badge-warning {
-            background: #FFF9DB;
-            color: #FFD700;
+            background: #FFC107;
+            color: #333;
         }
 
         .badge-danger {
-            background: #FFE5E5;
-            color: #FF4D4D;
+            background: #FF4D4D;
+            color: #ffffff;
         }
 
         .badge-secondary {
@@ -192,7 +158,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
         }
 
         .payment-info label {
-            font-weight: 720;
+            font-weight: 600;
             color: #1e3c72;
             margin-bottom: 5px;
             display: block;
@@ -201,43 +167,6 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
         .payment-info span, .payment-info p {
             color: #333;
             font-size: 0.95rem;
-        }
-
-        /* Toast Styles */
-        .modern-toast-success {
-            background: linear-gradient(to right, #28a745, #20c997) !important;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2) !important;
-        }
-        
-        .modern-toast-danger {
-            background: linear-gradient(to right, #dc3545, #ff4444) !important;
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2) !important;
-        }
-
-        .toast-icon {
-            background: rgba(255, 255, 255, 0.2);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .toast-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .toast-title {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .toast-message {
-            font-size: 14px;
-            opacity: 0.9;
         }
     </style>
 </head>
@@ -454,38 +383,12 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
     <script src="assets/js/core/jquery.min.js"></script>
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script>
-        function createCustomToast(title, message, icon) {
-            const container = document.createElement('div');
-            container.style.display = 'flex';
-            container.style.alignItems = 'center';
-            container.style.gap = '12px';
-            
-            const iconDiv = document.createElement('div');
-            iconDiv.className = 'toast-icon';
-            iconDiv.innerHTML = `<i class="${icon}" style="color: white"></i>`;
-            
-            const content = document.createElement('div');
-            content.className = 'toast-content';
-            
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'toast-title';
-            titleDiv.textContent = title;
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'toast-message';
-            messageDiv.textContent = message;
-            
-            content.appendChild(titleDiv);
-            content.appendChild(messageDiv);
-            
-            container.appendChild(iconDiv);
-            container.appendChild(content);
-            
-            return container;
-        }
-    </script>
+    <script src="assets/js/core/jquery.slimscroll.min.js"></script>
+    <script src="assets/js/core/jquery.scrollLock.min.js"></script>
+    <script src="assets/js/core/jquery.appear.min.js"></script>
+    <script src="assets/js/core/jquery.countTo.min.js"></script>
+    <script src="assets/js/core/js.cookie.min.js"></script>
+    <script src="assets/js/codebase.js"></script>
 </body>
 </html>
 <?php } ?>
