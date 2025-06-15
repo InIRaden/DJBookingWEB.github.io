@@ -66,7 +66,7 @@ if (isset($_POST['final_submit'])) {
             $paymentStatus = 'Paid';
         } elseif ($bookingData['paymentMethod'] === 'installment') {
             $completedDate = '-';
-            $paymentStatus = 'Pending';
+            $paymentStatus = 'First Payment ';
         }
 
         try {
