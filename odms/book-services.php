@@ -652,7 +652,14 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 </div>
                 <div class="modal-body-right">
                     <h4 class="text-lg font-medium text-white mb-4">Payment Instructions</h4>
-                    <div class="payment-info">
+                    <div class="payment-info cash-instructions" style="display:none;">
+                        <p class="text-white mb-2">Please prepare the exact cash amount to pay on the event day.</p>
+                        <p class="text-gray-300 text-sm mt-4">You will pay directly to our staff at the event location.</p>
+                        <label for="user-pay-cash" class="text-white mt-4 block">Payment Amount</label>
+                        <input type="number" id="user-pay-cash" name="user_pay_cash" class="form-input mt-1 block w-full" min="0" placeholder="Enter payment amount">
+                        <span id="user-pay-cash-error" class="text-red-400 text-xs mt-1" style="display:none;"></span>
+                    </div>
+                    <div class="payment-info transfer-instructions" style="display:block;">
                         <p class="text-white mb-2">Virtual Account Number:</p>
                         <div class="copy-field">
                             <input type="text" id="payment-va-number" readonly>
@@ -662,7 +669,6 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         </div>
                         <p id="installment-minimum-text" class="text-yellow-400 text-sm mt-1" style="display: none;">Minimum payment 50%</p>
                         <p class="text-gray-300 text-sm mt-4">Please transfer the exact amount to the VA number above.</p>
-                        <!-- UserPay input -->
                         <label for="user-pay" class="text-white mt-4 block">Payment Amount</label>
                         <input type="number" id="user-pay" name="user_pay" class="form-input mt-1 block w-full" min="0" placeholder="Enter payment amount">
                         <span id="user-pay-error" class="text-red-400 text-xs mt-1" style="display:none;"></span>
@@ -836,22 +842,16 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     if (data.success) {
                         closeModal('confirm-modal');
                         const bookingData = data.booking_data;
-
                         document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
                         document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
-
-                        // Display payment method and bank in payment modal
                         const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
                         const paymentMethodValue = paymentMethod ? paymentMethod.value : 'N/A';
                         document.getElementById('payment-method').textContent = paymentMethodValue;
-
-                        // Get references to elements that need to be shown/hidden
                         const bankInfoRow = document.querySelector('.payment-info p:has(#payment-bank)');
                         const paymentTimer = document.querySelector('.timer');
-                        const vaInstructions = document.querySelector('.modal-body-right .payment-info');
+                        const vaInstructions = document.querySelector('.transfer-instructions');
                         const cashInstructions = document.querySelector('.cash-instructions');
                         const installmentMinimumText = document.getElementById('installment-minimum-text');
-
                         // Show/hide elements based on payment method
                         if (paymentMethodValue === 'cash') {
                             if (bankInfoRow) bankInfoRow.style.display = 'none';
@@ -864,21 +864,16 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                             if (paymentTimer) paymentTimer.style.display = 'block';
                             if (vaInstructions) vaInstructions.style.display = 'block';
                             if (cashInstructions) cashInstructions.style.display = 'none';
-
                             const selectedBank = document.getElementById('selected-bank');
                             document.getElementById('payment-bank').textContent =
                                 (paymentMethod && (paymentMethod.value === 'transfer' || paymentMethod.value === 'installment')) ?
                                 (selectedBank.value || 'N/A') : 'N/A';
-
                             document.getElementById('payment-va-number').value = bookingData.va_number;
                             startTimer(bookingData.expiryTime);
-
-                            // Show or hide installment minimum payment text
                             if (installmentMinimumText) {
                                 installmentMinimumText.style.display = paymentMethodValue === 'installment' ? 'block' : 'none';
                             }
                         }
-
                         openModal('payment-modal');
                     } else {
                         alert('An error occurred. Please try again.');
@@ -894,10 +889,51 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
          * Sends final confirmation to server and shows success modal
          */
         function confirmPayment() {
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            if (paymentMethod === 'cash') {
+                const userPayInput = document.getElementById('user-pay-cash');
+                const userPayError = document.getElementById('user-pay-cash-error');
+                const paymentAmount = parseFloat(document.getElementById('payment-amount').textContent.replace(/[^\d.]/g, ''));
+                const userPay = parseFloat(userPayInput.value);
+                userPayError.style.display = 'none';
+                userPayError.textContent = '';
+                if (userPay !== paymentAmount) {
+                    userPayError.textContent = 'Payment amount must be exactly the total price.';
+                    userPayError.style.display = 'block';
+                    userPayInput.focus();
+                    return;
+                }
+                const formData = new FormData();
+                formData.append('final_submit', '1');
+                formData.append('payment_method', paymentMethod);
+                formData.append('user_pay', userPay);
+                formData.append('selected_bank', '');
+                formData.append('va_number', '');
+                formData.append('installment_count', '');
+                formData.append('completed_date', new Date().toISOString());
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal('payment-modal');
+                        openModal('success-modal');
+                    } else {
+                        userPayError.textContent = data.message || 'An error occurred. Please try again.';
+                        userPayError.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    userPayError.textContent = 'An error occurred. Please try again.';
+                    userPayError.style.display = 'block';
+                });
+                return;
+            }
             const userPayInput = document.getElementById('user-pay');
             const userPayError = document.getElementById('user-pay-error');
             const paymentAmount = parseFloat(document.getElementById('payment-amount').textContent.replace(/[^\d.]/g, ''));
-            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
             const userPay = parseFloat(userPayInput.value);
             let minPay = paymentAmount;
             userPayError.style.display = 'none';
@@ -918,7 +954,6 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     return;
                 }
             }
-            // Add UserPay to formData
             const formData = new FormData();
             formData.append('final_submit', '1');
             formData.append('payment_method', paymentMethod);
@@ -926,28 +961,27 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             formData.append('selected_bank', document.getElementById('selected-bank').value);
             formData.append('va_number', document.getElementById('payment-va-number').value);
             formData.append('installment_count', document.querySelector('select[name="installment_count"]')?.value || '');
-
             if (paymentMethod === 'cash' || paymentMethod === 'transfer') {
                 formData.append('completed_date', new Date().toISOString());
             }
             fetch(window.location.href, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        closeModal('payment-modal');
-                        openModal('success-modal');
-                    } else {
-                        userPayError.textContent = data.message || 'An error occurred. Please try again.';
-                        userPayError.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    userPayError.textContent = 'An error occurred. Please try again.';
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('payment-modal');
+                    openModal('success-modal');
+                } else {
+                    userPayError.textContent = data.message || 'An error occurred. Please try again.';
                     userPayError.style.display = 'block';
-                });
+                }
+            })
+            .catch(error => {
+                userPayError.textContent = 'An error occurred. Please try again.';
+                userPayError.style.display = 'block';
+            });
         }
 
         /**
