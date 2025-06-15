@@ -566,10 +566,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             </div>
         </section>
     </main>
-
-    <?php include_once('includes/footer.php'); ?>
-
-    <div id="confirm-modal" class="modal">
+     <div id="confirm-modal" class="modal">
         <div class="modal-content modal-landscape">
             <span class="close-modal" onclick="closeModal('confirm-modal')">×</span>
             <div class="modal-header">
@@ -614,7 +611,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             <span class="close-modal" onclick="closeModal('payment-modal')">×</span>
             <div class="modal-header">
                 <h3 class="text-xl font-semibold text-white">Payment Details</h3>
-                <span class="page-indicator">2/2</span>
+                <span class="page-indicator"> Step2/2</span>
             </div>
             <div class="modal-body">
                 <div class="modal-body-left">
@@ -665,6 +662,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         </div>
     </div>
 
+
+    <?php include_once('includes/footer.php'); ?>
+
+   
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
     <script src="./js/book-services.js"></script>
 

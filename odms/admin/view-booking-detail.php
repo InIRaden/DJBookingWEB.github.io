@@ -15,12 +15,54 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
     $query = $dbh->prepare($sql);
     $query->bindParam(':status', $status, PDO::PARAM_STR);
     $query->bindParam(':remark', $remark, PDO::PARAM_STR);
-    $query->bindParam(':eid', $eid, PDO::PARAM_STR);
+    $query->bindParam(':eid', $eid, PDO::PARAM_STR);    $query->execute();
 
-    $query->execute();
-
-    echo '<script>alert("Remark has been updated")</script>';
-    echo "<script>window.location.href ='new-booking.php'</script>";
+    // Set notification based on status
+    if ($status == 'Approved') {
+        echo "<script>
+            window.toastifyNotify = {                text: `<i class='fas fa-check' style='margin-right:8px;'></i> Booking successfully approved!`,
+                duration: 3000,
+                gravity: 'top',
+                position: 'right',
+                escapeMarkup: false,
+                style: {
+                    background: 'linear-gradient(135deg, #00b09b 0%, #96c93d 100%)',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,176,155,0.2)',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center'
+                },
+                onClick: function(){} 
+            };
+        </script>";
+    } else if ($status == 'Cancelled') {
+        echo "<script>
+            window.toastifyNotify = {
+                text: `<i class='fas fa-times' style='margin-right:8px;'></i> Booking has been cancelled`,
+                duration: 3000,
+                gravity: 'top',
+                position: 'right',
+                escapeMarkup: false,
+                style: {
+                    background: 'linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(255,95,109,0.2)',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center'
+                },
+                onClick: function(){} 
+            };
+        </script>";
+    }
+    
+    // Redirect after delay to show notification
+    echo "<script>setTimeout(function() { window.location.href = 'new-booking.php'; }, 1500);</script>";
   }
 ?>
 
@@ -29,6 +71,8 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
 <head>
     <title>Online DJ Management System - View Booking</title>
     <link rel="stylesheet" id="css-main" href="assets/css/codebase.min.css">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         body {
             background: #ffffff;
@@ -94,21 +138,25 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
             font-size: 0.9rem;
         }
 
-        .badge-primary, .badge-success {
+       .badge-primary {
             background: #007BFF;
             color: #ffffff;
         }
 
+        .badge-success {
+            background: #E0FFE0;
+            color: #28A745;
+        }
+
         .badge-warning {
-            background: #FFC107;
-            color: #333;
+            background: #FFF9DB;
+            color: #FFD700;
         }
 
         .badge-danger {
-            background: #FF4D4D;
-            color: #ffffff;
+            background: #FFE5E5;
+            color: #FF4D4D;
         }
-
         .badge-secondary {
             background: #6C757D;
             color: #ffffff;
@@ -389,6 +437,16 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
     <script src="assets/js/core/jquery.countTo.min.js"></script>
     <script src="assets/js/core/js.cookie.min.js"></script>
     <script src="assets/js/codebase.js"></script>
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+    // Tampilkan Toastify jika ada notifikasi dari PHP
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.toastifyNotify) {
+            Toastify(window.toastifyNotify).showToast();
+        }
+    });
+    </script>
 </body>
 </html>
 <?php } ?>

@@ -160,6 +160,8 @@
                                                 <?php } elseif ($bstatus == 'Approved') { ?>
                                                     <span class="badge badge-success"><?php echo htmlentities($bstatus); ?></span>
                                                 <?php } elseif ($bstatus == 'Rejected') { ?>
+                                                    <span class="badge badge-warning"><?php echo htmlentities($bstatus); ?></span>
+                                                <?php } elseif (strtolower($bstatus) == 'cancelled') { ?>
                                                     <span class="badge badge-danger"><?php echo htmlentities($bstatus); ?></span>
                                                 <?php } ?>
                                             </td>
