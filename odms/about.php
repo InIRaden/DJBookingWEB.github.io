@@ -150,7 +150,7 @@ include('includes/dbconnection.php');
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <a href="images/abt.jpg" data-fancybox="about-gallery">
-                                <img src="images/abt.jpg" alt="About Us" class="w-full h-auto rounded-md shadow-lg" />
+                                <img src="images/bersama.jpg" alt="About Us" class="w-full h-auto rounded-md shadow-lg" />
                             </a>
                         </div>
                         <div class="text-gray-300 text-sm leading-relaxed">

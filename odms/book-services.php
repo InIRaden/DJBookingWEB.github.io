@@ -1014,16 +1014,17 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        closeModal('payment-modal');
+                        // Tampilkan modal sukses
                         openModal('success-modal');
                     } else {
-                        userPayError.textContent = data.message || 'An error occurred. Please try again.';
+                        // Tampilkan error
                         userPayError.style.display = 'block';
+                        userPayError.textContent = data.message || 'An error occurred. Try again.';
                     }
                 })
                 .catch(error => {
-                    userPayError.textContent = 'An error occurred. Please try again.';
                     userPayError.style.display = 'block';
+                    userPayError.textContent = 'An error occurred. Try again.';
                 });
                 return;
             }
