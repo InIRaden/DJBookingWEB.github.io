@@ -133,14 +133,29 @@
                                     <th class="d-none d-sm-table-cell" style="width: 15%;">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                $sql = "SELECT * FROM tblbooking";
+                            <tbody>                                <?php
+                                // Get booking summary first
+                                $summary_sql = "CALL sp_get_booking_summary()";
+                                $summary_query = $dbh->prepare($summary_sql);
+                                $summary_query->execute();
+                                $summary = $summary_query->fetch(PDO::FETCH_ASSOC);
+                                $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, 1);
+                                
+                                // Get all bookings with formatted status
+                                $sql = "CALL sp_get_all_bookings()";
                                 $query = $dbh->prepare($sql);
                                 $query->execute();
                                 $results = $query->fetchAll(PDO::FETCH_OBJ);
                                 $cnt = 1;
                                 if ($query->rowCount() > 0) {
+                                    // Display summary at the top
+                                    echo '<div class="row mb-4">';
+                                    echo '<div class="col-3"><div class="card bg-primary text-white p-3">Total Bookings: ' . $summary['Total'] . '</div></div>';
+                                    echo '<div class="col-3"><div class="card bg-success text-white p-3">Approved: ' . $summary['Approved'] . '</div></div>';
+                                    echo '<div class="col-3"><div class="card bg-warning text-white p-3">Pending: ' . $summary['Pending'] . '</div></div>';
+                                    echo '<div class="col-3"><div class="card bg-danger text-white p-3">Cancelled: ' . $summary['Cancelled'] . '</div></div>';
+                                    echo '</div>';
+                                    
                                     foreach ($results as $row) {
                                 ?>
                                         <tr>
@@ -152,18 +167,9 @@
                                             <td class="font-w600">
                                                 <span class="badge badge-primary"><?php echo htmlentities($row->BookingDate); ?></span>
                                             </td>
-                                            <td>
-                                                <?php
-                                                $bstatus = $row->Status;
-                                                if ($bstatus == '') { ?>
-                                                    <span class="badge badge-warning">Not Processed Yet</span>
-                                                <?php } elseif ($bstatus == 'Approved') { ?>
-                                                    <span class="badge badge-success"><?php echo htmlentities($bstatus); ?></span>
-                                                <?php } elseif ($bstatus == 'Rejected') { ?>
-                                                    <span class="badge badge-warning"><?php echo htmlentities($bstatus); ?></span>
-                                                <?php } elseif (strtolower($bstatus) == 'cancelled') { ?>
-                                                    <span class="badge badge-danger"><?php echo htmlentities($bstatus); ?></span>
-                                                <?php } ?>
+                                            <td>                                                <span class="badge <?php echo $row->status_class; ?>">
+                                                    <?php echo htmlentities($row->formatted_status); ?>
+                                                </span>
                                             </td>
                                             <td class="d-none d-sm-table-cell">
                                                 <a href="view-booking-detail.php?editid=<?php echo htmlentities($row->ID); ?>" class="btn btn-info btn-sm" target="_blank">View</a>
