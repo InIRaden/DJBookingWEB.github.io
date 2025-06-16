@@ -15,12 +15,23 @@ if (isset($_SESSION['odmsaid'])) {
 }
 
 
+
 // First step - Store booking data in session but don't insert into database yet
 if (isset($_POST['confirm_submit'])) {
+    $userId = $_SESSION['odmsaid']; // Get user ID from session
     $bid = $_POST['bookid'];
-    $name = $_POST['name'];
-    $mobnum = $_POST['mobnum'];
-    $email = $_POST['email'];
+    
+    // Get user data from tbluser_login
+    $sqlUser = "SELECT NameUser, Email, MobileNumber FROM tbluser_login WHERE ID = :uid";
+    $queryUser = $dbh->prepare($sqlUser);
+    $queryUser->bindParam(':uid', $userId, PDO::PARAM_INT);
+    $queryUser->execute();
+    $userInfo = $queryUser->fetch(PDO::FETCH_ASSOC);
+
+    // Use user data from login instead of form for security
+    $name = $userInfo['NameUser'];
+    $mobnum = $userInfo['MobileNumber'];
+    $email = $userInfo['Email'];
     $edate = $_POST['edate'];
     $est = $_POST['est'];
     $eetime = $_POST['eetime'];
@@ -40,10 +51,17 @@ if (isset($_POST['confirm_submit'])) {
     $serviceData = $queryPrice->fetch(PDO::FETCH_ASSOC);
     $amount = $serviceData['ServicePrice'];
 
+    // Cek apakah user sudah login
+    if (!isset($_SESSION['odmsaid'])) {
+        echo json_encode(['success' => false, 'message' => 'Please login first to make a booking']);
+        exit;
+    }
+
     // Simpan data booking ke session untuk digunakan nanti
     $_SESSION['temp_booking'] = [
         'bookingid' => $bookingid,
         'bid' => $bid,
+        'userid' => $_SESSION['odmsaid'], // Tambahkan UserID dari session
         'name' => $name,
         'mobnum' => $mobnum,
         'email' => $email,
@@ -67,7 +85,17 @@ if (isset($_POST['confirm_submit'])) {
 
 // Final step - Insert data into database after payment confirmation using stored procedure
 if (isset($_POST['final_submit'])) {
+    if (!isset($_SESSION['odmsaid'])) {
+        echo json_encode(['success' => false, 'message' => 'Please login to continue']);
+        exit;
+    }
+
     if (isset($_SESSION['temp_booking'])) {
+        // Verify that the booking belongs to the logged-in user
+        if ($_SESSION['temp_booking']['userid'] != $_SESSION['odmsaid']) {
+            echo json_encode(['success' => false, 'message' => 'Invalid booking session']);
+            exit;
+        }
         $bookingData = $_SESSION['temp_booking'];
         $userPay = isset($_POST['user_pay']) ? floatval($_POST['user_pay']) : 0;
         $amount = floatval($bookingData['amount']);
@@ -92,41 +120,36 @@ if (isset($_POST['final_submit'])) {
             $completedDate = date('Y-m-d H:i:s');
             $paymentStatus = 'Paid';
         } elseif (strtolower($paymentMethod) === 'installment') {
-            $completedDate = '-';
+            $completedDate = null;
             $paymentStatus = 'First Payment'; // Set status to First Payment for first installment
         }
         try {
             // Call stored procedure to insert booking and payment
             $sql = "CALL CreateBookingAndPayment(
-                :bookingid, :serviceid, :name, :mobilenumber, :email, 
-                :eventdate, :eventstartingtime, :eventendingtime,
-                :venueaddress, :eventtype, :additionalinformation,
-                :paymentmethod, :amount, :transferbank, :va_number,
-                :paymentstatus, :completeddate, :installmentcount, :userpay
+                :bookingid, :serviceid, :userid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo, :paymentMethod, :amount, :selectedBank, :va_number, :paymentStatus, :completedDate, :installmentCount, :userPay
             )";
-            
             $query = $dbh->prepare($sql);
-            $query->execute([
-                ':bookingid' => $bookingData['bookingid'],
-                ':serviceid' => $bookingData['bid'],
-                ':name' => $bookingData['name'],
-                ':mobilenumber' => $bookingData['mobnum'],
-                ':email' => $bookingData['email'],
-                ':eventdate' => $bookingData['edate'],
-                ':eventstartingtime' => $bookingData['est'],
-                ':eventendingtime' => $bookingData['eetime'],
-                ':venueaddress' => $bookingData['vaddress'],
-                ':eventtype' => $bookingData['eventtype'],
-                ':additionalinformation' => $bookingData['addinfo'],
-                ':paymentmethod' => $paymentMethod,
-                ':amount' => $amount,
-                ':transferbank' => $bookingData['selectedBank'],
-                ':va_number' => $bookingData['va_number'],
-                ':paymentstatus' => $paymentStatus,
-                ':completeddate' => $completedDate,
-                ':installmentcount' => isset($bookingData['installmentCount']) ? $bookingData['installmentCount'] : null,
-                ':userpay' => $userPay
-            ]);
+            $query->bindParam(':bookingid', $bookingData['bookingid']);
+            $query->bindParam(':serviceid', $bookingData['bid']);
+            $query->bindParam(':userid', $_SESSION['odmsaid']);
+            $query->bindParam(':name', $bookingData['name']);
+            $query->bindParam(':mobnum', $bookingData['mobnum']);
+            $query->bindParam(':email', $bookingData['email']);
+            $query->bindParam(':edate', $bookingData['edate']);
+            $query->bindParam(':est', $bookingData['est']);
+            $query->bindParam(':eetime', $bookingData['eetime']);
+            $query->bindParam(':vaddress', $bookingData['vaddress']);
+            $query->bindParam(':eventtype', $bookingData['eventtype']);
+            $query->bindParam(':addinfo', $bookingData['addinfo']);
+            $query->bindParam(':paymentMethod', $bookingData['paymentMethod']);
+            $query->bindParam(':amount', $bookingData['amount']);
+            $query->bindParam(':selectedBank', $bookingData['selectedBank']);
+            $query->bindParam(':va_number', $bookingData['va_number']);
+            $query->bindParam(':paymentStatus', $paymentStatus);
+            $query->bindParam(':completedDate', $completedDate);
+            $query->bindParam(':installmentCount', $bookingData['installmentCount']);
+            $query->bindParam(':userPay', $userPay);
+            $query->execute();
 
             unset($_SESSION['temp_booking']);
             echo json_encode(['success' => true]);
@@ -145,13 +168,19 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
     try {
         $dbh->beginTransaction();
 
+        // Ambil UserID dari session login
+        if (!isset($_SESSION['odmsaid'])) {
+            throw new Exception('User not logged in');
+        }
+        $userId = $_SESSION['odmsaid'];
+
         // Insert booking data
         $sql = "INSERT INTO tblbooking (UserID, BookingID, ServiceID, Name, Email, EventDate, EventStartTime, EventEndTime, EventType, VenueAddress, AdditionalInformation, BookingDate, Status) VALUES (:userid, :bookingid, :serviceid, :name, :email, :eventdate, :eventstarttime, :eventendtime, :eventtype, :venue, :additionalinfo, :bookingdate, :status)";
 
         $bookingId = generateBookingID();
         $query = $dbh->prepare($sql);
 
-        $query->bindParam(':userid', $input['userid'], PDO::PARAM_INT);
+        $query->bindParam(':userid', $userId, PDO::PARAM_INT);
         $query->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
         $query->bindParam(':serviceid', $input['serviceid'], PDO::PARAM_INT);
         $query->bindParam(':name', $input['name'], PDO::PARAM_STR);
@@ -169,10 +198,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         $query->execute();
 
         // Insert payment data
-        $sql = "INSERT INTO tblpayment (BookingID, PaymentMethod, Bank, InstallmentCount, AmountPaid, VANumber, PaymentDate, PaymentStatus) VALUES (:bookingid, :paymentmethod, :bank, :installmentcount, :amountpaid, :vanumber, :paymentdate, :paymentstatus)";
+        $sql = "INSERT INTO tblpayment (UserID, BookingID, PaymentMethod, Bank, InstallmentCount, AmountPaid, VANumber, PaymentDate, PaymentStatus) VALUES (:userid, :bookingid, :paymentmethod, :bank, :installmentcount, :amountpaid, :vanumber, :paymentdate, :paymentstatus)";
 
         $query = $dbh->prepare($sql);
-
+        $query->bindParam(':userid', $userId, PDO::PARAM_INT);
         $query->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
         $query->bindParam(':paymentmethod', $input['payment_method'], PDO::PARAM_STR);
         $query->bindParam(':bank', $input['selected_bank'], PDO::PARAM_STR);

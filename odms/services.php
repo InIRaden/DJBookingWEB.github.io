@@ -216,9 +216,9 @@ include('includes/dbconnection.php');
         .no-results {
             text-align: center;
             padding: 2rem;
-            background: linear-gradient(145deg, #1f2937, #111827);
+            background: #121212;
             border-radius: 0.75rem;
-            border: 1px solid #374151;
+            border: 0.8px solid #212121;
             color: #9ca3af;
             grid-column: 1 / -1;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -265,7 +265,7 @@ include('includes/dbconnection.php');
     </header>
 
     <!-- Main Content -->
-    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto bg-gray-900 rounded-lg shadow-2xl transition-all duration-300 hover:shadow-red-600/20">
+    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto bg-[#121212] rounded-lg shadow-2xl transition-all duration-300 hover:shadow-red-600/20">
         <!-- Breadcrumb -->
         <div class="breadcrumb flex items-center space-x-2 text-xs mb-8 text-gray-400">
             <a href="index.php" class="hover:text-white transition-colors duration-200">Home</a>
@@ -293,28 +293,14 @@ include('includes/dbconnection.php');
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php
             $search = isset($_GET['search']) ? $_GET['search'] : '';
-            
+            $isLoggedIn = isset($_SESSION['odmsaid']);
             if (!empty($search)) {
-                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
-                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
-                       COUNT(b.ID) AS booking_count
-                FROM tblservice s
-                LEFT JOIN tblbooking b ON s.ID = b.ServiceID
-                WHERE s.ServiceName LIKE :search OR s.SerDes LIKE :search
-                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
-                ) AS ranked_services";
+                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (\n                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,\n                       COUNT(b.ID) AS booking_count\n                FROM tblservice s\n                LEFT JOIN tblbooking b ON s.ID = b.ServiceID\n                WHERE s.ServiceName LIKE :search OR s.SerDes LIKE :search\n                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice\n                ) AS ranked_services";
                 
                 $query = $dbh->prepare($sql);
                 $query->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
             } else {
-                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (
-                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,
-                       COUNT(b.ID) AS booking_count
-                FROM tblservice s
-                LEFT JOIN tblbooking b ON s.ID = b.ServiceID
-                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice
-                ) AS ranked_services
-                LIMIT 5";
+                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (\n                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,\n                       COUNT(b.ID) AS booking_count\n                FROM tblservice s\n                LEFT JOIN tblbooking b ON s.ID = b.ServiceID\n                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice\n                ) AS ranked_services\n                LIMIT 5";
                 
                 $query = $dbh->prepare($sql);
             }
@@ -368,9 +354,11 @@ include('includes/dbconnection.php');
                             <p class="service-description"><?php echo htmlentities($row->SerDes); ?></p>
                             <div class="service-footer">
                                 <span class="service-price">$<?php echo htmlentities($row->ServicePrice); ?></span>
-                                <a href="book-services.php?bookid=<?php echo $row->ID; ?>" class="book-button">
-                                    Book Now <span class="icon">→</span>
-                                </a>
+                                <?php if ($isLoggedIn): ?>
+                                    <a href="book-services.php?bookid=<?php echo $row->ID; ?>" class="book-button">Book Now <span class="icon">→</span></a>
+                                <?php else: ?>
+                                    <button type="button" class="book-button book-now-guest" data-service="<?php echo $row->ID; ?>">Book Now <span class="icon">→</span></button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -378,7 +366,7 @@ include('includes/dbconnection.php');
                 }
             } else { ?>
                 <div class="no-results">
-                    <i class="fas fa-search fa-3x mb-4"></i>
+                    <i class="fas fa-search fa-2x mb-4"></i>
                     <h3 class="text-lg font-semibold mb-2">No services found</h3>
                     <p>We couldn't find any services matching your search criteria.</p>
                 </div>
@@ -386,12 +374,222 @@ include('includes/dbconnection.php');
         </div>
     </main>
 
-    <!-- Modal (removed as per request) -->
+    <!-- Login/Register Modal for Guest -->
+    <div id="loginModal" class="modal-login">
+        <div class="modal-login-content modal-login-content-wide">
+            <span class="close-login-modal" id="closeLoginModal">&times;</span>
+            <div class="modal-modal-body">
+                <h2 class="modal-title">Login is Required</h2>
+                <p class="modal-desc">To book a service, please sign in or create an account first.</p>
+                <div class="modal-btn-group-col">
+                    <a href="signin.php" class="modal-btn modal-btn-signin">Sign In</a>
+                    <div class="modal-or-separator"><span>Or</span></div>
+                    <a href="signup.php" class="modal-btn modal-btn-signup">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <?php include_once('includes/footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.umd.js"></script>
     <script>
-        // No modal logic needed anymore
+        // Modal logic for guest booking
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = document.getElementById('loginModal');
+            var closeBtn = document.getElementById('closeLoginModal');
+            var bookBtns = document.querySelectorAll('.book-now-guest');
+            bookBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    modal.style.display = 'flex';
+                });
+            });
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+            };
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
+    </script>
+    <style>
+        .modal-login {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(18,18,18,0.92);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-login-content {
+            background: linear-gradient(135deg, #212121 80%, #121212 100%);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+            box-shadow: 0 12px 48px 0 rgba(0,0,0,0.7), 0 1.5px 8px 0 #53535344;
+            min-width: 400px;
+            max-width: 98vw;
+            width: 480px;
+            min-height: 320px;
+            text-align: left;
+            position: relative;
+            animation: fadeInModal 0.35s cubic-bezier(.4,2,.6,1);
+            border: 1.5px solid #353535;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .close-login-modal {
+            position: absolute;
+            top: 22px;
+            right: 32px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+            z-index: 2;
+        }
+        .close-login-modal:hover {
+            color: #dc2626;
+            transform: scale(1.15) rotate(90deg);
+        }
+        .modal-modal-body {
+            width: 100%;
+        }
+        .modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.1px;
+            text-align: left;
+        }
+        .modal-desc {
+            color: #bdbdbd;
+            font-size: 0.98rem;
+            margin-bottom: 2.1rem;
+            font-weight: 400;
+            text-align: left;
+        }
+        .modal-btn-group-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            align-items: stretch;
+        }
+        .modal-btn {
+            padding: 0.95rem 0;
+            border-radius: 0.7rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s, border 0.18s;
+            box-shadow: 0 2px 12px 0 rgba(33,33,33,0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            border: none;
+            outline: none;
+            letter-spacing: 0.1px;
+        }
+        .modal-btn-signin {
+            background: #fff;
+            color: #232323;
+            border: 1.5px solid #353535;
+        }
+        .modal-btn-signin:hover {
+            background: #ededed;
+            color: #181818;
+            box-shadow: 0 4px 18px 0 #53535333;
+            transform: translateY(-1px) scale(1.02);
+        }
+        .modal-btn-signup {
+            background: transparent;
+            color: #fff;
+            border: 1.5px solid #353535;
+        }
+        .modal-btn-signup:hover {
+            background: #232323;
+            color: #fff;
+            box-shadow: 0 4px 18px 0 #53535333;
+            transform: translateY(-1px) scale(1.02);
+        }
+        .modal-btn i {
+            font-size: 1.2em;
+            margin-right: 0.5em;
+        }
+        .modal-login-content-wide {
+            width: 540px;
+            min-width: 420px;
+            max-width: 99vw;
+        }
+        .modal-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.25rem;
+            letter-spacing: 0.1px;
+            text-align: left;
+        }
+        .modal-desc {
+            color: #bdbdbd;
+            font-size: 0.93rem;
+            margin-bottom: 1.7rem;
+            font-weight: 400;
+            text-align: left;
+        }
+        .modal-btn {
+            font-size: 0.98rem;
+        }
+        .modal-or-separator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 0.5rem 0 0.5rem 0;
+            color: #535353;
+            font-size: 0.93rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+        }
+        .modal-or-separator span {
+            padding: 0 1.1em;
+            color: #b3b3b3;
+            font-size: 0.93rem;
+        }
+      .modal-or-separator:before,
+.modal-or-separator:after {
+    content: '';
+    flex: 1;
+    border-bottom: 1.2px solid rgba(179, 179, 180, 0.3); /* transparan */
+    margin: 0 0.2em;
+}
+
+        @media (max-width: 600px) {
+            .modal-login-content {
+                min-width: 90vw;
+                width: 99vw;
+                padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+            }
+            .modal-title {
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+    <script>
+        // ...existing code...
     </script>
 </body>
 
