@@ -830,15 +830,15 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 });
 
                 // Populate confirmation modal with form data
-                document.getElementById('confirm-name').textContent = data.name || 'N/A';
-                document.getElementById('confirm-email').textContent = data.email || 'N/A';
-                document.getElementById('confirm-mobnum').textContent = data.mobnum || 'N/A';
-                document.getElementById('confirm-edate').textContent = data.edate || 'N/A';
-                document.getElementById('confirm-est').textContent = data.est || 'N/A';
-                document.getElementById('confirm-eetime').textContent = data.eetime || 'N/A';
-                document.getElementById('confirm-vaddress').textContent = data.vaddress || 'N/A';
-                document.getElementById('confirm-eventtype').textContent = data.eventtype || 'N/A';
-                document.getElementById('confirm-addinfo').textContent = data.addinfo || 'N/A';
+                document.getElementById('confirm-name').textContent = data.name || '-';
+                document.getElementById('confirm-email').textContent = data.email || '-';
+                document.getElementById('confirm-mobnum').textContent = data.mobnum || '-';
+                document.getElementById('confirm-edate').textContent = data.edate || '-';
+                document.getElementById('confirm-est').textContent = data.est || '-';
+                document.getElementById('confirm-eetime').textContent = data.eetime || '-';
+                document.getElementById('confirm-vaddress').textContent = data.vaddress || '-';
+                document.getElementById('confirm-eventtype').textContent = data.eventtype || '-';
+                document.getElementById('confirm-addinfo').textContent = data.addinfo || '-';
 
                 // Get selected payment method and display it properly
                 const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
@@ -908,7 +908,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
                         document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
                         const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
-                        const paymentMethodValue = paymentMethod ? paymentMethod.value : 'N/A';
+                        const paymentMethodValue = paymentMethod ? paymentMethod.value : '-';
                         document.getElementById('payment-method').textContent = paymentMethodValue;
                         const bankInfoRow = document.querySelector('.payment-info p:has(#payment-bank)');
                         const paymentTimer = document.querySelector('.timer');
@@ -930,7 +930,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                             const selectedBank = document.getElementById('selected-bank');
                             document.getElementById('payment-bank').textContent =
                                 (paymentMethod && (paymentMethod.value === 'transfer' || paymentMethod.value === 'installment')) ?
-                                (selectedBank.value || 'N/A') : 'N/A';
+                                (selectedBank.value || '-') : '-';
                             document.getElementById('payment-va-number').value = bookingData.va_number;
                             startTimer(bookingData.expiryTime);
                             if (installmentMinimumText) {
