@@ -209,6 +209,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
     <link rel="stylesheet" href="./css/book-service.css">
     <style>
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -220,6 +221,50 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             align-items: center;
             justify-content: center;
             z-index: 1000;
+        }
+
+        /* Header styles */
+        .header-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.7) 60%,rgba(0,0,0,0.1) 100%);
+        }
+
+        .header-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 0 20px;
+            z-index: 2;
+        }
+
+        .header-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.92);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #fff,0 0 18px #2563eb,2px 2px 8px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+
+        .header-text {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
         .modal.show {
@@ -378,12 +423,15 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
 <body class="bg-black text-white">
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
-        <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-md px-4">
-            <h1 class="text-white font-bold text-lg md:text-xl leading-tight">Contact</h1>
-            <p class="text-xs md:text-sm mt-2 text-white">
-                Learn more about our DJ services and what makes us special
-            </p>
+        <div class="header-container">
+            <img alt="DJ performing at event" class="w-full h-[300px] object-cover" src="images/abt.jpg" />
+            <div class="header-overlay"></div>
+            <div class="header-content">
+                <h1 class="header-title">Book Services</h1>
+                <p class="header-text">
+                    Learn more about our DJ services and what makes us special
+                </p>
+            </div>
         </div>
     </header>
 
