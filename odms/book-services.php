@@ -152,10 +152,11 @@ if (isset($_POST['final_submit'])) {
             $query->execute();
 
             unset($_SESSION['temp_booking']);
-            echo json_encode(['success' => true]);
-        } catch (PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+            echo json_encode(['success' => true, 'message' => 'Booking successful']);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
+        exit;
     } else {
         echo json_encode(['success' => false, 'message' => 'No temporary booking data found.']);
     }

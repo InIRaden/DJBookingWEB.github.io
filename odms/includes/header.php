@@ -99,12 +99,15 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <!-- Menu Navigasi -->
         <ul class="hidden md:flex space-x-8 text-sm font-normal">
-            <li><a class="nav-link" href="index.php"></a></li>
+            <!-- <li><a class="nav-link" href="index.php"></a></li> -->
             <li><a class="nav-link" href="services.php">Services</a></li>
             <li><a class="nav-link" href="status.php">Request Status</a></li>
             <li><a class="nav-link" href="about.php">About</a></li>
             <li><a class="nav-link" href="contact.php">Contact</a></li>
-            <li><a class="nav-link" href="admin/login.php"></a></li>
+            <!-- <li><a class="nav-link" href="admin/login.php"></a></li> -->
+            <?php if (strlen($_SESSION['odmsaid']) != 0) { ?>
+                <li><a class="nav-link" href="history-payment.php">Payment History</a></li>
+            <?php } ?>
         </ul>
 
         <!-- Tombol Sign In / Logout -->

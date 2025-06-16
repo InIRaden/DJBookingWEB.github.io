@@ -14,11 +14,10 @@ include('includes/dbconnection.php');
     <link rel="stylesheet" href="../src/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.css" />
-    <style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancyapps.css" />    <style>
         body {
             font-family: "Poppins", sans-serif;
-            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+            background-color: black;
         }
 
         .service-card {
@@ -261,6 +260,26 @@ include('includes/dbconnection.php');
             margin-top: 40px; 
             padding: 10px 0;
         }
+
+        .header-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #fff, 0 0 18px #2563eb, 2px 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        .header-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -268,6 +287,14 @@ include('includes/dbconnection.php');
     <!-- Header Section -->
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
+        <div class="header-container" style="position:relative;width:100%;height:300px;overflow:hidden;">
+            <img src="images/abt.jpg" alt="DJ performing at event" class="w-full h-[300px] object-cover header-image" />
+            <div class="header-overlay" style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.7) 60%,rgba(0,0,0,0.1) 100%);"></div>
+            <div class="header-content" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:100%;max-width:500px;padding:0 20px;z-index:2;">
+                <h1 class="header-title">Our Services</h1>
+                <p class="header-text">Find the perfect DJ service for your event</p>
+            </div>
+        </div>
     </header>
 
     <!-- Main Content -->
