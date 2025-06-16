@@ -328,7 +328,7 @@ include('includes/dbconnection.php');
 
                 foreach ($latest_events as $event) { ?>
                     <a href="book-services.php" class="block">
-                        <article class="event-card bg-gray-800 rounded-md p-4 text-[10px] sm:text-xs leading-tight h-full">
+                        <article class="event-card bg-[#1a1a1a] rounded-md p-4 text-[10px] sm:text-xs leading-tight h-full">
                             <h3 class="font-bold text-white mb-2"><?php echo $event['title']; ?></h3>
                             <p class="text-gray-400"><?php echo $event['description']; ?></p>
                         </article>

@@ -108,6 +108,7 @@ if (isset($_POST['register'])) {
             border-top-right-radius: 50px;
             border-bottom-right-radius: 50px;
             overflow: hidden;
+            z-index: -99;
         }
 
         .register-image::before {
@@ -439,7 +440,7 @@ if (isset($_POST['register'])) {
             <i class="fas fa-music">Online Event Booking With DJs System</i> 
         </div>
         <div class="copyright animated delay-1">
-            <p>&copy; <span id="current-year"></span> All Rights Reserved • Made with <i class="fas fa-heart"></i></p>
+            <p>&copy; <span id="current-year"></span> All Rights Reserved • Made with ❤️<i class="fas fa-heart"></i></p>
         </div>
     </div>
 
@@ -449,7 +450,7 @@ if (isset($_POST['register'])) {
                 <div class="register-logo">
                     <i class="fas fa-user-plus"></i>
                 </div>
-                <h2 class="register-title animated delay-2">Create Account</h2>
+                <h2 class="register-title animated delay-2" style="font-weight: 700;">Create Account</h2>
                 <p class="register-subtitle animated delay-2">Please fill in the form to register</p>
 
                 <form method="post" class="space-y-4">
@@ -485,7 +486,7 @@ if (isset($_POST['register'])) {
                     <button type="submit" name="register" class="register-btn">Sign Up</button>
 
                     <div class="login-link">
-                        <a href="signin.php"><i class="fas fa-sign-in-alt"></i> Already have an account? Sign in here</a>
+                        <a href="signin.php"><i class="fas fa-sign-in-alt"></i> Already have an account?<b>Sign in here</b> </a>
                     </div>
 
                     <div class="back-home">

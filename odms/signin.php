@@ -58,13 +58,29 @@ if (isset($_POST['login'])) {
             --shadow-color: rgba(0, 0, 0, 0.1);
         }
 
-        body {
-            background-color: var(--white);
-            color: var(--dark-text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            margin: 0;
-        }
+    body {
+    background-color: var(--white);
+    color: var(--dark-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    position: relative;
+}
+
+/* Dekorasi abstrak */
+body::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 0%, transparent 80%);
+    z-index: 0;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
 
         .login-container {
             display: flex;
@@ -447,10 +463,10 @@ if (isset($_POST['login'])) {
         <!-- Left Side - Image -->
     <div class="login-image">
         <div class="system-name animated">
-            <i class="fas fa-music"></i> Online Event Booking With DJs System
+            <i class="fas fa-music"></i> <i style="color:white;" >Online Event Booking With DJs System</i>
         </div>
         <div class="copyright animated delay-1">
-            <p>&copy; <span id="current-year"></span> All Rights Reserved • Made with <i class="fas fa-heart"></i></p>
+            <p>&copy; <span id="current-year"></span> All Rights Reserved • Made with ❤️ <i class="fas fa-heart"></i></p>
         </div>
     </div>
 
@@ -460,7 +476,7 @@ if (isset($_POST['login'])) {
                 <div class="login-logo">
                     <i class="fas fa-user-circle"></i>
                 </div>
-                <h2 class="login-title animated delay-2">Welcome Back</h2>
+                <h2 class="login-title animated delay-2" style="font-weight: 700;">Welcome Back</h2>
                 <p class="login-subtitle animated delay-2">Sign in to your account to continue</p>
 
                 <form method="post" class="space-y-4">
@@ -490,7 +506,7 @@ if (isset($_POST['login'])) {
                         <i class="fas fa-sign-in-alt" style="margin-right:0.5em;"></i> Sign In
                     </button>
                     <div class="signup-link">
-                        <a href="signup.php"><i class="fas fa-user-plus"></i> Don't have an account? Sign up now</a>
+                        <a href="signup.php"><i class="fas fa-user-plus "></i> Don't have an account? <b>Sign up now</b></a>
                     </div>
                     <div class="back-home">
                         <a href="index.php">
