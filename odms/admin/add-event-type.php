@@ -8,9 +8,7 @@ if (strlen($_SESSION['odmsaid']) == 0) {
     header('location:logout.php');
 } else {
     // Proses saat tombol submit ditekan
-    if (isset($_POST['submit'])) {
-        $etype = $_POST['eventtype'];
-
+    if (isset($_POST['submit'])) {        $etype = $_POST['eventtype'];
         $sql = "INSERT INTO tbleventtype(EventType) VALUES (:etype)";
         $query = $dbh->prepare($sql);
         $query->bindParam(':etype', $etype, PDO::PARAM_STR);
