@@ -175,13 +175,13 @@ include('includes/dbconnection.php');
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
         <div class="header-container" style="position:relative;width:100%;height:300px;overflow:hidden;">
-            <img src="images/abt.jpg" alt="DJ performing at event" class="w-full h-[300px] object-cover header-image" />
+            <img src="images/8.jpg" alt="DJ performing at event" class="w-full h-[300px] object-cover header-image" />
             <div class="header-overlay" style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.7) 60%,rgba(0,0,0,0.1) 100%);"></div>
             <div class="header-content" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:100%;max-width:500px;padding:0 20px;z-index:2;">
                 <h1 class="header-title" style="font-size:2.2rem;font-weight:800;color:rgba(255,255,255,0.92);margin-bottom:1rem;text-shadow:0 0 10px #fff,0 0 18px #2563eb,2px 2px 8px rgba(0,0,0,0.3);letter-spacing:1px;">Request Status</h1>
                 <p class="header-text" style="color:rgba(255,255,255,0.8);font-size:1.1rem;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">Learn more about our DJ services and what makes us special</p>
             </div>
-        </div>
+        </div>  
     </header>
 
     <!-- Main Content -->

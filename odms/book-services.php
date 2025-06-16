@@ -1116,9 +1116,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
          * @param {number} amount - Amount to format
          * @returns {string} Formatted currency string
          */
-        function formatCurrency(amount) {
-            return '$ ' + parseFloat(amount).toLocaleString('id-ID');
-        }
+ function formatCurrency(amount) {
+    return '$' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
 
         function submitFinalForm() {
             if (!window._bookingData) {

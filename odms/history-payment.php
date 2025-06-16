@@ -266,7 +266,7 @@ include('includes/dbconnection.php');
                                     <?php foreach($results as $row) { ?>
                                         <tr>
                                             <td><?php echo htmlentities($row->BookingID); ?></td>
-                                            <td>Rp <?php echo number_format($row->Amount, 0, ',', '.'); ?></td>
+                                            <td>$<?php echo number_format($row->Amount, 0, ',', '.'); ?></td>
                                             <td><?php echo htmlentities($row->PaymentMethod); ?></td>
                                             <td><?php echo date('d M Y H:i', strtotime($row->PaymentDate)); ?></td>
                                             <td>
