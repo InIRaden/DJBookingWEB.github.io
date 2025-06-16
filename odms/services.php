@@ -33,12 +33,14 @@ include('includes/dbconnection.php');
             border: none; /* Remove border by default */
         }
 
-        .service-card:hover, .service-card:active {
-            background: linear-gradient(145deg, #1f2937, #111827); /* Change on hover/click */
-            border: 1px solid #374151; /* Add border on interaction */
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
-        }
+       .service-card:hover,
+.service-card:active {
+    background-color: #212121; /* ganti warna saat hover */
+    border: 1px solid #2f2f2f; /* abu tua */
+    transform: translateY(-2px); /* lebih ringan */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.05); /* efek shadow putih abu tipis */
+    transition: all 0.2s ease-in-out;
+}
 
         .service-image-container {
             overflow: hidden;
@@ -105,22 +107,26 @@ include('includes/dbconnection.php');
             align-items: center;
             padding-top: 1rem;
             border-top: 1px solid #374151;
-            background: linear-gradient(135deg, #1a1a1a, #0d0d0d); /* Match with .service-card background */
+            background: transparent; /* Match with .service-card background */
             transition: background 0.3s ease;
         }
 
         .service-card:hover .service-footer, .service-card:active .service-footer {
-            background: linear-gradient(145deg, #1f2937, #111827); /* Match hover state of .service-card */
+       background-color: transparent;
         }
 
-        .service-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #dc2626;
-            text-shadow: 1px 1px 3px rgba(220, 38, 38, 0.3);
-            border: none;
-            padding: 0.25rem 0.5rem;
-        }
+     .service-price {
+    font-size: 1.25rem;
+    font-style: italic;
+    font-weight: 450;
+    color: #f4f4f5; /* putih keabu-abuan */
+    background-color: rgba(83, 83, 83, 0.3); /* #535353 dengan 70% opacity */
+    border-radius: 6px;
+    padding: 0.25rem 0.75rem;
+    backdrop-filter: blur(2px); /* efek pudar lembut */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow ringan */
+    transition: background-color 0.2s ease-in-out;
+}
 
         .book-button {
             background: linear-gradient(90deg, #dc2626, #ef4444);
@@ -252,20 +258,20 @@ include('includes/dbconnection.php');
 
         /* Tambahan untuk breadcrumb */
         .breadcrumb {
-            margin-top: 40px; /* Jarak dari atas ditingkatkan menjadi 40px untuk lebih rendah */
+            margin-top: 40px; 
             padding: 10px 0;
         }
     </style>
 </head>
 
-<body class="bg-black text-white">
+<body class="bg-[#1a1a1a] text-white">
     <!-- Header Section -->
     <header class="relative">
         <?php include_once('includes/header.php'); ?>
     </header>
 
     <!-- Main Content -->
-    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto bg-[#121212] rounded-lg shadow-2xl transition-all duration-300 hover:shadow-red-600/20">
+    <main class="px-6 md:px-16 lg:px-24 xl:px-32 py-10 max-w-[1280px] mx-auto rounded-lg shadow-2xl transition-all duration-300 hover:shadow-red-600/20">
         <!-- Breadcrumb -->
         <div class="breadcrumb flex items-center space-x-2 text-xs mb-8 text-gray-400">
             <a href="index.php" class="hover:text-white transition-colors duration-200">Home</a>
