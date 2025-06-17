@@ -658,27 +658,63 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 <h3 class="text-xl font-semibold text-white">Confirm Your Booking <span class="text-sm text-gray-400 ml-2">Step 1/2</span></h3>
             </div>
             <div class="modal-body">
-                <div class="modal-body-left">
+                <div class="modal-body-left" style="padding: 20px;">
                     <h4 class="text-lg font-medium text-white mb-4">Booking Details</h4>
-                    <div class="space-y-3">
-                        <p class="text-gray-300">Name: <span id="confirm-name" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Email: <span id="confirm-email" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Phone Number: <span id="confirm-mobnum" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Event Date: <span id="confirm-edate" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Start Time: <span id="confirm-est" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">End Time: <span id="confirm-eetime" class="text-white font-semibold"></span></p>
-                    </div>
+                    <table style="width:100%; border-collapse: collapse; background-color: #2d2d2d; border-radius: 12px; overflow: hidden;">
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Name:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-name"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Email:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-email"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Phone Number:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-mobnum"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Event Date:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-edate"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Start Time:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-est"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">End Time:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-eetime"></span></td>
+                        </tr>
+                    </table>
                 </div>
-                <div class="modal-body-right">
+                <div class="modal-body-right" style="padding: 20px;">
                     <h4 class="text-lg font-medium text-white mb-4">Additional Details</h4>
-                    <div class="space-y-3">
-                        <p class="text-gray-300">Venue Address: <span id="confirm-vaddress" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Event Type: <span id="confirm-eventtype" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Additional Information: <span id="confirm-addinfo" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Payment Method: <span id="confirm-payment-method" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Bank: <span id="confirm-selected-bank" class="text-white font-semibold"></span></p>
-                        <p class="text-gray-300">Installment Count: <span id="confirm-installment-count" class="text-white font-semibold"></span></p>
-                    </div>
+                    <table style="width:100%; border-collapse: collapse; background-color: #2d2d2d; border-radius: 12px; overflow: hidden;">
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Venue Address:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-vaddress"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Event Type:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-eventtype"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Additional Information:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-addinfo"></span></td>
+                        </tr>
+                         <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Payment Method:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-payment-method"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Bank:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-selected-bank"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; text-align: left; color: #9ca3af;">Installment Count:</td>
+                            <td style="padding: 12px; text-align: left; color: #fff; font-weight: bold;"><span id="confirm-installment-count"></span></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div id="confirm-error-message" class="error-message bg-red-500 text-white p-3 rounded mb-4" style="display: none;"></div>
@@ -695,21 +731,27 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('payment-modal')">×</span>
             <div class="modal-header">
-                <h3 class="text-xl font-semibold text-white">Payment Details</h3>
-                <span class="page-indicator"> Step2/2</span>
+                <h3 class="text-xl font-semibold text-white">Payment Details <span class="text-sm text-gray-400 ml-2">Step 2/2</span></h3>
             </div>
             <div class="modal-body">
                 <div class="modal-body-left">
                     <h4 class="text-lg font-medium text-white mb-4">Booking Information</h4>
                     <div class="payment-info">
-                        <p><span class="label">Booking ID:</span> <span id="payment-booking-id" class="value"></span></p>
-                        <p><span class="label">Total Payment:</span> <span id="payment-amount" class="value"></span></p>
-                        <p><span class="label">Payment Method:</span> <span id="payment-method" class="value"></span></p>
-                        <p><span class="label">Bank:</span> <span id="payment-bank" class="value"></span></p>
+                        <p><span class="label">Booking ID:</span> <span id="payment-booking-id" class="value" style="float: right;"></span></p>
+                        <p><span class="label">Total Payment:</span> <span id="payment-amount" class="value" style="float: right;"></span></p>
+                        <p><span class="label">Payment Method:</span> <span id="payment-method" class="value" style="float: right;"></span></p>
+                        <p>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 0; text-align: left; color: #9ca3af; font-size: 14px;">Bank:</td>
+                                    <td style="padding: 0; text-align: right; color: #fff; font-weight: 500;"><span id="payment-bank" class="value"></span></td>
+                                </tr>
+                            </table>
+                        </p>
                     </div>
                     <div class="timer mt-4">
                         <p>Time remaining for payment:</p>
-                        <p id="payment-timer" class="font-bold"></p>
+                        <p id="payment-timer" class="font-bold" style="color: #fff;"></p>
                     </div>
                 </div>
                 <div class="modal-body-right">
