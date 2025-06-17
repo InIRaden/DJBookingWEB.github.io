@@ -953,6 +953,48 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
          */
         function confirmPayment() {
             const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            if (paymentMethod === 'cash') {
+                const userPayInput = document.getElementById('user-pay-cash');
+                const userPayError = document.getElementById('user-pay-cash-error');
+                const paymentAmount = parseFloat(document.getElementById('payment-amount').textContent.replace(/[^\d.]/g, ''));
+                const userPay = parseFloat(userPayInput.value);
+                userPayError.style.display = 'none';
+                userPayError.textContent = '';
+                if (userPay !== paymentAmount) {
+                    userPayError.textContent = 'Payment amount must be exactly the total price.';
+                    userPayError.style.display = 'block';
+                    userPayInput.focus();
+                    return;
+                }
+                const formData = new FormData();
+                formData.append('final_submit', '1');
+                formData.append('payment_method', paymentMethod);
+                formData.append('user_pay', userPay);
+                formData.append('selected_bank', '');
+                formData.append('va_number', '');
+                formData.append('installment_count', '');
+                formData.append('completed_date', new Date().toISOString());
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Tampilkan modal sukses
+                        openModal('success-modal');
+                    } else {
+                        // Tampilkan error
+                        userPayError.style.display = 'block';
+                        userPayError.textContent = data.message || 'An error occurred. Try again.';
+                    }
+                })
+                .catch(error => {
+                    userPayError.style.display = 'block';
+                    userPayError.textContent = 'An error occurred. Try again.';
+                });
+                return;
+            }
             const userPayInput = document.getElementById('user-pay');
             const userPayError = document.getElementById('user-pay-error');
             const paymentAmount = parseFloat(document.getElementById('payment-amount').textContent.replace(/[^\d.]/g, ''));
