@@ -920,14 +920,14 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
 
                 // Get selected payment method and display it properly
                 const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
-                const paymentMethodValue = selectedPaymentMethod ? selectedPaymentMethod.value : 'N/A';
+                const paymentMethodValue = selectedPaymentMethod ? selectedPaymentMethod.value : '-';
                 document.getElementById('confirm-payment-method').textContent = paymentMethodValue;
 
                 // Get and display bank information only for transfer and installment
                 const selectedBank = document.getElementById('selected-bank');
                 const bankElement = document.querySelector('.text-gray-300:has(#confirm-selected-bank)');
                 if (paymentMethodValue === 'transfer' || paymentMethodValue === 'installment') {
-                    document.getElementById('confirm-selected-bank').textContent = selectedBank.value || 'N/A';
+                    document.getElementById('confirm-selected-bank').textContent = selectedBank.value || '-';
                     if (bankElement) bankElement.style.display = 'block';
                 } else {
                     if (bankElement) bankElement.style.display = 'none';
@@ -937,7 +937,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 const installmentCount = document.querySelector('select[name="installment_count"]');
                 const installmentElement = document.querySelector('.text-gray-300:has(#confirm-installment-count)');
                 if (paymentMethodValue === 'installment') {
-                    document.getElementById('confirm-installment-count').textContent = installmentCount.value || 'N/A';
+                    document.getElementById('confirm-installment-count').textContent = installmentCount.value || '-';
                     if (installmentElement) installmentElement.style.display = 'block';
                 } else {
                     if (installmentElement) installmentElement.style.display = 'none';
