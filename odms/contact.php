@@ -20,20 +20,20 @@ if (isset($_POST['submit'])) {
 		// Ganti alert standar dengan notifikasi yang lebih menarik
 		echo "<script>
 			document.addEventListener('DOMContentLoaded', function() {
-				showSuccessNotification('Pesan Anda telah terkirim. Kami akan segera menghubungi Anda.');
+				showSuccessNotification('Your message has been sent. We will contact you shortly.');
 			});
 		</script>";
 	} else {
 		// Ganti alert error standar dengan notifikasi yang lebih menarik
 		echo "<script>
 			document.addEventListener('DOMContentLoaded', function() {
-				showErrorNotification('Terjadi kesalahan. Silakan coba lagi.');
+				showErrorNotification(' An error occurred. Please try again.');
 			});
 		</script>";
 	}
 }
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html>]
 <html lang="en">
 
 <head>

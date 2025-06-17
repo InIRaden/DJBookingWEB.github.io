@@ -134,21 +134,21 @@
                                 </tr>
                             </thead>
                             <tbody>                                <?php
-                                // Get booking summary first
+                                // Get booking summary dulu
                                 $summary_sql = "CALL sp_get_booking_summary()";
                                 $summary_query = $dbh->prepare($summary_sql);
                                 $summary_query->execute();
                                 $summary = $summary_query->fetch(PDO::FETCH_ASSOC);
                                 $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, 1);
                                 
-                                // Get all bookings with formatted status
+                                // Dapetin semua booking dengan status yang sudah diformat
                                 $sql = "CALL sp_get_all_bookings()";
                                 $query = $dbh->prepare($sql);
                                 $query->execute();
                                 $results = $query->fetchAll(PDO::FETCH_OBJ);
                                 $cnt = 1;
                                 if ($query->rowCount() > 0) {
-                                    // Display summary at the top
+                                    // Menampilkan ringkasan booking
                                     echo '<div class="row mb-4">';
                                     echo '<div class="col-3"><div class="card bg-primary text-white p-3">Total Bookings: ' . $summary['Total'] . '</div></div>';
                                     echo '<div class="col-3"><div class="card bg-success text-white p-3">Approved: ' . $summary['Approved'] . '</div></div>';

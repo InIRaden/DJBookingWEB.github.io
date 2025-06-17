@@ -118,10 +118,10 @@ if (isset($_POST['submit'])) {
     <script src="assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
 
     <script>
-        // Update current year
+        // Update tahun saat ini
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Password visibility toggle
+        // Toggle visibilitas password
         function togglePassword(fieldId, iconId) {
             const passwordField = document.getElementById(fieldId);
             const icon = document.getElementById(iconId);
@@ -137,7 +137,7 @@ if (isset($_POST['submit'])) {
             }
         }
 
-        // Password validation
+        // Validasi Password
         function valid() {
             if (document.chngpwd.newpassword.value !== document.chngpwd.confirmpassword.value) {
                 alert("New Password and Confirm Password do not match!");

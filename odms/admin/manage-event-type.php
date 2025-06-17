@@ -7,7 +7,7 @@ if (strlen($_SESSION['odmsaid']) == 0) {
     header('location:logout.php');
     exit();
 } else {
-    // Code for deleting product from cart
+    // Kode untuk menghapus produk dari keranjang
     if (isset($_GET['delid'])) {
         $rid = intval($_GET['delid']);
         $sql = "DELETE FROM tbleventtype WHERE ID = :rid";

@@ -1,26 +1,24 @@
--- Add UserID column to tblbooking if it doesn't exist
+
 ALTER TABLE tblbooking
 ADD COLUMN IF NOT EXISTS UserID int;
 
--- Add UserID column to tblpayment if it doesn't exist
 ALTER TABLE tblpayment
 ADD COLUMN IF NOT EXISTS UserID int;
 
--- Add foreign key constraint to tblbooking
+
 ALTER TABLE tblbooking
 ADD CONSTRAINT fk_booking_user
 FOREIGN KEY (UserID) REFERENCES tbluser_login(ID)
 ON DELETE RESTRICT
 ON UPDATE CASCADE;
 
--- Add foreign key constraint to tblpayment
+
 ALTER TABLE tblpayment
 ADD CONSTRAINT fk_payment_user
 FOREIGN KEY (UserID) REFERENCES tbluser_login(ID)
 ON DELETE RESTRICT
 ON UPDATE CASCADE;
 
--- Create or modify stored procedure for booking and payment
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS CreateBookingAndPayment//

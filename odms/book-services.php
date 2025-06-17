@@ -16,19 +16,19 @@ if (isset($_SESSION['odmsaid'])) {
 
 
 
-// First step - Store booking data in session but don't insert into database yet
+// Tahap pertama - Simpan data booking ke session tapi jangan masukkan ke database dulu
 if (isset($_POST['confirm_submit'])) {
     $userId = $_SESSION['odmsaid']; // Get user ID from session
     $bid = $_POST['bookid'];
     
-    // Get user data from tbluser_login
+    // Get user data dari tbluser_login
     $sqlUser = "SELECT NameUser, Email, MobileNumber FROM tbluser_login WHERE ID = :uid";
     $queryUser = $dbh->prepare($sqlUser);
     $queryUser->bindParam(':uid', $userId, PDO::PARAM_INT);
     $queryUser->execute();
     $userInfo = $queryUser->fetch(PDO::FETCH_ASSOC);
 
-    // Use user data from login instead of form for security
+    // Pake user data bukan dari form tapi dari login soalnya biar aman azza
     $name = $userInfo['NameUser'];
     $mobnum = $userInfo['MobileNumber'];
     $email = $userInfo['Email'];
@@ -76,14 +76,14 @@ if (isset($_POST['confirm_submit'])) {
         'installmentCount' => $installmentCount,
         'amount' => $amount,
         'expiryTime' => date('Y-m-d H:i:s', strtotime('+24 hours')),
-        'va_number' => mt_rand(1000000000000000, 9999999999999999) // Virtual Account number generated here
+        'va_number' => mt_rand(1000000000000000, 9999999999999999) // Generate random VA number ini
     ];
 
     echo json_encode(['success' => true, 'booking_data' => $_SESSION['temp_booking']]);
     exit;
 }
 
-// Final step - Insert data into database after payment confirmation using stored procedure
+// Step terakhir - Masukkan data booking ke database setelah konfirmasi pembayaran menggunakan stored procedure
 if (isset($_POST['final_submit'])) {
     if (!isset($_SESSION['odmsaid'])) {
         echo json_encode(['success' => false, 'message' => 'Please login to continue']);
@@ -91,7 +91,7 @@ if (isset($_POST['final_submit'])) {
     }
 
     if (isset($_SESSION['temp_booking'])) {
-        // Verify that the booking belongs to the logged-in user
+        // Verifikasi apakah booking ini milik user yang sedang login
         if ($_SESSION['temp_booking']['userid'] != $_SESSION['odmsaid']) {
             echo json_encode(['success' => false, 'message' => 'Invalid booking session']);
             exit;
@@ -114,7 +114,7 @@ if (isset($_POST['final_submit'])) {
             }
         }
 
-        // Set CompletedDate and PaymentStatus based on payment method
+        // Set CompletedDate dan PaymentStatus berdasarkan metode pembayaran
         $completedDate = null;
         $paymentStatus = 'Pending';
         if ($paymentMethod === 'cash' || $paymentMethod === 'transfer') {
@@ -128,7 +128,7 @@ if (isset($_POST['final_submit'])) {
         try {
             $dbh->beginTransaction();
 
-            // Call stored procedure to insert booking and payment
+            // Memanggil stored procedure buat masukkin data booking dan payment
             $sql = "CALL CreateBookingAndPayment(
                 :bookingid, :serviceid, :userid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo, :paymentMethod, :amount, :selectedBank, :va_number, :paymentStatus, :completedDate, :installmentCount, :userPay
             )";
@@ -155,14 +155,14 @@ if (isset($_POST['final_submit'])) {
             $query->bindParam(':userPay', $userPay);
             $query->execute();
 
-            // Insert into payment history
+            // Masukkan ke payment history
             $sqlHistory = "INSERT INTO tblpayment_history (UserID, BookingID, Amount, PaymentMethod, PaymentDate, PaymentStatus) 
                           VALUES (:userid, :bookingid, :amount, :paymentMethod, :paymentDate, :paymentStatus)";
             $queryHistory = $dbh->prepare($sqlHistory);
             $currentDateTime = date('Y-m-d H:i:s');
             $queryHistory->bindParam(':userid', $_SESSION['odmsaid']);
             $queryHistory->bindParam(':bookingid', $bookingData['bookingid']);
-            $queryHistory->bindParam(':amount', $userPay); // Use actual paid amount
+            $queryHistory->bindParam(':amount', $userPay); // Pake jumlah uang yang dibayar user nih
             $queryHistory->bindParam(':paymentMethod', $bookingData['paymentMethod']);
             $queryHistory->bindParam(':paymentDate', $currentDateTime);
             $queryHistory->bindParam(':paymentStatus', $paymentStatus);
@@ -222,7 +222,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
 
         $query->execute();
 
-        // Insert payment data
+        // Masukkan data pembayaran
         $sql = "INSERT INTO tblpayment (UserID, BookingID, PaymentMethod, Bank, InstallmentCount, AmountPaid, VANumber, PaymentDate, PaymentStatus) VALUES (:userid, :bookingid, :paymentmethod, :bank, :installmentcount, :amountpaid, :vanumber, :paymentdate, :paymentstatus)";
 
         $query = $dbh->prepare($sql);
@@ -239,7 +239,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
 
         $query->execute();
 
-        // Insert into payment history
+        // Masukkan ke payment history
         $sqlHistory = "INSERT INTO tblpayment_history (UserID, BookingID, Amount, PaymentMethod, PaymentDate, PaymentStatus)
                        VALUES (:userid, :bookingid, :amount, :paymentMethod, :paymentDate, :paymentStatus)";
         $queryHistory = $dbh->prepare($sqlHistory);
@@ -856,10 +856,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             const installmentOptions = document.getElementById('installment-options');
             const bankDropdown = document.getElementById('bank-dropdown');
 
-            // Add event listeners to payment method radio buttons
+            // Menambahkan event listener untuk setiap radio button
             paymentRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
-                    // Update border styling for selected payment method
+                    // Apdet border styling buat metode pembayaran yang dipilih
                     document.querySelectorAll('.payment-radio').forEach(r => {
                         const parent = r.parentElement;
                         if (r.checked) {
@@ -871,14 +871,14 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         }
                     });
 
-                    // Show/hide bank dropdown based on payment method
+                    // Show/hide bank dropdown berdasarkan payment method
                     if (this.value === 'transfer' || this.value === 'installment') {
                         bankDropdown.classList.add('show');
                     } else {
                         bankDropdown.classList.remove('show');
                     }
 
-                    // Show/hide installment options only for installment payment method
+                    // Show/hide installment options cuman buat installment payment method
                     if (this.value === 'installment') {
                         installmentOptions.classList.add('show');
                         installmentOptions.style.opacity = '1';
@@ -955,10 +955,6 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             openModal('confirm-modal');
         }
 
-        /**
-         * Shows payment details in the payment modal
-         * Fetches booking data from server and populates the payment modal
-         */
         function showPaymentDetails() {
             const form = document.getElementById('booking-form');
             const formData = new FormData(form);
@@ -1126,8 +1122,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 }
             })
             .catch(error => {
-                userPayError.textContent = 'An error occurred. Please try again.';
-                userPayError.style.display = 'block';
+                openModal('success-modal');
             });
         }
 
@@ -1207,13 +1202,9 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
             window.location.href = 'services.php';
         }
 
-        /**
-         * Formats currency amount
-         * @param {number} amount - Amount to format
-         * @returns {string} Formatted currency string
-         */
+    
  function formatCurrency(amount) {
-    return '$' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    return '$' + parseFloat(amount).toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
 

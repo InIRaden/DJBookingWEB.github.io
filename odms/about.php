@@ -149,8 +149,8 @@ include('includes/dbconnection.php');
                     <h2 class="font-semibold text-white text-lg mb-6"><?php echo htmlentities($row->PageTitle); ?></h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <a href="images/abt.jpg" data-fancybox="about-gallery">
-                                <img src="images/abt.jpg" alt="About Us" class="w-full h-auto rounded-md shadow-lg" />
+                            <a href="images/bersama.jpg" data-fancybox="about-gallery">
+                                <img src="images/bersama.jpg" alt="About Us" class="w-full h-auto rounded-md shadow-lg" />
                             </a>
                         </div>
                         <div class="text-gray-300 text-sm leading-relaxed">
