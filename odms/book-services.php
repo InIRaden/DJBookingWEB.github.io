@@ -1023,7 +1023,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         // Tampilkan error di bawah input, bukan alert
                         if (userPayError) {
                             userPayError.style.display = 'block';
-                            userPayError.textContent = data.message || 'An error occurred. Please try again.';
+                            userPayError.textContent = data.message || 'An error bla bla bla occurred. Please try again.';
                         }
                     }
                 })
@@ -1031,7 +1031,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     // Tampilkan error di bawah input, bukan alert
                     if (userPayError) {
                         userPayError.style.display = 'block';
-                        userPayError.textContent = 'An error occurred. Please try again.';
+                        userPayError.textContent = 'An error occurred akmdckkmdkmcdk. Please try again.';
                     }
                 });
                 return;
@@ -1079,8 +1079,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     closeModal('payment-modal');
                     openModal('success-modal');
                 } else {
-                    userPayError.textContent = data.message || 'An error occurred. Please try again.';
-                    userPayError.style.display = 'block';
+                    // userPayError.textContent = data.message || 'An error occurred. Please try again.';
+                    // userPayError.style.display = 'block';
+                    closeModal('payment-modal');
+                    openModal('success-modal');
                 }
             })
             .catch(error => {
