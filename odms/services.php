@@ -327,14 +327,24 @@ include('includes/dbconnection.php');
             <?php
             $search = isset($_GET['search']) ? $_GET['search'] : '';
             $isLoggedIn = isset($_SESSION['odmsaid']);
+
+            // Query dengan ranking berdasarkan jumlah booking
             if (!empty($search)) {
-                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (\n                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,\n                       COUNT(b.ID) AS booking_count\n                FROM tblservice s\n                LEFT JOIN tblbooking b ON s.ID = b.ServiceID\n                WHERE s.ServiceName LIKE :search OR s.SerDes LIKE :search\n                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice\n                ) AS ranked_services";
-                
+                $sql = "SELECT s.*, COUNT(b.ID) as booking_count,
+                        RANK() OVER (ORDER BY COUNT(b.ID) DESC) as ranking
+                        FROM tblservice s 
+                        LEFT JOIN tblbooking b ON s.ID = b.ServiceID
+                        WHERE s.ServiceName LIKE :search 
+                        OR s.SerDes LIKE :search
+                        GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice";
                 $query = $dbh->prepare($sql);
                 $query->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
             } else {
-                $sql = "SELECT *, RANK() OVER (ORDER BY booking_count DESC) AS ranking FROM (\n                SELECT s.ID, s.ServiceName, s.SerDes, s.ServicePrice,\n                       COUNT(b.ID) AS booking_count\n                FROM tblservice s\n                LEFT JOIN tblbooking b ON s.ID = b.ServiceID\n                GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice\n                ) AS ranked_services\n                LIMIT 5";
-                
+                $sql = "SELECT s.*, COUNT(b.ID) as booking_count,
+                        RANK() OVER (ORDER BY COUNT(b.ID) DESC) as ranking
+                        FROM tblservice s 
+                        LEFT JOIN tblbooking b ON s.ID = b.ServiceID
+                        GROUP BY s.ID, s.ServiceName, s.SerDes, s.ServicePrice";
                 $query = $dbh->prepare($sql);
             }
 
@@ -343,54 +353,40 @@ include('includes/dbconnection.php');
 
             if ($query->rowCount() > 0) {
                 foreach ($results as $row) {
-                    $serviceImage = '';
-                    $djNames = '';
-                    switch (strtolower($row->ServiceName)) {
-                        case 'wedding dj':
-                            $serviceImage = 'weddingDj.jpg';
-                            $djNames = 'Emily Carter, James Harper, Sophia Bennet';
+                    // Get default image jika service image tidak ada
+                    $imagePath = "images/default-service.jpg";
+                    $possibleImages = [
+                        strtolower(str_replace(' ', '', $row->ServiceName)) . '.jpg',
+                        strtolower(str_replace(' ', '', $row->ServiceName)) . '.png'
+                    ];
+                    
+                    foreach ($possibleImages as $img) {
+                        if (file_exists("images/" . $img)) {
+                            $imagePath = "images/" . $img;
                             break;
-                        case 'party dj':
-                            $serviceImage = 'partyDj.jpg';
-                            $djNames = 'Mia Sullivan, Liam Parker, Chloe Evans';
-                            break;
-                        case 'ceremony music':
-                            $serviceImage = 'blg2.jpg';
-                            break;
-                        case 'photo booth hire':
-                            $serviceImage = 'photobooth.jpg';
-                            break;
-                        case 'karaoke add-on':
-                            $serviceImage = 'karaoke.jpg';
-                            break;
-                        case 'uplighters':
-                            $serviceImage = 'uplighters.jpg';
-                            break;
-                        default:
-                            $serviceImage = 'abt.jpg';
+                        }
                     }
             ?>
-                    <div class="service-card" onclick="this.classList.toggle('active')">
-                        <div class="service-image-container relative">
-                            <div class="ranking-badge">
-                                #<?php echo $row->ranking; ?>
-                            </div>
-                            <img src="images/<?php echo $serviceImage; ?>"
-                                alt="<?php echo htmlentities($row->ServiceName); ?>"
-                                class="service-image">
-                            <?php if (!empty($djNames)): ?>
-                                <div class="dj-names"><?php echo $djNames; ?></div>
-                            <?php endif; ?>
+                    <div class="service-card">
+                        <?php if($row->ranking <= 3): ?>
+                        <div class="ranking-badge">#<?php echo $row->ranking; ?></div>
+                        <?php endif; ?>
+                        <div class="service-image-container">
+                            <img src="<?php echo $imagePath; ?>" alt="<?php echo htmlspecialchars($row->ServiceName); ?>" class="service-image">
                         </div>
                         <div class="service-content">
-                            <h3 class="service-title"><?php echo htmlentities($row->ServiceName); ?></h3>
-                            <p class="service-description"><?php echo htmlentities($row->SerDes); ?></p>
+                            <h3 class="service-title"><?php echo htmlspecialchars($row->ServiceName); ?></h3>
+                            <p class="service-description"><?php echo htmlspecialchars($row->SerDes); ?></p>
                             <div class="service-footer">
-                                <span class="service-price">$<?php echo htmlentities($row->ServicePrice); ?></span>
-                                <?php if ($isLoggedIn): ?>
-                                    <a href="book-services.php?bookid=<?php echo $row->ID; ?>" class="book-button">Book Now <span class="icon">→</span></a>
+                                <div class="service-price">Rp <?php echo number_format($row->ServicePrice, 0, ',', '.'); ?></div>
+                                <?php if($isLoggedIn): ?>
+                                <a href="book-services.php?service_id=<?php echo $row->ID; ?>" class="book-button">
+                                    Book Now <i class="fas fa-arrow-right icon"></i>
+                                </a>
                                 <?php else: ?>
-                                    <button type="button" class="book-button book-now-guest" data-service="<?php echo $row->ID; ?>">Book Now <span class="icon">→</span></button>
+                                <a href="javascript:void(0)" class="book-button book-now-guest">
+                                    Book Now <i class="fas fa-arrow-right icon"></i>
+                                </a>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -399,9 +395,8 @@ include('includes/dbconnection.php');
                 }
             } else { ?>
                 <div class="no-results">
-                    <i class="fas fa-search fa-2x mb-4"></i>
-                    <h3 class="text-lg font-semibold mb-2">No services found</h3>
-                    <p>We couldn't find any services matching your search criteria.</p>
+                    <h3 class="text-xl font-semibold mb-2">No services found</h3>
+                    <p class="text-gray-400">Try searching with different keywords or browse all services</p>
                 </div>
             <?php } ?>
         </div>
