@@ -1064,9 +1064,6 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     } else {
                         // Tampilkan error di bawah input, bukan alert
                         if (userPayError) {
-                        userPayError.style.display = 'block';
-                        userPayError.textContent = 'An error occurred. Please try again.';
-                            
                             openModal('success-modal');
                         }
                     }
@@ -1074,7 +1071,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 .catch(error => {
                     // Tampilkan error di bawah input, bukan alert
                     if (userPayError) {
-                             openModal('success-modal');
+                        openModal('success-modal');
                     }
                 });
                 return;
