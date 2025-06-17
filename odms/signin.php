@@ -30,7 +30,7 @@ if (isset($_POST['login'])) {
         }
 
     $_SESSION['login'] = $_POST['username'];
-    echo "<script>location.href='index.php';</script>";
+    echo "<script>location.href='services.php';</script>";
   } else {
     echo "<script>alert('Username atau password salah');</script>";
   }

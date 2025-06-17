@@ -34,7 +34,7 @@ if (strlen($_SESSION['odmsaid'] == 0)) {
                         <div class="content-header-item">
                             <a class="link-effect font-w700" href="dashboard.php">
                 
-                                <span class="font-size-xl text-white">SPIN</span><span class="font-size-xl text-primary">UP</span>
+                                <span class="font-size-xl text-white">SPINUP</span>
                             </a>
                         </div>
                         <!-- END Logo -->

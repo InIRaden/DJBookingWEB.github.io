@@ -193,7 +193,7 @@ include('includes/dbconnection.php');
             <p class="text-sm md:text-base mt-3 text-white">
                 Customize your event with the right DJ. Explore styles, check availability, and book in just a few clicks.
             </p>
-            <a href="services.php" class="mt-4 inline-block bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-red-600 transition">
+            <a href="signin.php" class="mt-4 inline-block bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-red-600 transition">
                 Book Now
             </a>
         </div>

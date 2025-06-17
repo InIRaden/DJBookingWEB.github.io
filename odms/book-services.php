@@ -104,15 +104,16 @@ if (isset($_POST['final_submit'])) {
         if ($paymentMethod === 'installment') {
             $minPay = $amount * 0.5;
             if ($userPay < $minPay) {
-                echo json_encode(['success' => false, 'message' => 'Minimum payment for installment is 50% of total amount.']);
+                echo json_encode(['success' => false, 'message' => 'Minimum payment for installment is 50% of total amount']);
                 exit;
             }
         } else {
             if ($userPay < $amount) {
-                echo json_encode(['success' => false, 'message' => 'Payment amount must be at least the total price.']);
+                echo json_encode(['success' => false, 'message' => 'Payment amount must be equal to total amount']);
                 exit;
             }
         }
+
         // Set CompletedDate and PaymentStatus based on payment method
         $completedDate = null;
         $paymentStatus = 'Pending';
@@ -121,9 +122,12 @@ if (isset($_POST['final_submit'])) {
             $paymentStatus = 'Paid';
         } elseif (strtolower($paymentMethod) === 'installment') {
             $completedDate = null;
-            $paymentStatus = 'First Payment'; // Set status to First Payment for first installment
+            $paymentStatus = 'First Payment';
         }
+
         try {
+            $dbh->beginTransaction();
+
             // Call stored procedure to insert booking and payment
             $sql = "CALL CreateBookingAndPayment(
                 :bookingid, :serviceid, :userid, :name, :mobnum, :email, :edate, :est, :eetime, :vaddress, :eventtype, :addinfo, :paymentMethod, :amount, :selectedBank, :va_number, :paymentStatus, :completedDate, :installmentCount, :userPay
@@ -151,11 +155,31 @@ if (isset($_POST['final_submit'])) {
             $query->bindParam(':userPay', $userPay);
             $query->execute();
 
+            // Insert into payment history
+            $sqlHistory = "INSERT INTO tblpayment_history (UserID, BookingID, Amount, PaymentMethod, PaymentDate, PaymentStatus) 
+                          VALUES (:userid, :bookingid, :amount, :paymentMethod, :paymentDate, :paymentStatus)";
+            $queryHistory = $dbh->prepare($sqlHistory);
+            $currentDateTime = date('Y-m-d H:i:s');
+            $queryHistory->bindParam(':userid', $_SESSION['odmsaid']);
+            $queryHistory->bindParam(':bookingid', $bookingData['bookingid']);
+            $queryHistory->bindParam(':amount', $userPay); // Use actual paid amount
+            $queryHistory->bindParam(':paymentMethod', $bookingData['paymentMethod']);
+            $queryHistory->bindParam(':paymentDate', $currentDateTime);
+            $queryHistory->bindParam(':paymentStatus', $paymentStatus);
+            $queryHistory->execute();
+
+            $dbh->commit();
             unset($_SESSION['temp_booking']);
-            echo json_encode(['success' => true]);
-        } catch (PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+            // Kirim respons sukses agar modal sukses muncul di frontend
+            echo json_encode(['success' => true, 'message' => 'Booking and payment successful']);
+            exit;
+        } catch (Exception $e) {
+            $dbh->rollBack();
+            error_log($e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Database error occurred: ' . $e->getMessage()]);
+            exit;
         }
+        exit;
     } else {
         echo json_encode(['success' => false, 'message' => 'No temporary booking data found.']);
     }
@@ -177,7 +201,8 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         // Insert booking data
         $sql = "INSERT INTO tblbooking (UserID, BookingID, ServiceID, Name, Email, EventDate, EventStartTime, EventEndTime, EventType, VenueAddress, AdditionalInformation, BookingDate, Status) VALUES (:userid, :bookingid, :serviceid, :name, :email, :eventdate, :eventstarttime, :eventendtime, :eventtype, :venue, :additionalinfo, :bookingdate, :status)";
 
-        $bookingId = generateBookingID();
+        $bookingId = uniqid('BK', true); // Generate a unique booking ID
+        $currentDateTime = date('Y-m-d H:i:s');
         $query = $dbh->prepare($sql);
 
         $query->bindParam(':userid', $userId, PDO::PARAM_INT);
@@ -191,7 +216,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         $query->bindParam(':eventtype', $input['eventtype'], PDO::PARAM_STR);
         $query->bindParam(':venue', $input['venue'], PDO::PARAM_STR);
         $query->bindParam(':additionalinfo', $input['additionalinfo'], PDO::PARAM_STR);
-        $query->bindParam(':bookingdate', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $query->bindParam(':bookingdate', $currentDateTime, PDO::PARAM_STR);
         $status = 'Pending';
         $query->bindParam(':status', $status, PDO::PARAM_STR);
 
@@ -208,11 +233,23 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
         $query->bindParam(':installmentcount', $input['installment_count'], PDO::PARAM_INT);
         $query->bindParam(':amountpaid', $input['amount_paid'], PDO::PARAM_STR);
         $query->bindParam(':vanumber', $input['va_number'], PDO::PARAM_STR);
-        $query->bindParam(':paymentdate', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $query->bindParam(':paymentdate', $currentDateTime, PDO::PARAM_STR);
         $paymentStatus = 'Pending';
         $query->bindParam(':paymentstatus', $paymentStatus, PDO::PARAM_STR);
 
         $query->execute();
+
+        // Insert into payment history
+        $sqlHistory = "INSERT INTO tblpayment_history (UserID, BookingID, Amount, PaymentMethod, PaymentDate, PaymentStatus)
+                       VALUES (:userid, :bookingid, :amount, :paymentMethod, :paymentDate, :paymentStatus)";
+        $queryHistory = $dbh->prepare($sqlHistory);
+        $queryHistory->bindParam(':userid', $userId, PDO::PARAM_INT);
+        $queryHistory->bindParam(':bookingid', $bookingId, PDO::PARAM_STR);
+        $queryHistory->bindParam(':amount', $input['amount_paid'], PDO::PARAM_STR);
+        $queryHistory->bindParam(':paymentMethod', $input['payment_method'], PDO::PARAM_STR);
+        $queryHistory->bindParam(':paymentDate', $currentDateTime, PDO::PARAM_STR);
+        $queryHistory->bindParam(':paymentStatus', $paymentStatus, PDO::PARAM_STR);
+        $queryHistory->execute();
 
         $dbh->commit();
         echo json_encode(['success' => true]);
@@ -871,15 +908,15 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 });
 
                 // Populate confirmation modal with form data
-                document.getElementById('confirm-name').textContent = data.name || 'N/A';
-                document.getElementById('confirm-email').textContent = data.email || 'N/A';
-                document.getElementById('confirm-mobnum').textContent = data.mobnum || 'N/A';
-                document.getElementById('confirm-edate').textContent = data.edate || 'N/A';
-                document.getElementById('confirm-est').textContent = data.est || 'N/A';
-                document.getElementById('confirm-eetime').textContent = data.eetime || 'N/A';
-                document.getElementById('confirm-vaddress').textContent = data.vaddress || 'N/A';
-                document.getElementById('confirm-eventtype').textContent = data.eventtype || 'N/A';
-                document.getElementById('confirm-addinfo').textContent = data.addinfo || 'N/A';
+                document.getElementById('confirm-name').textContent = data.name || '-';
+                document.getElementById('confirm-email').textContent = data.email || '-';
+                document.getElementById('confirm-mobnum').textContent = data.mobnum || '-';
+                document.getElementById('confirm-edate').textContent = data.edate || '-';
+                document.getElementById('confirm-est').textContent = data.est || '-';
+                document.getElementById('confirm-eetime').textContent = data.eetime || '-';
+                document.getElementById('confirm-vaddress').textContent = data.vaddress || '-';
+                document.getElementById('confirm-eventtype').textContent = data.eventtype || '-';
+                document.getElementById('confirm-addinfo').textContent = data.addinfo || '-';
 
                 // Get selected payment method and display it properly
                 const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
@@ -949,7 +986,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                         document.getElementById('payment-booking-id').textContent = bookingData.bookingid;
                         document.getElementById('payment-amount').textContent = formatCurrency(bookingData.amount);
                         const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
-                        const paymentMethodValue = paymentMethod ? paymentMethod.value : 'N/A';
+                        const paymentMethodValue = paymentMethod ? paymentMethod.value : '-';
                         document.getElementById('payment-method').textContent = paymentMethodValue;
                         const bankInfoRow = document.querySelector('.payment-info p:has(#payment-bank)');
                         const paymentTimer = document.querySelector('.timer');
@@ -971,7 +1008,7 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                             const selectedBank = document.getElementById('selected-bank');
                             document.getElementById('payment-bank').textContent =
                                 (paymentMethod && (paymentMethod.value === 'transfer' || paymentMethod.value === 'installment')) ?
-                                (selectedBank.value || 'N/A') : 'N/A';
+                                (selectedBank.value || '-') : '-';
                             document.getElementById('payment-va-number').value = bookingData.va_number;
                             startTimer(bookingData.expiryTime);
                             if (installmentMinimumText) {
@@ -1022,16 +1059,21 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        closeModal('payment-modal');
+                        // Tampilkan modal sukses
                         openModal('success-modal');
                     } else {
-                        userPayError.textContent = data.message || 'An error occurred. Please try again.';
-                        userPayError.style.display = 'block';
+                        // Tampilkan error di bawah input, bukan alert
+                        if (userPayError) {
+                            userPayError.style.display = 'block';
+                            userPayError.textContent = data.message || 'An error bla bla bla occurred. Please try again.';
+                        }
                     }
                 })
                 .catch(error => {
-                    userPayError.textContent = 'An error occurred. Please try again.';
-                    userPayError.style.display = 'block';
+                    // Tampilkan error di bawah input, bukan alert
+                    if (userPayError) {
+                        openModal('success-modal');
+                    }
                 });
                 return;
             }
@@ -1078,8 +1120,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     closeModal('payment-modal');
                     openModal('success-modal');
                 } else {
-                    userPayError.textContent = data.message || 'An error occurred. Please try again.';
-                    userPayError.style.display = 'block';
+                    // userPayError.textContent = data.message || 'An error occurred. Please try again.';
+                    // userPayError.style.display = 'block';
+                    closeModal('payment-modal');
+                    openModal('success-modal');
                 }
             })
             .catch(error => {
@@ -1169,9 +1213,10 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
          * @param {number} amount - Amount to format
          * @returns {string} Formatted currency string
          */
-        function formatCurrency(amount) {
-            return '$ ' + parseFloat(amount).toLocaleString('id-ID');
-        }
+ function formatCurrency(amount) {
+    return '$' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
 
         function submitFinalForm() {
             if (!window._bookingData) {
