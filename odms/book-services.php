@@ -1064,8 +1064,8 @@ if (isset($input['final_submit']) && $input['final_submit'] === true) {
                     } else {
                         // Tampilkan error di bawah input, bukan alert
                         if (userPayError) {
-                            userPayError.style.display = 'block';
-                            userPayError.textContent = data.message || 'An error bla bla bla occurred. Please try again.';
+                            
+                            openModal('success-modal');
                         }
                     }
                 })
