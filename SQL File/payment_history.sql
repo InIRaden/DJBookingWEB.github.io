@@ -6,6 +6,7 @@ CREATE TABLE tblpayment_history (
     PaymentMethod varchar(50) NOT NULL,
     PaymentDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PaymentStatus varchar(50) NOT NULL,
+    TransactionID varchar(100) NOT NULL,
     PRIMARY KEY (ID),
     KEY UserID (UserID),
     FOREIGN KEY (UserID) REFERENCES tbluser_login(ID) ON DELETE CASCADE
