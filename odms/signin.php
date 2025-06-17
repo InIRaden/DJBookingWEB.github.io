@@ -56,7 +56,6 @@ if (isset($_POST['login'])) {
             --light-bg: #f8f9fa;
             --border-color: #e9ecef;
             --shadow-color: rgba(0, 0, 0, 0.1);
-            --gray-color: #888888;
         }
 
         body {
@@ -441,29 +440,6 @@ if (isset($_POST['login'])) {
             margin-bottom: 1.5rem;
         }
     }
-
-    .forgot-link {
-        text-align: center;
-        margin-top: 1rem;
-    }
-    
-    .forgot-link a {
-        color: var(--gray-color);
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .forgot-link a:hover {
-        color: var(--primary-color);
-    }
-    
-    .forgot-link i {
-        font-size: 0.9rem;
-    }
     </style>
 </head>
 <body>
@@ -515,11 +491,6 @@ if (isset($_POST['login'])) {
                     </button>
                     <div class="signup-link">
                         <a href="signup.php"><i class="fas fa-user-plus"></i> Don't have an account? Sign up now</a>
-                    </div>
-                    <div class="forgot-link">
-                        <a href="forget-password.php">
-                            <i class="fas fa-unlock-alt"></i> Forgot password?
-                        </a>
                     </div>
                     <div class="back-home">
                         <a href="index.php">

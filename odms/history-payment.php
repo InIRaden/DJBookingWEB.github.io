@@ -245,7 +245,7 @@ include('includes/dbconnection.php');
                         ORDER BY ph.PaymentDate DESC";
                 $query = $dbh->prepare($sql);
                 $query->bindParam(':userid', $userId, PDO::PARAM_INT);
-                $query->execute();  
+                $query->execute();
                 $results = $query->fetchAll(PDO::FETCH_OBJ);
                 
                 if($query->rowCount() > 0) { ?>
